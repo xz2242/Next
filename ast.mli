@@ -17,6 +17,7 @@ type expr =
   | Lit of int
   | Var of string
   | LitS of string
+  | Print of expr
   
 type stmt = 
 	Ifelse of expr * stmt * stmt
