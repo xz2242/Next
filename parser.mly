@@ -1,18 +1,21 @@
 %{ open Ast %}
 
+
 %token PLUS MINUS TIMES DIVIDE LESSTHAN GREATERTHAN EQUAL NEQUAL LOGICAND LOGICOR ASSIGN
 %token COMMA SEMICOLON QUOTATION DOT
 %token LBRACKET RBRACKET LPAREN RPAREN 
-%token IF THEN ELSE START END PROB WHEN WITH NEXT
-%token CHARACTER LOCATION ACTION OUPUT ATTRIBUTE ITEM INT STRING
+%token IF THEN ELSE START END PROB WHEN NEXT
+%token CHARACTER LOCATION ACTION OUTPUT ITEM INT STRING
 %token EOF
 %token <int> LITERAL
 %token <string> VARIABLE
+%token <string> VARIABLESTR
 %token <string> STRINGLIT
 
 %nonassoc IF THEN ELSE
 %left SEMICOLON
 
+%nonassoc OUTPUT
 %left COMMA
 %right ASSIGN
 %left LOGICOR
@@ -22,7 +25,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %nonassoc LPAREN RPAREN
-%nonassoc LCOMMENT RCOMMENT
+
 
 %start block
 %type < Ast.block> block
@@ -59,6 +62,7 @@ expr:
 | LITERAL          			{ Lit($1) }
 | VARIABLE 			   		{ Var($1) }
 | STRINGLIT					{ LitS($1) }
+| OUTPUT expr				{ Print($2)}
 ;
 
 
