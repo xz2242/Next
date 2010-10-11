@@ -1,0 +1,22 @@
+x = 2;
+x = x*x;
+y=0;
+z=5;
+x = (x+1) * (y + z);
+if x > z then
+{
+	x=1;
+	x = 2, y=5;
+	
+} else if x<z then
+{
+
+	x=2;
+	
+} else
+{
+	x=3, y=4;
+}
+x;
+y;
+
