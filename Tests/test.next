@@ -1,0 +1,29 @@
+x = 2;
+x = x+x*x;
+y=0;
+z=5;
+x = (x+1) * (y + z);
+"i am + dude ";
+if x > z  and y != 0 then
+{
+	x=1;
+	x = 2, y=5;
+	
+} else if y = 4 then
+{
+
+	x=2;
+	y = 3 ;
+	
+} else if x<y then
+{
+/* hello world */
+	x=3, y=4;
+} else
+{}
+x;
+y;
+output x,",",y,"hello";
+output "hello";
+/*t;*/
+
