@@ -25,6 +25,30 @@ rule token = parse
 | ')' {RPAREN}
 | ',' {COMMA}
 | "output" {OUTPUT}
+
+|'.' {DOT}
+|"do" {DO}
+|"end" {END}
+|"prob" {PROB}
+|"[?" {RPROBBLOCK}
+|"?]" {LPROBBLOCK}
+|"when" {WHEN}
+|"next" {NEXT}
+|"choose" {CHOOSE}
+|"kill" {KILL}
+|"grab" {GRAB}
+|"drop" {DROP}
+|"show" {SHOW}
+|"hide" {HIDE}
+|"exists" {EXISTS}
+|"character" {CHARACTER}
+|"location" {LOCATION}
+|"action" {ACTION}
+|"item" {ITEM}
+|"int" {INT}
+|"string" {STRING}
+| ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as varstr {VARIABLESTR (varstr) }
+
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
 | ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as var { VARIABLE (var) }
 | eof { EOF }
