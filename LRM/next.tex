@@ -14,15 +14,144 @@
 \section{Introduction}
 
 \section{Lexicon}
+The Next programming language uses a standard grammar and character set.  Characters in the source code are grouped into tokens, which can be punctuators, operators, identifiers, keywords, or string literals.  The compiler forms the longest possible token from a given string of characters; tokens end when white space is encountered, or when it would not be possible for the next character to be part of the token.  White space is defined as space characters, tab characters, return characters, and newline characters.
+\\
+\\
+\noindent The compiler processes the source code and identifies tokens and locates error conditions.  There are three types of errors:
+\begin{itemize}
+\item Lexical errors occur when the compiler cannot form a legal token from the character stream.
+\item Syntax errors occur when a legal token can be formed, but the compiler cannot make a legal statement from the tokens.
+\item Semantic errors?
+\end{itemize}
+
 \subsection{Character Set}
+The Next programming languages accepts standard ASCII characters.
+
+\subsection{Identifiers}
+An identifier is a sequence of characters that represents a name for a:
+\begin{itemize}
+\item Variable
+\item Location
+\item Character
+\item Item
+\item Action
+\end{itemize}
+
+\noindent Rules for identifiers:
+\begin{itemize}
+\item Identifiers consist of a sequence of one or more uppercase or lowercase characters, the digits 0 to 9, and the underscore character (\_).
+\item Identifier names are case sensitive.
+\item Identifiers cannot begin with a digit or an underscore.
+\item Keywords are not identifiers.
+\end{itemize}
+
+\subsection{Comments}
+Comments are introduced by /* and ended by */, except within a string literal.
+Comments cannot be nested.  If a comment is started by /*, the next occurrence of */ ends the comment.
+
+\subsection{Keywords}
+Keywords identify statement constructs and specify basic types.  Keywords cannot be used as identifiers.  The keywords are listed in Table~\ref{keywords}.
+
+\begin{table}[htdp]
+\caption{Keywords}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\texttt{if} & \texttt{then} & \texttt{else} & \texttt{and} & \texttt{or} \\
+\hline
+\texttt{start} & \texttt{end} & \texttt{when} & \texttt{choose} & \texttt{kill} \\
+\hline
+\texttt{grab} & \texttt{hide} & \texttt{exists} & \texttt{drop} & \texttt{output} \\
+\hline
+\texttt{character} & \texttt{location} & \texttt{action} & \texttt{item} & \texttt{int} \\
+\hline
+\texttt{string} & \texttt{next} & & &  \\
+\hline
+\end{tabular}
+\end{center}
+\label{keywords}
+\end{table}%
+
+\noindent Keywords are used:
+\begin{itemize}
+\item To qualify a data type (\texttt{character, location, action, item, int, string})
+\item As part of a statement (\texttt{if, then, else, and, or, start, end, when, choose, kill, grab, hide, exists, drop, output}) 
+\end{itemize}
+
+
+\subsection{Operators}
+Operators are tokens that specify an operation on at least on operand and yield a result (a value, side effect, or combination).  Operands are expressions.  Operators with one operand are unary operators, and operators with two operands are binary operators.
+\\
+\\
+\noindent Operators are ranked by precedence, which determines which operators are evaluated before others in a statement.
+\\
+\\
+\noindent Some operators are composed of more than one character, and others are single characters.
+\\
+\\
+\noindent The single character operators are shown in Table~\ref{single_operators}.
+
+\begin{table}[htdp]
+\caption{Single-character operators}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\texttt{+} & \texttt{-} & \texttt{*} & \texttt{/} & \texttt{<} \\
+\hline
+\texttt{>} & \texttt{=} & \texttt{} & \texttt{} & \texttt{} \\
+\hline
+\end{tabular}
+\end{center}
+\label{single_operators}
+\end{table}%
+
+
+\noindent The multiple-character operators are shown in Table~\ref{multi_operators}.
+
+\begin{table}[htdp]
+\caption{Multiple-character operators}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\texttt{>=} & \texttt{<=} & \texttt{==} & \texttt{!=} & \texttt{and} \\
+\hline
+\texttt{or} & \texttt{} & \texttt{} & \texttt{} & \texttt{} \\
+\hline
+\end{tabular}
+\end{center}
+\label{multi_operators}
+\end{table}%
+
+
+\subsection{Punctuators}
+\subsection{String literals}
 
 \section{Basic Concepts}
-\section{Data Types}
-\section{Declarations}
-\section{Functions}
-\section{Expressions and Operators}
-\section{Statements}
+\subsection{Blocks}
+\subsection{Scope}
+\subsection{Visibility}
+\subsection{Side Effects and Sequence Points}
 
+\section{Data Types}
+
+\section{Declarations}
+\subsection{Declaration Syntax Rules}
+
+\section{Expressions and Operators}
+\subsection{Primary Expressions}
+\subsection{Overview of the Next Operators}
+\subsection{Unary Operators}
+logical negation?
+\subsection{Binary Operators}
+
+\section{Statements}
+\subsection{Labeled Statements}
+\subsection{Compound Statements}
+\subsection{Expression Statements}
+\subsection{Selection Statements}
+\subsection{Iteration Statements}
+
+\section{Examples}
 
 
 \end{document}
