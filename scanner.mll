@@ -25,9 +25,10 @@ rule token = parse
 | ')' {RPAREN}
 | ',' {COMMA}
 | "output" {OUTPUT}
+| "not" {LOGICNOT}
 
 |'.' {DOT}
-|"do" {DO}
+|"start" {START}
 |"end" {END}
 |"prob" {PROB}
 |"[?" {RPROBBLOCK}
@@ -47,7 +48,6 @@ rule token = parse
 |"item" {ITEM}
 |"int" {INT}
 |"string" {STRING}
-| ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as varstr {VARIABLESTR (varstr) }
 
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
 | ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as var { VARIABLE (var) }

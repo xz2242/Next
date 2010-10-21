@@ -10,17 +10,55 @@ type operator =
   | Gt 
   | Neq
 
-type expr =
+type pridec =
+	Strdec of string
+  | Intdec of string
+  | Strdecinit of string * expr
+  | Intdecinit of string * expr
+
+and membervar =
+	Primember of pridec
+  | Varref of varref
+  | Seq of membervar * membervar
+
+and varref = Var of string
+
+and expr =
     Binop of expr * operator * expr
   | Asn of string * expr
-  | Seq of expr * expr
   | Lit of int
-  | Var of string
   | LitS of string
   | Print of expr
+  | Exists of varref
+  | Has of string * string
+  | Neg of expr
+  | Not of expr
+
+and probexpr =
+	Unitprob of int * stmt
+  | Probblk of probexpr * probexpr
+
+and actiondec = 
+	Unitaction of string * string * string
+  | Actionblk of actiondec * actiondec
   
-type stmt = 
+and whenexpr =
+	Unitwhen of string * stmt * string
+  | Whenblk of whenexpr * whenexpr
+
+and stmt = 
 	Ifelse of expr * stmt * stmt
+  | Chwhen of actiondec * whenexpr
+  | Prob of probexpr
+  | Kill of varref
+  | Grab of varref
+  | Drop of varref
+  | Show of varref
+  | Hide of varref
+  | Charadec of string * membervar
+  | Itemdec of string * membervar
+  | Locdec of string * membervar
+  | Startend of string * expr * stmt
   | Atomstmt of expr
   | Cmpdstmt of block
   | Nostmt of int
