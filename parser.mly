@@ -13,21 +13,24 @@
 
 %nonassoc IF THEN ELSE
 %left SEMICOLON
-
 %nonassoc OUTPUT
 %left COMMA
 %right ASSIGN
 %left LOGICOR
 %left LOGICAND
+%left LOGICNOT
 %left EQUAL NEQUAL
 %left LESSTHAN GREATERTHAN
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left NEG
+%left DOT
 %nonassoc LPAREN RPAREN
 
 
-%start block
+%start program
+%type < Ast.block> program
+%type < Ast.block> file
 %type < Ast.block> block
 %type < Ast.expr> expr
 %type < Ast.stmt> stmt
@@ -37,34 +40,42 @@
 %type < Ast.varref> varref
 
 %%
+program:
+  file EOF {$1}
+;
+
+file:
+ 		{[]}
+| block {List.rev $1}
+;
+
 stmt:
   IF expr THEN stmt ELSE stmt {Ifelse($2,$4,$6)}
 | START VARIABLE END expr stmt {Startend ($2, $4, $5)}
-| KILL varref				{Kill($2)}
-| GRAB varref				{Grab($2)}
-| DROP varref				{Drop($2)}
-| HIDE varref				{Hide($2)}
-| SHOW varref				{Show($2)}
+| KILL varref SEMICOLON				{Kill($2)}
+| GRAB varref SEMICOLON				{Grab($2)}
+| DROP varref SEMICOLON				{Drop($2)}
+| HIDE varref SEMICOLON				{Hide($2)}
+| SHOW varref SEMICOLON				{Show($2)}
 | CHARACTER VARIABLE LBRACKET membervar RBRACKET {Charadec($2,$4)}
 | LOCATION VARIABLE LBRACKET membervar RBRACKET {Itemdec($2,$4)}
 | ITEM VARIABLE LBRACKET membervar RBRACKET {Locdec($2,$4)}
-| RPROBBLOCK probexpr LPROBBLOCK {Prob($2)}
+| RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
-| CHOOSE actiondec LBRACKET whenexpr RBRACKET {Chwhen ($2,$4)}
+| CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
 ;
 
 block:
-  stmt { Onestmt ($1) }
-| stmt block { Onestmtoneblk ($1, $2) }
-| block block { Twoblks ($1, $2) }
+  stmt { [$1] }
+| block stmt { $2::$1 }
 ;
 
 expr:
   expr PLUS   expr 			{ Binop($1, Add, $3) }
-| MINUS expr %prec NEG		{ Neg ($2)}
+/*| MINUS expr %prec NEG		{ Neg ($2)}*/
 | LOGICNOT expr				{ Not ($2)}
 | expr MINUS  expr 			{ Binop($1, Sub, $3) }
 | expr TIMES  expr 			{ Binop($1, Mul, $3) }
@@ -99,20 +110,33 @@ pridec:
 | INT VARIABLE {Intdec($2)}
 ;
 
+probexprlist:
+  probexpr {[$1]}
+| probexprlist probexpr {$2::$1}
+
 probexpr:
   PROB LITERAL stmt { Unitprob ($2,$3)}
-| probexpr probexpr { Probblk ($1,$2)}
 
 varref:
   VARIABLE {Var($1)}
 
+actiondeclist:
+  actiondec {[$1]}
+| actiondeclist actiondec {$2::$1}
+;
+
 actiondec:
   LPAREN VARIABLE STRINGLIT STRINGLIT RPAREN { Unitaction ($2,$3,$4)}
-| actiondec actiondec { Actionblk ($1,$2)}
+;
+
+whenexprlist:
+  whenexpr	{[$1]}
+| whenexprlist whenexpr {$2::$1}
+;
 
 whenexpr:
   WHEN VARIABLE stmt NEXT VARIABLE { Unitwhen($2,$3,$5)}
-| whenexpr whenexpr {Whenblk ($1,$2)}
+;
 
 
 

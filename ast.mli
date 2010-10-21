@@ -34,22 +34,22 @@ and expr =
   | Neg of expr
   | Not of expr
 
+
 and probexpr =
 	Unitprob of int * stmt
-  | Probblk of probexpr * probexpr
+
+and probexprlist = probexpr list
 
 and actiondec = 
 	Unitaction of string * string * string
-  | Actionblk of actiondec * actiondec
   
 and whenexpr =
 	Unitwhen of string * stmt * string
-  | Whenblk of whenexpr * whenexpr
 
 and stmt = 
 	Ifelse of expr * stmt * stmt
-  | Chwhen of actiondec * whenexpr
-  | Prob of probexpr
+  | Chwhen of actiondeclist * whenexprlist
+  | Prob of probexprlist
   | Kill of varref
   | Grab of varref
   | Drop of varref
@@ -62,7 +62,7 @@ and stmt =
   | Atomstmt of expr
   | Cmpdstmt of block
   | Nostmt of int
-and block = 
-	Onestmt of stmt
-  | Onestmtoneblk of stmt * block
-  | Twoblks of block * block
+and block = stmt list
+and actiondeclist = actiondec list
+and whenexprlist = whenexpr list
+
