@@ -12,6 +12,7 @@
 \tableofcontents
 
 \section{Introduction}
+TODO
 
 \section{Lexicon}
 The Next programming language uses a standard grammar and character set.  Characters in the source code are grouped into tokens, which can be punctuators, operators, identifiers, keywords, or string literals.  The compiler forms the longest possible token from a given string of characters; tokens end when white space is encountered, or when it would not be possible for the next character to be part of the token.  White space is defined as space characters, tab characters, return characters, and newline characters.
@@ -21,7 +22,7 @@ The Next programming language uses a standard grammar and character set.  Charac
 \begin{itemize}
 \item Lexical errors occur when the compiler cannot form a legal token from the character stream.
 \item Syntax errors occur when a legal token can be formed, but the compiler cannot make a legal statement from the tokens.
-\item Semantic errors?
+\item Semantic errors, which are grammatically correct and thus pass through the parser, but break another Next rule.  For example, it is possible to \texttt{kill} a character or item, but not a location.
 \end{itemize}
 
 \subsection{Character Set}
@@ -34,7 +35,7 @@ An identifier is a sequence of characters that represents a name for a:
 \item Location
 \item Character
 \item Item
-\item Action
+\item Action \\
 \end{itemize}
 
 \noindent Rules for identifiers:
@@ -98,7 +99,9 @@ Operators are tokens that specify an operation on at least on operand and yield 
 \hline
 \texttt{+} & \texttt{-} & \texttt{*} & \texttt{/} & \texttt{<} \\
 \hline
-\texttt{>} & \texttt{=} & \texttt{} & \texttt{} & \texttt{} \\
+\texttt{>} & \texttt{=} & \texttt{} & \texttt{} & \texttt{"} \\
+\hline
+\texttt{.} & \texttt{\{} & \texttt{\}} & \texttt{(} & \texttt{)} \\
 \hline
 \end{tabular}
 \end{center}
@@ -111,37 +114,128 @@ Operators are tokens that specify an operation on at least on operand and yield 
 \begin{table}[htdp]
 \caption{Multiple-character operators}
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-\texttt{>=} & \texttt{<=} & \texttt{==} & \texttt{!=} & \texttt{and} \\
-\hline
-\texttt{or} & \texttt{} & \texttt{} & \texttt{} & \texttt{} \\
+\texttt{>=} & \texttt{<=} & \texttt{==} & \texttt{!=} & \texttt{and} & \texttt{or} \\
 \hline
 \end{tabular}
 \end{center}
 \label{multi_operators}
 \end{table}%
 
-
 \subsection{Punctuators}
-\subsection{String literals}
+Table~\ref{punctuators} shows the punctuators in Next.  Each punctuator has its own syntactic and semantic significance.  Some characters can either be punctuators or operators; the context specifies the meaning.
+
+\begin{table}[htdp]
+\caption{Punctuators}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\{ \} & Declaration block or compound statement delimiter \\
+\hline
+( ) & Sub-declaration list; also used in expression grouping \\
+\hline
+, & Sub-declaration separator \\
+\hline
+; & Statement end \\
+\hline
+= & Declaration initializer \\
+\hline 
+`` " & String literal \\
+\hline
+\end{tabular}
+\end{center}
+\label{punctuators}
+\end{table}%
+
+\subsection{String and integer literals}
+Strings are sequences of zero or more characters.  String literals are character strings surrounded by quotation marks.  String literals can include any valid character, including white-space characters.
+
+Integers are used to represent whole numbers.  Next does not support floating point numbers.  Integers are specified by a sequence of decimal digits.  The value of the integer is computed in base 10.
 
 \section{Basic Concepts}
+
 \subsection{Blocks}
+A block is a section of code surrounded by braces \{ \}.  Blocks are used to surround compound statements, a set of related statements enclosed in braces.   Since Next uses global scope (except in the case of actions), blocks do not affect the scope of a variable.
+
 \subsection{Scope}
-\subsection{Visibility}
+All declarations except actions are made at the beginning of the program, and have global scope.  Actions are declared within a choose statement and their scope is that choose statement.
+
 \subsection{Side Effects and Sequence Points}
+Any operation that affects an operand's storage has a side effect.  This includes the assignment operation, and operations that alter the items, attributes, etc. within a location or a character.
+
+Sequence points are checkpoints in the program where the compiler ensures that operations in an expression are concluded.  The most important example of this is the semicolon that marks the end of a statement.  All expressions and side effects are completely evaluated when the semicolon is reached.
+
 
 \section{Data Types}
+A type is assigned to an object in its declaration.  Table~\ref{types} shows the basic types that are used in Next.
+
+\begin{table}[htdp]
+\caption{Basic Data Types}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+integer \\
+\hline
+string \\
+\hline
+location \\
+\hline
+character \\
+\hline
+item \\
+\hline
+(attribute) \\
+\hline
+(action) \\
+\hline
+\end{tabular}
+\end{center}
+\label{types}
+\end{table}%
+
 
 \section{Declarations}
-\subsection{Declaration Syntax Rules}
+Declarations introduce identifiers (variable names) in the program, and, in the case of the complex types (character, location, item), specify important information about them such as attributes.  When an object is declared, space is immediately allocated for it.
+
+\subsection{Primitive Types}
+The primitive types in Next are integer and string.  These can stand on their own, or they can serve as attributes within a complex type.  Primitive types are declared as follows: \\
+
+\texttt{int \textit{identifier} = \textit{value}}
+
+\texttt{string \textit{identifier} = \textit{value}} \\
+
+\noindent where:
+\begin{itemize}
+\item \texttt{identifier} stands in for a variable name.
+\item \texttt{value} stands in for an expression.
+\end{itemize}
+
+\subsection{Complex Types}
+Each of the complex types in Next (item, character, and location) has its own declaration syntax.  The declarations are as follows: \\
+
+\texttt{item \textit{identifier} = \{ \textit{primitive\_declaration\_list} \}} \\
+
+\texttt{character \textit{identifier} = \{ \textit{primitive\_declaration\_list}, \\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent  \textit{item\_list} \} } \\
+
+\texttt{location \textit{identifier} = \{ \textit{primitive\_declaration\_list}, \\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent  \textit{item\_list}, \\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent  \textit{character\_list} \}} \\
+
+\noindent where:
+\begin{itemize}
+\item \texttt{identifier} stands in for a variable name.
+\item \texttt{primitive\_declaration\_list} stands in for a list of attribute declarations in the form \texttt{(declaration\_1, declaration\_2, ... , declaration\_n)}, and each \texttt{declaration} is in the form described above in the description of primitive types.  These represent the attributes (and values for those attributes) for a given item, character, or location.
+\item \texttt{item\_list} and \texttt{character\_list} stand in for lists of item and character variable names, respectively, in the form \texttt{(name\_1, name\_2, ... name\_n)}.  These represent the list of items a character is carrying or are found in a location, and the characters that are physically in a location.
+\end{itemize}
 
 \section{Expressions and Operators}
+An expression is a sequence of Next operators and operands that produces a value or generates a side effect.  The simplest expressions yield values directly, such as ints, strings, and variable names.  Other expressions combine operators and subexpressions to produce values.  Every expression has a type as well as a value.  Operands in expressions must have compatible types.
+
 \subsection{Primary Expressions}
 \subsection{Overview of the Next Operators}
 \subsection{Unary Operators}
-logical negation?
 \subsection{Binary Operators}
 
 \section{Statements}
