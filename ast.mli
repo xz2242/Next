@@ -17,10 +17,11 @@ type pridec =
   | Strdecinit of string * expr
   | Intdecinit of string * expr
 
+and membervarlist = membervar list
+
 and membervar =
 	Primember of pridec
-  | Var of string
-  | Seq of membervar * membervar
+  | Varref of string
 
 and expr =
     Binop of expr * operator * expr
@@ -32,6 +33,7 @@ and expr =
   | Has of string * string
   | Neg of expr
   | Not of expr
+  | Var of string
 
 
 and probexpr =
@@ -54,13 +56,14 @@ and stmt =
   | Drop of string
   | Show of string
   | Hide of string
-  | Charadec of string * membervar
-  | Itemdec of string * membervar
-  | Locdec of string * membervar
+  | Charadec of string * membervar list
+  | Itemdec of string * membervar list
+  | Locdec of string * membervar list
   | Startend of string * expr * stmt
   | Atomstmt of expr
   | Cmpdstmt of block
   | Nostmt of int
+  | IntStrdec of pridec
 and block = stmt list
 and actiondeclist = actiondec list
 and whenexprlist = whenexpr list

@@ -1,7 +1,8 @@
-(*
+
 
 open Ast
 
+(*
 exception Varnotfound
 exception SyntaxErr
 
@@ -66,13 +67,15 @@ let rec evalstmt = function
   | Onestmtoneblk (s1, b1) -> ignore (evalstmt s1); evalblock b1
   | Twoblks (b1, b2) -> ignore (evalblock b1); evalblock b2
 
-let _ =
-  let lexbuf = Lexing.from_channel stdin in
-  let block = Parser.block Scanner.token lexbuf in
-  let result = evalblock block in
-  print_endline (string_of_int result);
-  
 *)
+
+let _ =
+  let lexbuf = Lexing.from_channel stdin in Parser.program Scanner.token lexbuf
+(*  let block =  Parser.program Scanner.token lexbuf in
+  let result = evalblock block in
+  print_endline (string_of_int result); *)
+  
+
 
 
 

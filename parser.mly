@@ -12,7 +12,7 @@
 %token <string> STRINGLIT
 
 
-%nonassoc IF THEN ELSE
+%nonassoc IF THEN ELSE START END PROB
 %left SEMICOLON
 %nonassoc OUTPUT
 %left COMMA
@@ -57,15 +57,16 @@ stmt:
 | DROP VARIABLE SEMICOLON				{Drop($2)}
 | HIDE VARIABLE SEMICOLON				{Hide($2)}
 | SHOW VARIABLE SEMICOLON				{Show($2)}
-| CHARACTER VARIABLE LBRACKET membervar RBRACKET {Charadec($2,$4)}
-| LOCATION VARIABLE LBRACKET membervar RBRACKET {Itemdec($2,$4)}
-| ITEM VARIABLE LBRACKET membervar RBRACKET {Locdec($2,$4)}
+| CHARACTER VARIABLE LBRACKET membervarlist RBRACKET {Charadec($2, List.rev $4)}
+| LOCATION VARIABLE LBRACKET membervarlist RBRACKET {Itemdec($2,List.rev $4)}
+| ITEM VARIABLE LBRACKET membervarlist RBRACKET {Locdec($2, List.rev $4)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
+| pridec SEMICOLON {IntStrdec($1)}
 ;
 
 block:
@@ -91,14 +92,19 @@ expr:
 | LITERAL          			{ Lit($1) }
 | STRINGLIT					{ LitS($1) }
 | OUTPUT expr				{ Print($2)}
-| EXISTS VARIABLE			{Exists($2)}
+| EXISTS VARIABLE			{ Exists($2)}
 | VARIABLE DOT VARIABLE		{ Has($1,$3)}
+| VARIABLE					{ Var($1)}
+;
+
+membervarlist:
+  membervar {[$1]}
+| membervarlist COMMA membervar {$3::$1}
 ;
 
 membervar:
   pridec {Primember($1)}
-| VARIABLE {Var($1)}
-| membervar COMMA membervar {Seq($1,$3)}
+| VARIABLE {Varref($1)}
 ;
 
 pridec:
@@ -107,6 +113,7 @@ pridec:
 | STRING VARIABLE {Strdec($2)}
 | INT VARIABLE {Intdec($2)}
 ;
+
 
 probexprlist:
   probexpr {[$1]}
@@ -123,7 +130,7 @@ actiondeclist:
 ;
 
 actiondec:
-  LPAREN VARIABLE STRINGLIT STRINGLIT RPAREN { Unitaction ($2,$3,$4)}
+  LPAREN VARIABLE COMMA STRINGLIT COMMA STRINGLIT RPAREN { Unitaction ($2,$4,$6)}
 ;
 
 whenexprlist:
