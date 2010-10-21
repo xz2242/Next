@@ -3,6 +3,7 @@ open Ast
 exception Varnotfound
 exception SyntaxErr
 
+
 module StringMap = Map.Make(String)
 let varmap = ref StringMap.empty
 

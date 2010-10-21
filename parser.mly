@@ -11,6 +11,7 @@
 %token <string> VARIABLE
 %token <string> STRINGLIT
 
+
 %nonassoc IF THEN ELSE
 %left SEMICOLON
 %nonassoc OUTPUT

@@ -10,6 +10,7 @@ type operator =
   | Gt 
   | Neq
 
+
 type pridec =
 	Strdec of string
   | Intdec of string
