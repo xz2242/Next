@@ -10,18 +10,18 @@ type operator =
   | Gt 
   | Neq
 
+
 type pridec =
 	Strdec of string
   | Intdec of string
   | Strdecinit of string * expr
   | Intdecinit of string * expr
 
+and membervarlist = membervar list
+
 and membervar =
 	Primember of pridec
-  | Varref of varref
-  | Seq of membervar * membervar
-
-and varref = Var of string
+  | Varref of string
 
 and expr =
     Binop of expr * operator * expr
@@ -29,40 +29,42 @@ and expr =
   | Lit of int
   | LitS of string
   | Print of expr
-  | Exists of varref
+  | Exists of string
   | Has of string * string
   | Neg of expr
   | Not of expr
+  | Var of string
+
 
 and probexpr =
 	Unitprob of int * stmt
-  | Probblk of probexpr * probexpr
+
+and probexprlist = probexpr list
 
 and actiondec = 
 	Unitaction of string * string * string
-  | Actionblk of actiondec * actiondec
   
 and whenexpr =
 	Unitwhen of string * stmt * string
-  | Whenblk of whenexpr * whenexpr
 
 and stmt = 
 	Ifelse of expr * stmt * stmt
-  | Chwhen of actiondec * whenexpr
-  | Prob of probexpr
-  | Kill of varref
-  | Grab of varref
-  | Drop of varref
-  | Show of varref
-  | Hide of varref
-  | Charadec of string * membervar
-  | Itemdec of string * membervar
-  | Locdec of string * membervar
+  | Chwhen of actiondeclist * whenexprlist
+  | Prob of probexprlist
+  | Kill of string
+  | Grab of string
+  | Drop of string
+  | Show of string
+  | Hide of string
+  | Charadec of string * membervar list
+  | Itemdec of string * membervar list
+  | Locdec of string * membervar list
   | Startend of string * expr * stmt
   | Atomstmt of expr
   | Cmpdstmt of block
   | Nostmt of int
-and block = 
-	Onestmt of stmt
-  | Onestmtoneblk of stmt * block
-  | Twoblks of block * block
+  | IntStrdec of pridec
+and block = stmt list
+and actiondeclist = actiondec list
+and whenexprlist = whenexpr list
+
