@@ -45,7 +45,6 @@ rule token = parse
 |"exists" {EXISTS}
 |"character" {CHARACTER}
 |"location" {LOCATION}
-|"action" {ACTION}
 |"item" {ITEM}
 |"int" {INT}
 |"string" {STRING}
