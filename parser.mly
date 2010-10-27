@@ -2,7 +2,7 @@
 
 
 %token PLUS MINUS TIMES DIVIDE LESSTHAN GREATERTHAN EQUAL NEQUAL LOGICAND LOGICOR ASSIGN LOGICNOT
-%token COMMA SEMICOLON QUOTATION DOT
+%token COMMA SEMICOLON DOT
 %token LBRACKET RBRACKET LPAREN RPAREN RPROBBLOCK LPROBBLOCK
 %token IF THEN ELSE START END PROB WHEN NEXT CHOOSE KILL GRAB HIDE EXISTS DROP SHOW
 %token CHARACTER LOCATION ACTION OUTPUT ITEM INT STRING
@@ -12,7 +12,7 @@
 %token <string> STRINGLIT
 
 
-%nonassoc IF THEN ELSE
+%nonassoc IF THEN ELSE START END PROB
 %left SEMICOLON
 %nonassoc OUTPUT
 %left COMMA
@@ -38,7 +38,6 @@
 %type < Ast.pridec> pridec
 %type < Ast.membervar> membervar
 %type < Ast.probexpr> probexpr
-%type < Ast.varref> varref
 
 %%
 program:
@@ -53,20 +52,21 @@ file:
 stmt:
   IF expr THEN stmt ELSE stmt {Ifelse($2,$4,$6)}
 | START VARIABLE END expr stmt {Startend ($2, $4, $5)}
-| KILL varref SEMICOLON				{Kill($2)}
-| GRAB varref SEMICOLON				{Grab($2)}
-| DROP varref SEMICOLON				{Drop($2)}
-| HIDE varref SEMICOLON				{Hide($2)}
-| SHOW varref SEMICOLON				{Show($2)}
-| CHARACTER VARIABLE LBRACKET membervar RBRACKET {Charadec($2,$4)}
-| LOCATION VARIABLE LBRACKET membervar RBRACKET {Itemdec($2,$4)}
-| ITEM VARIABLE LBRACKET membervar RBRACKET {Locdec($2,$4)}
+| KILL VARIABLE SEMICOLON				{Kill($2)}
+| GRAB VARIABLE SEMICOLON				{Grab($2)}
+| DROP VARIABLE SEMICOLON				{Drop($2)}
+| HIDE VARIABLE SEMICOLON				{Hide($2)}
+| SHOW VARIABLE SEMICOLON				{Show($2)}
+| CHARACTER VARIABLE LBRACKET membervarlist RBRACKET {Charadec($2, List.rev $4)}
+| LOCATION VARIABLE LBRACKET membervarlist RBRACKET {Itemdec($2,List.rev $4)}
+| ITEM VARIABLE LBRACKET membervarlist RBRACKET {Locdec($2, List.rev $4)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
+| pridec SEMICOLON {IntStrdec($1)}
 ;
 
 block:
@@ -87,21 +87,24 @@ expr:
 | expr NEQUAL expr 			{ Binop($1, Neq ,$3) }
 | expr LOGICAND expr 		{ Binop($1, And ,$3) }
 | expr LOGICOR expr 		{ Binop($1, Or ,$3) }
-/*| expr COMMA expr 			{ Seq ($1,$3) }*/
 | LPAREN expr RPAREN        { $2 }
 | VARIABLE ASSIGN expr 		{ Asn($1, $3) }
 | LITERAL          			{ Lit($1) }
-/*| VARIABLE 			   	{ Var($1) }*/
 | STRINGLIT					{ LitS($1) }
 | OUTPUT expr				{ Print($2)}
-| EXISTS varref				{Exists($2)}
+| EXISTS VARIABLE			{ Exists($2)}
 | VARIABLE DOT VARIABLE		{ Has($1,$3)}
+| VARIABLE					{ Var($1)}
+;
+
+membervarlist:
+  membervar {[$1]}
+| membervarlist COMMA membervar {$3::$1}
 ;
 
 membervar:
   pridec {Primember($1)}
-| varref {Varref($1)}
-| membervar COMMA membervar {Seq($1,$3)}
+| VARIABLE {Varref($1)}
 ;
 
 pridec:
@@ -114,12 +117,11 @@ pridec:
 probexprlist:
   probexpr {[$1]}
 | probexprlist probexpr {$2::$1}
+;
 
 probexpr:
   PROB LITERAL stmt { Unitprob ($2,$3)}
-
-varref:
-  VARIABLE {Var($1)}
+;
 
 actiondeclist:
   actiondec {[$1]}
@@ -127,7 +129,7 @@ actiondeclist:
 ;
 
 actiondec:
-  LPAREN VARIABLE STRINGLIT STRINGLIT RPAREN { Unitaction ($2,$3,$4)}
+  LPAREN VARIABLE COMMA STRINGLIT COMMA STRINGLIT RPAREN { Unitaction ($2,$4,$6)}
 ;
 
 whenexprlist:
