@@ -64,19 +64,20 @@ Keywords identify statement constructs and specify basic types.  Keywords cannot
 \hline
 \texttt{grab} & \texttt{hide} & \texttt{exists} & \texttt{drop} & \texttt{output} \\
 \hline
-\texttt{character} & \texttt{location} & \texttt{action} & \texttt{item} & \texttt{int} \\
+\texttt{character} & \texttt{location} & \texttt{not} & \texttt{item} & \texttt{int} \\
 \hline
-\texttt{string} & \texttt{next} & & &  \\
+\texttt{string} & \texttt{next} & \texttt{show} & &  \\
 \hline
 \end{tabular}
 \end{center}
 \label{keywords}
-\end{table}%
+\end{table}
 
 \noindent Keywords are used:
 \begin{itemize}
-\item To specify a data type (\texttt{character, location, action(?), item, int, string})
-\item As part of a statement (\texttt{if, then, else, and, or, start, end, when, choose, kill, grab, hide, exists, drop, output}) 
+\item To specify a data type (\texttt{character, location, item, int, string})
+\item As part of a statement (\texttt{if, then, else, start, end, when, choose, kill, grab, hide, drop, output, next, show}) 
+\item As operators on expressions (\texttt{and, or, exists, not})
 \end{itemize}
 
 \subsection{Operators}
@@ -96,11 +97,9 @@ Operators are tokens that specify an operation on at least on operand and yield 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-\texttt{+} & \texttt{-} & \texttt{*} & \texttt{/} & \texttt{<} \\
+\texttt{+} & \texttt{-} & \texttt{*} & \texttt{/}  \\
 \hline
-\texttt{>} & \texttt{=} & \texttt{} & \texttt{} & \texttt{"} \\
-\hline
-\texttt{.} & \texttt{} & \texttt{} & \texttt{} & \texttt{} \\
+\texttt{>} & \texttt{<} & \texttt{=} & \texttt{.}  \\
 \hline
 \end{tabular}
 \end{center}
@@ -113,17 +112,14 @@ Operators are tokens that specify an operation on at least on operand and yield 
 \begin{table}[htdp]
 \caption{Multiple-character operators}
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-\texttt{>=} & \texttt{<=} & \texttt{==} & \texttt{!=} & \texttt{and} & \texttt{or} \\
+\texttt{>=} & \texttt{<=} & \texttt{==} & \texttt{!=} & \texttt{and} & \texttt{or} & \texttt{not} & \texttt{exists}\\
 \hline
 \end{tabular}
 \end{center}
 \label{multi_operators}
 \end{table}%
-
-
-TODO: be clear on difference between operators and punctuators
 
 \subsection{Punctuators}
 Table~\ref{punctuators} shows the punctuators in Next.  Each punctuator has its own syntactic and semantic significance.  Some characters can either be punctuators or operators; the context specifies the meaning.
@@ -133,17 +129,17 @@ Table~\ref{punctuators} shows the punctuators in Next.  Each punctuator has its 
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
-\{ \} & Declaration block or compound statement delimiter \\
+\{ \} & Compound statement delimiter \\
 \hline
-( ) & Sub-declaration list; also used in expression grouping \\
+( ) & Member variable list; also used in expression grouping \\
 \hline
-, & Sub-declaration separator \\
+, & Member variable separator \\
 \hline
 ; & Statement end \\
-\hline
-= & Declaration initializer \\
 \hline 
 `` " & String literal \\
+\hline
+[? ?] & Probability statements \\ 
 \hline
 \end{tabular}
 \end{center}
@@ -151,24 +147,25 @@ Table~\ref{punctuators} shows the punctuators in Next.  Each punctuator has its 
 \end{table}%
 
 \subsection{String and integer literals}
-Strings are sequences of zero or more characters.  String literals are character strings surrounded by quotation marks.  String literals can include any valid character, including white-space characters. \\
+Strings are sequences of zero or more characters.  String literals are character strings surrounded by quotation marks.  String literals can include any valid character, including white-space characters, except for quotation marks. \\
 
 \noindent Integers are used to represent whole numbers.  Next does not support floating point numbers.  Integers are specified by a sequence of decimal digits.  The value of the integer is computed in base 10.
 
 \section{Basic Concepts}
 
-\subsection{Blocks}
-A block is a section of code surrounded by braces \{ \}.  Blocks are used to surround compound statements, a set of related statements enclosed in braces.   Since Next uses global scope (except in the case of actions), blocks do not affect the scope of a variable.
-
-TODO: examples of what we use blocks for?
+\subsection{Blocks and Compound Statements}
+A block is a section of code consisting of a sequence of statements.  \\ A compound statement is a block surrounded by brackets \{ \}. \\
+TODO: examples 
 
 \subsection{Scope}
-All declarations except actions are made at the beginning of the program, and have global scope.  Actions are declared within a choose statement and their scope is that choose statement.
+All declarations have global scope.   \\
+
+\noindent Actions are listed within a choose statement, and their scope is that choose statement.  Actions are variables that are given values within that scope, but they are not explicitly declared and do not technically have a declaration.
 
 \subsection{Side Effects and Sequence Points}
 Any operation that affects an operand's storage has a side effect.  This includes the assignment operation, and operations that alter the items, attributes, etc. within a location or a character. \\
 
-\noindent Sequence points are checkpoints in the program where the compiler ensures that operations in an expression are concluded.  The most (only????) important example of this in Next is the semicolon that marks the end of a statement.  All expressions and side effects are completely evaluated when the semicolon is reached.
+\noindent Sequence points are checkpoints in the program where the compiler ensures that operations in an expression are concluded.  The most important example of this in Next is the semicolon that marks the end of a statement.  All expressions and side effects are completely evaluated when the semicolon is reached.
 
 
 \section{Data Types}
@@ -189,24 +186,26 @@ character \\
 \hline
 item \\
 \hline
-(attribute) \\
-\hline
-(action) \\
-\hline
 \end{tabular}
 \end{center}
 \label{types}
 \end{table}%
 
 \section{Declarations}
-Declarations introduce identifiers (variable names) in the program, and, in the case of the complex types (character, location, item), specify important information about them such as attributes.  When an object is declared, space is immediately allocated for it, and it is immediately assigned a value.  Next does not support declarations that do not specify a value for the variable.
+Declarations introduce identifiers (variable names) in the program, and, in the case of the complex types (character, location, item), specify important information about them such as attributes.  When an object is declared, space is immediately allocated for it, and it is immediately assigned a value.  Declarations of integers and strings do not have to include an explicit value; they will be assigned default values of 0 and ``", respectively.  Next does not support complex declarations without a value for the variable.
 
 \subsection{Primitive Types}
 The primitive types in Next are integer and string.  These can stand on their own, or they can serve as attributes within a complex type.  Primitive types are declared as follows: \\
 
 \texttt{int \textit{identifier} = \textit{value}}
 
-\texttt{string \textit{identifier} = \textit{value}} \\
+\texttt{string \textit{identifier} = \textit{value}} \\ 
+
+\noindent or, receiving default values: \\
+
+\texttt{int \textit{identifier}}
+
+\texttt{string \textit{identifier}} \\ 
 
 \noindent where:
 \begin{itemize}
@@ -231,15 +230,14 @@ Each of the complex types in Next (item, character, and location) has its own de
 \item \texttt{identifier} stands in for a variable name.
 \item \texttt{primitive\_declaration\_list} stands in for a list of attribute declarations in the form \texttt{(declaration\_1, declaration\_2, ... declaration\_n)}, and each \texttt{declaration} is in the form described above in the description of primitive types.  These represent the attributes (and values for those attributes) for a given item, character, or location.
 \item \texttt{item\_list} and \texttt{character\_list} stand in for lists of item and character variable names, respectively, in the form \texttt{(name\_1, name\_2, ... name\_n)}.  These represent the list of items a character is carrying or are found in a location, and the characters that are physically in a location.
+\item Empty lists are permitted in place of any \texttt{primitive\_declaration\_list}, \texttt{item\_list} or \texttt{character\_list}, to indicate that there are none of that type of member variable.
 \end{itemize}
 
 \section{Expressions and Operators}
 An expression is a sequence of Next operators and operands that produces a value or generates a side effect.  The simplest expressions yield values directly, such as ints, strings, and variable names.  Other expressions combine operators and subexpressions to produce values.  Every expression has a type as well as a value.  Operands in expressions must have compatible types.
 
 \subsection{Primary Expressions}
-The most simple type of expressions are those that denote a value directly.  These include identifiers that refer to variables that have already been declared, and integer and string literals.
-
-TODO: parenthesized expressions?
+The most simple type of expressions are those that denote a value directly.  These include identifiers that refer to variables that have already been declared, and integer and string literals.  In addition, any more complicated expression can be enclosed in parentheses and still be a valid expression.
 
 \subsection{Overview of the Next Operators}
 Variables and literals can be used in conjunction with operators to make more complex expressions.  Table~\ref{operators} shows the Next operators.
@@ -273,12 +271,12 @@ not & not a & Logical NOT of a (yields 0 or 1) \\
 \hline
 = & a = b & a, after b is assigned to it \\
 \hline
+exists & exists x.a & 1 if a exists in location x or in the inventory of character x; \\ & & 0 otherwise \\
+\hline
 \end{tabular}
 \end{center}
 \label{operators}
 \end{table}%
-
-TODO: add in special Next operators - grab, output, etc. \\
 
 The Next operators fall into the following categories:
 \begin{itemize}
@@ -313,6 +311,10 @@ Operator precedence determines the grouping of terms in an expression.  This aff
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Category} & \textbf{Operator} & \textbf{Associativity} \\
+\hline 
+Dot & . & Left to right \\
+\hline
+Gameplay operators & exists & Non-associative \\
 \hline
 Unary & - not & Right to left \\
 \hline
@@ -338,7 +340,7 @@ Assignment & = & Right to left \\
 \noindent Associativity relates to precedence, and resolves any ambiguity over the grouping of operators with the same precedence.  Most operators associate left-to-right, so the leftmost expressions are evaluated first.  The assignment operator  and the unary operators associate right-to-left.
 
 \subsection{Unary Operators}
-Unary expressions are formed by combining a unary operator with a single operand.  The two unary operators in Next (\texttt{-} and \texttt{not}) have equal precedence and have right-to-left associativity.
+Unary expressions are formed by combining a unary operator with a single operand.  The unary operators in Next (\texttt{-}, \texttt{not}, and \texttt{exists}) all have right-to-left associativity.  The operators \texttt{-} and \texttt{not} have equal precedence, and \texttt{exists} has a higher precedence.
 
 \subsubsection {Unary Minus}
 
@@ -356,6 +358,16 @@ The following expression: \\
 
 \noindent results in the logical (Boolean) negation of the expression.  If the value of the expression is 0, the negated result is 1.  If the value of the expression is not 0, the negated result is 0.  The type of the result is \texttt{int}.  The expression must have a scalar type.
 
+\subsubsection{Gameplay Operators (exists)}
+The following expressions: \\
+
+\texttt{exists location.x} \\
+\indent \texttt{exists character.y} \\
+
+\noindent tells us whether x is present either in the given location (x must be an item or character) or in the given character's inventory (x must be an item).  The expression returns 1 if x exists and 0 otherwise.  The result is type \texttt{int}.
+
+TODO: update scanner/parser?
+
 \subsection{Binary Operators}
 The binary operators are categorized as follows:
 \begin{itemize}
@@ -371,8 +383,7 @@ The multiplicative operators in Next are * and /.  Operands must have arithmetic
 
 \noindent The * operator performs multiplication. \\
 
-\noindent The / operator performs division.  \\
-TODO: truncation???
+\noindent The / operator performs division.  If two integers don't divide evenly, the result is truncated, not rounded.
 
 \subsubsection{Additive Operators}
 The additive operators in Next are + and -.  They perform addition and subtraction respectively.
@@ -395,7 +406,7 @@ The equality operators in Next, equal (==) and not-equal (!=), like relational o
 \noindent  Both operands must have an arithmetic type.
 
 \subsubsection{Logical Operators}
-The logical operators are \texttt{and} and \texttt{or}.  These operators have left-to-right evaluation.  The resulting integer literal is either 0 (false) or 1 (true).  Both operators must have scalar types.  If the compiler can make an evaluation by examining only the left operand, the right operand is not evaluated.  (TODO: do we have short-circuiting like this?) \\
+The logical operators are \texttt{and} and \texttt{or}.  These operators have left-to-right evaluation.  The resulting integer literal is either 0 (false) or 1 (true).  Both operators must have scalar types.  If the compiler can make an evaluation by examining only the left operand, the right operand is not evaluated. \\
 
 \noindent In the following expression, \\
 
@@ -408,17 +419,17 @@ The logical operators are \texttt{and} and \texttt{or}.  These operators have le
 \texttt{E1 or E2}
 
 \subsection{Assignment Operator}
-There is only one assignment operator in Next.  An assignment results in the value of the target variable after the assignment.  They can be used as subexpressions in larger expressions.  Outside of the declaration section, assignment operators can only operate on attributes in Next; these are integer and string literals.  Assignment expressions have two operands: a modifiable value on the left and an expression on the right.  In the following assignment: \\
+There is only one assignment operator in Next.  An assignment results in the value of the target variable after the assignment.  It can be used as subexpressions in larger expressions.  Outside of the declaration section, assignment operators can only operate on attributes in Next; these are integer and string literals.  Assignment expressions have two operands: a modifiable value on the left and an expression on the right.  In the following assignment: \\
 
 \texttt{E1 = E2;} \\
 
-\noindent the value of expression \texttt{E2} is assigned to \texttt{E1}.  The type is the type of \texttt{E1}, and the result is the value of \texttt{E1} after completion of the operation.  If expression \texttt{E1} is 0, expression \texttt{E2} is not evaluated because the result would be the same regardless of its value. 
+\noindent the value of expression \texttt{E2} is assigned to \texttt{E1}.  The type is the type of \texttt{E1}, and the result is the value of \texttt{E1} after completion of the operation.
 
 \section{Statements}
-Statements are executed in the sequence in which they appear in the code.
+Statements are executed in the sequence in which they appear in the code, unless otherwise specified.
 
 \subsection{Labeled Statements}
-A labeled statement is used in only one place in Next: within a \texttt{choose} statement.  This will be discussed in more detail in a later section.
+Next uses labeled statements within the content of a \texttt{choose} statement.  The location name included in a \texttt{start} statement is also a type of label.  Both of these statements will be discussed in more detail in later sections.
 
 \subsection{Compound Statements}
 A compound statement, or block, allows a sequence of statements to be treated as a single statement.  A compound statement begins with a left brace, contains (optionally) statements, and ends with a right brace, as in the following example: \\
@@ -467,5 +478,34 @@ When \texttt{if} statements are nested, an \texttt{else} clause matches the most
 Iteration statements in Next begin with the \texttt{start} keyword.  The statements inside the following block are executed until an end condition is met.  The end condition must have a scalar type. \\
 
 TODO: syntax and example
+
+\subsection{Gameplay Statements}
+\subsubsection{Grab and Drop}
+The statements: \\
+
+\texttt{grab y.x;} \\
+\indent \texttt{drop y.x;} \\
+
+\noindent operate on the item x in character c's inventory.  The \texttt{grab} statement removes an item from the current location and adds in to the character's inventory.  The \texttt{drop} statement removes an item from the characters.  x must be of type item.
+
+\subsubsection{Hide and Show}
+The statements:\\
+
+\texttt{hide y.x;} \\
+\indent \texttt{show y.x;} \\
+
+\noindent operate on the item or character x within the location or character inventory y.  The \texttt{hide} statement removes x from y, and the \texttt{show} statement adds x to y.  y must be a location or character, and x must be an item or character.
+
+\noindent
+
+\subsubsection{Output}
+The statement: \\
+
+\texttt{output s;} \\
+
+\noindent outputs string \texttt{s} to the screen.  \texttt{s} must be of type \texttt{string}.
+
+\subsubsection{Kill}
+\subsubsection{Next}
 
 \end{document}
