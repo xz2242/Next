@@ -467,15 +467,17 @@ The \texttt{if} statement has the following syntax: \\
 
 TODO: example \\
 
-When \texttt{if} statements are nested, an \texttt{else} clause matches the most recent \texttt{if} statement that does not have an \texttt{else} clause, and is in the same block.
+\noindent When \texttt{if} statements are nested, an \texttt{else} clause matches the most recent \texttt{if} statement that does not have an \texttt{else} clause, and is in the same block.
 
 \subsubsection{The choose Statement}
+TODO
 
 \subsubsection{The prob Statement}
+TODO
 
 \subsection{Iteration (start) Statements}
 
-Iteration statements in Next begin with the \texttt{start} keyword.  The statements inside the following block are executed until an end condition is met.  The end condition must have a scalar type. \\
+Iteration statements in Next begin with the \texttt{start} keyword.  The statements inside the following block are executed until an end condition is met.  The end condition must have a scalar type.  An iteration statement is specified by the location in which the action occurs and an end condition that clarifies when gameplay should stop. \\
 
 TODO: syntax and example
 
@@ -486,7 +488,7 @@ The statements: \\
 \texttt{grab y.x;} \\
 \indent \texttt{drop y.x;} \\
 
-\noindent operate on the item x in character c's inventory.  The \texttt{grab} statement removes an item from the current location and adds in to the character's inventory.  The \texttt{drop} statement removes an item from the characters.  x must be of type item.
+\noindent operate on the item x in character c's inventory.  The \texttt{grab} statement removes an item from the current location and adds in to the character's inventory.  The \texttt{drop} statement removes an item from the characters.  The object x must be of type item.
 
 \subsubsection{Hide and Show}
 The statements:\\
@@ -494,7 +496,7 @@ The statements:\\
 \texttt{hide y.x;} \\
 \indent \texttt{show y.x;} \\
 
-\noindent operate on the item or character x within the location or character inventory y.  The \texttt{hide} statement removes x from y, and the \texttt{show} statement adds x to y.  y must be a location or character, and x must be an item or character.
+\noindent operate on the item or character x within the location or character inventory y.  The \texttt{hide} statement removes x from y, and the \texttt{show} statement adds x to y.  The object y must be a location or character, and x must be an item or character.
 
 \noindent
 
@@ -503,9 +505,54 @@ The statement: \\
 
 \texttt{output s;} \\
 
-\noindent outputs string \texttt{s} to the screen.  \texttt{s} must be of type \texttt{string}.
+\noindent outputs string \texttt{s} to the screen.  Object \texttt{s} must be of type \texttt{string}.
 
 \subsubsection{Kill}
+The statement: \\
+
+\texttt{kill x;} \\
+
+\noindent removes x permanently from global memory, not just for a given character or location.  There is no way to retrieve x from any part of the game after this operation has taken place.  If you would like to make a character or item disappear temporarily, use the \texttt{hide} command.  The object  x must be of type \texttt{item} or \texttt{character}.
+
 \subsubsection{Next}
+The statement: \\
+
+\texttt{next l;} \\
+
+\noindent moves the main character from the current location to location l.  Code continues execution at the beginning of the \texttt{start} statement marked with identifier l.  If no location is given, as in: \\
+
+\texttt{next;} \\
+
+\noindent it simply returns code execution to the beginning of the current location's \texttt{start} statement.
+
+\section{Example Program}
+
+\begin{verbatim}
+int count;
+item the_greatest_sword_ever {int damage = 100000000}
+
+character xiaowei_the_greatest_man_ever {int life = 100000000, 
+    int level=99999, string haha="hahahahaha", the_greatest_sword_ever}
+
+location where_is_this_place {xiaowei_the_greatest_man_ever, 
+    int sizex = 10000, int sizey=9283}
+
+start where_is_this_place end xiaowei_the_greatest_man_ever.life < 0 {
+    choose (attack,"hia!","a") (up,"up","u") {
+        when attack 
+        {
+            xiaowei_the_greatest_man_ever.life+1;
+        } next where_is_this_place
+        when up 
+        {
+            [? prob 40 count = count-1;
+               prob 60 count = count+1; ?]
+        } next where_is_this_place
+		
+    }
+}
+\end{verbatim}
+
+
 
 \end{document}
