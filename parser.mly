@@ -2,11 +2,7 @@
 
 
 %token PLUS MINUS TIMES DIVIDE LESSTHAN GREATERTHAN EQUAL NEQUAL LOGICAND LOGICOR ASSIGN LOGICNOT
-<<<<<<< HEAD:parser.mly
 %token COMMA SEMICOLON DOT
-=======
-%token COMMA SEMICOLON QUOTATION DOT
->>>>>>> dpark27-master:parser.mly
 %token LBRACKET RBRACKET LPAREN RPAREN RPROBBLOCK LPROBBLOCK
 %token IF THEN ELSE START END PROB WHEN NEXT CHOOSE KILL GRAB HIDE EXISTS DROP SHOW
 %token CHARACTER LOCATION ACTION OUTPUT ITEM INT STRING
@@ -16,11 +12,7 @@
 %token <string> STRINGLIT
 
 
-<<<<<<< HEAD:parser.mly
 %nonassoc IF THEN ELSE START END PROB
-=======
-%nonassoc IF THEN ELSE
->>>>>>> dpark27-master:parser.mly
 %left SEMICOLON
 %nonassoc OUTPUT
 %left COMMA
@@ -33,6 +25,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left NEG
+%nonassoc EXISTS
 %left DOT
 %nonassoc LPAREN RPAREN
 
@@ -46,10 +39,6 @@
 %type < Ast.pridec> pridec
 %type < Ast.membervar> membervar
 %type < Ast.probexpr> probexpr
-<<<<<<< HEAD:parser.mly
-=======
-%type < Ast.varref> varref
->>>>>>> dpark27-master:parser.mly
 
 %%
 program:
@@ -63,38 +52,22 @@ file:
 
 stmt:
   IF expr THEN stmt ELSE stmt {Ifelse($2,$4,$6)}
-| START VARIABLE END expr stmt {Startend ($2, $4, $5)}
-<<<<<<< HEAD:parser.mly
+| START VARIABLE END LPAREN expr RPAREN stmt {Startend ($2, $5, $7)}
 | KILL VARIABLE SEMICOLON				{Kill($2)}
-| GRAB VARIABLE SEMICOLON				{Grab($2)}
-| DROP VARIABLE SEMICOLON				{Drop($2)}
-| HIDE VARIABLE SEMICOLON				{Hide($2)}
-| SHOW VARIABLE SEMICOLON				{Show($2)}
-| CHARACTER VARIABLE LBRACKET membervarlist RBRACKET {Charadec($2, List.rev $4)}
-| LOCATION VARIABLE LBRACKET membervarlist RBRACKET {Itemdec($2,List.rev $4)}
-| ITEM VARIABLE LBRACKET membervarlist RBRACKET {Locdec($2, List.rev $4)}
+| GRAB VARIABLE DOT VARIABLE SEMICOLON				{Grab($2,$4)}
+| DROP VARIABLE DOT VARIABLE SEMICOLON				{Drop($2,$4)}
+| HIDE VARIABLE DOT VARIABLE SEMICOLON				{Hide($2,$4)}
+| SHOW VARIABLE DOT VARIABLE SEMICOLON				{Show($2,$4)}
+| CHARACTER VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Charadec($2, List.rev $5, List.rev $9)}
+| LOCATION VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Locdec($2,List.rev $5,List.rev $9, List.rev $13)}
+| ITEM VARIABLE LBRACKET LPAREN membervarlist RPAREN RBRACKET {Itemdec($2, List.rev $5)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
-=======
-| KILL varref SEMICOLON				{Kill($2)}
-| GRAB varref SEMICOLON				{Grab($2)}
-| DROP varref SEMICOLON				{Drop($2)}
-| HIDE varref SEMICOLON				{Hide($2)}
-| SHOW varref SEMICOLON				{Show($2)}
-| CHARACTER VARIABLE LBRACKET membervar RBRACKET {Charadec($2,$4)}
-| LOCATION VARIABLE LBRACKET membervar RBRACKET {Itemdec($2,$4)}
-| ITEM VARIABLE LBRACKET membervar RBRACKET {Locdec($2,$4)}
-| RPROBBLOCK probexpr LPROBBLOCK {Prob($2)}
->>>>>>> dpark27-master:parser.mly
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
-<<<<<<< HEAD:parser.mly
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
 | pridec SEMICOLON {IntStrdec($1)}
-=======
-| CHOOSE actiondec LBRACKET whenexpr RBRACKET {Chwhen ($2,$4)}
->>>>>>> dpark27-master:parser.mly
 ;
 
 block:
@@ -103,57 +76,36 @@ block:
 ;
 
 expr:
-  expr PLUS   expr 			{ Binop($1, Add, $3) }
-<<<<<<< HEAD:parser.mly
-/*| MINUS expr %prec NEG		{ Neg ($2)}*/
-=======
-| MINUS expr %prec NEG		{ Neg ($2)}
->>>>>>> dpark27-master:parser.mly
-| LOGICNOT expr				{ Not ($2)}
-| expr MINUS  expr 			{ Binop($1, Sub, $3) }
-| expr TIMES  expr 			{ Binop($1, Mul, $3) }
-| expr DIVIDE expr 			{ Binop($1, Div, $3) }
+  expr PLUS expr 			{ Binop($1, Add, $3) }
+| LOGICNOT expr				{ Not ($2)} 
+| expr MINUS  expr 			{ Binop($1, Sub, $3) } 
+| expr TIMES  expr 			{ Binop($1, Mul, $3) } 
+| expr DIVIDE expr 			{ Binop($1, Div, $3) } 
 | expr LESSTHAN expr 		{ Binop($1, Lt, $3) }
-| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) }
-| expr EQUAL expr 			{ Binop($1, Eq ,$3) }
-| expr NEQUAL expr 			{ Binop($1, Neq ,$3) }
-| expr LOGICAND expr 		{ Binop($1, And ,$3) }
-| expr LOGICOR expr 		{ Binop($1, Or ,$3) }
-<<<<<<< HEAD:parser.mly
+| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) } 
+| expr EQUAL expr 			{ Binop($1, Eq ,$3) } 
+| expr NEQUAL expr 			{ Binop($1, Neq ,$3) } 
+| expr LOGICAND expr 		{ Binop($1, And ,$3) } 
+| expr LOGICOR expr 		{ Binop($1, Or ,$3) } 
 | LPAREN expr RPAREN        { $2 }
 | VARIABLE ASSIGN expr 		{ Asn($1, $3) }
 | LITERAL          			{ Lit($1) }
 | STRINGLIT					{ LitS($1) }
 | OUTPUT expr				{ Print($2)}
-| EXISTS VARIABLE			{ Exists($2)}
+| EXISTS VARIABLE DOT VARIABLE	{ Exists($2,$4)}
 | VARIABLE DOT VARIABLE		{ Has($1,$3)}
 | VARIABLE					{ Var($1)}
+| MINUS expr %prec NEG  	{ Neg($2)} 
 ;
 
 membervarlist:
   membervar {[$1]}
 | membervarlist COMMA membervar {$3::$1}
-=======
-/*| expr COMMA expr 			{ Seq ($1,$3) }*/
-| LPAREN expr RPAREN        { $2 }
-| VARIABLE ASSIGN expr 		{ Asn($1, $3) }
-| LITERAL          			{ Lit($1) }
-/*| VARIABLE 			   	{ Var($1) }*/
-| STRINGLIT					{ LitS($1) }
-| OUTPUT expr				{ Print($2)}
-| EXISTS varref				{Exists($2)}
-| VARIABLE DOT VARIABLE		{ Has($1,$3)}
->>>>>>> dpark27-master:parser.mly
 ;
 
 membervar:
   pridec {Primember($1)}
-<<<<<<< HEAD:parser.mly
 | VARIABLE {Varref($1)}
-=======
-| varref {Varref($1)}
-| membervar COMMA membervar {Seq($1,$3)}
->>>>>>> dpark27-master:parser.mly
 ;
 
 pridec:
@@ -161,8 +113,8 @@ pridec:
 | INT VARIABLE ASSIGN expr {Intdecinit($2,$4)}
 | STRING VARIABLE {Strdec($2)}
 | INT VARIABLE {Intdec($2)}
-<<<<<<< HEAD:parser.mly
 ;
+
 
 probexprlist:
   probexpr {[$1]}
@@ -189,24 +141,7 @@ whenexprlist:
 
 whenexpr:
   WHEN VARIABLE stmt NEXT VARIABLE { Unitwhen($2,$3,$5)}
-=======
->>>>>>> dpark27-master:parser.mly
 ;
-
-probexpr:
-  PROB LITERAL stmt { Unitprob ($2,$3)}
-| probexpr probexpr { Probblk ($1,$2)}
-
-varref:
-  VARIABLE {Var($1)}
-
-actiondec:
-  LPAREN VARIABLE STRINGLIT STRINGLIT RPAREN { Unitaction ($2,$3,$4)}
-| actiondec actiondec { Actionblk ($1,$2)}
-
-whenexpr:
-  WHEN VARIABLE stmt NEXT VARIABLE { Unitwhen($2,$3,$5)}
-| whenexpr whenexpr {Whenblk ($1,$2)}
 
 
 
