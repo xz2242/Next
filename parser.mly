@@ -25,6 +25,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left NEG
+%nonassoc EXISTS
 %left DOT
 %nonassoc LPAREN RPAREN
 
@@ -51,15 +52,15 @@ file:
 
 stmt:
   IF expr THEN stmt ELSE stmt {Ifelse($2,$4,$6)}
-| START VARIABLE END expr stmt {Startend ($2, $4, $5)}
+| START VARIABLE END LPAREN expr RPAREN stmt {Startend ($2, $5, $7)}
 | KILL VARIABLE SEMICOLON				{Kill($2)}
-| GRAB VARIABLE SEMICOLON				{Grab($2)}
-| DROP VARIABLE SEMICOLON				{Drop($2)}
-| HIDE VARIABLE SEMICOLON				{Hide($2)}
-| SHOW VARIABLE SEMICOLON				{Show($2)}
-| CHARACTER VARIABLE LBRACKET membervarlist RBRACKET {Charadec($2, List.rev $4)}
-| LOCATION VARIABLE LBRACKET membervarlist RBRACKET {Itemdec($2,List.rev $4)}
-| ITEM VARIABLE LBRACKET membervarlist RBRACKET {Locdec($2, List.rev $4)}
+| GRAB VARIABLE DOT VARIABLE SEMICOLON				{Grab($2,$4)}
+| DROP VARIABLE DOT VARIABLE SEMICOLON				{Drop($2,$4)}
+| HIDE VARIABLE DOT VARIABLE SEMICOLON				{Hide($2,$4)}
+| SHOW VARIABLE DOT VARIABLE SEMICOLON				{Show($2,$4)}
+| CHARACTER VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Charadec($2, List.rev $5, List.rev $9)}
+| LOCATION VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Locdec($2,List.rev $5,List.rev $9, List.rev $13)}
+| ITEM VARIABLE LBRACKET LPAREN membervarlist RPAREN RBRACKET {Itemdec($2, List.rev $5)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
@@ -75,26 +76,26 @@ block:
 ;
 
 expr:
-  expr PLUS   expr 			{ Binop($1, Add, $3) }
-/*| MINUS expr %prec NEG		{ Neg ($2)}*/
-| LOGICNOT expr				{ Not ($2)}
-| expr MINUS  expr 			{ Binop($1, Sub, $3) }
-| expr TIMES  expr 			{ Binop($1, Mul, $3) }
-| expr DIVIDE expr 			{ Binop($1, Div, $3) }
+  expr PLUS expr 			{ Binop($1, Add, $3) }
+| LOGICNOT expr				{ Not ($2)} 
+| expr MINUS  expr 			{ Binop($1, Sub, $3) } 
+| expr TIMES  expr 			{ Binop($1, Mul, $3) } 
+| expr DIVIDE expr 			{ Binop($1, Div, $3) } 
 | expr LESSTHAN expr 		{ Binop($1, Lt, $3) }
-| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) }
-| expr EQUAL expr 			{ Binop($1, Eq ,$3) }
-| expr NEQUAL expr 			{ Binop($1, Neq ,$3) }
-| expr LOGICAND expr 		{ Binop($1, And ,$3) }
-| expr LOGICOR expr 		{ Binop($1, Or ,$3) }
+| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) } 
+| expr EQUAL expr 			{ Binop($1, Eq ,$3) } 
+| expr NEQUAL expr 			{ Binop($1, Neq ,$3) } 
+| expr LOGICAND expr 		{ Binop($1, And ,$3) } 
+| expr LOGICOR expr 		{ Binop($1, Or ,$3) } 
 | LPAREN expr RPAREN        { $2 }
 | VARIABLE ASSIGN expr 		{ Asn($1, $3) }
 | LITERAL          			{ Lit($1) }
 | STRINGLIT					{ LitS($1) }
 | OUTPUT expr				{ Print($2)}
-| EXISTS VARIABLE			{ Exists($2)}
+| EXISTS VARIABLE DOT VARIABLE	{ Exists($2,$4)}
 | VARIABLE DOT VARIABLE		{ Has($1,$3)}
 | VARIABLE					{ Var($1)}
+| MINUS expr %prec NEG  	{ Neg($2)} 
 ;
 
 membervarlist:
