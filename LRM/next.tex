@@ -552,12 +552,12 @@ Iteration statements in Next begin with the \texttt{start} keyword.  The stateme
 
 \noindent The syntax of a \texttt{start} statement is as follows: \\
 
-\texttt{start location\_identifier end expression} \\
+\texttt{start location\_identifier end (expression)} \\
 \indent \indent \texttt{statement} \\
 
 \noindent where \texttt{location\_identifier} is the identifier representing the location, and \texttt{expression} represents the end condition.  For example: \\
 
-\texttt{start myplace end junior.life < 1} \\
+\texttt{start myplace end (junior.life < 1)} \\
 \indent \texttt{\{} \\
 \indent \indent \texttt{junior.life = junior.life - 1;} \\
 \indent \indent \texttt{output "You have reached the mountains of myplace!";} \\
@@ -613,7 +613,7 @@ character xiaowei_the_greatest_man_ever {(int life = 100000000,
 location where_is_this_place {(int sizex = 10000, int sizey=9283), (),
     (xiaowei_the_greatest_man_ever)}
 
-start where_is_this_place end xiaowei_the_greatest_man_ever.life < 0 {
+start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
     choose (attack,"hia!","a") (up,"up","u") {
         when attack 
         {
