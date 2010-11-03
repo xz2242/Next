@@ -47,8 +47,7 @@ An identifier is a sequence of characters that represents a name for a:
 \end{itemize}
 
 \subsection{Comments}
-Comments are introduced by /* and ended by */, except within a string literal.
-Comments cannot be nested.  If a comment is started by /*, the next occurrence of */ ends the comment.
+Comments are introduced by \texttt{/*} and ended by \texttt{*/}, except within a string literal, where the characters \texttt{"/*"} would be displayed directly.  Comments cannot be nested.  If a comment is started by \texttt{/*}, the next occurrence of */ ends the comment.
 
 \subsection{Keywords}
 Keywords identify statement constructs and specify basic types.  Keywords cannot be used as identifiers.  The keywords are listed in Table~\ref{keywords}.
@@ -95,11 +94,9 @@ Operators are tokens that specify an operation on at least one operand and yield
 \begin{table}[htdp]
 \caption{Single-character operators}
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-\texttt{+} & \texttt{-} & \texttt{*} & \texttt{/}  \\
-\hline
-\texttt{>} & \texttt{<} & \texttt{=} & \texttt{.}  \\
+\texttt{+} & \texttt{-} & \texttt{*} & \texttt{/}  & \texttt{>} & \texttt{<} & \texttt{=} & \texttt{.}  \\
 \hline
 \end{tabular}
 \end{center}
@@ -129,17 +126,17 @@ Table~\ref{punctuators} shows the punctuators in Next.  Each punctuator has its 
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
-\{ \} & Compound statement delimiter \\
+\texttt{\{ \}} & Compound statement delimiter \\
 \hline
-( ) & Member variable list; also used in expression grouping \\
+\texttt{( )} & Member variable list; also used in expression grouping \\
 \hline
-, & Member variable separator \\
+\texttt{,} & Member variable separator \\
 \hline
-; & Statement end \\
+\texttt{;} & Statement end \\
 \hline 
-`` " & String literal \\
+\texttt{" "} & String literal \\
 \hline
-[? ?] & Probability statements \\ 
+\texttt{[? ?]} & Probability statements \\ 
 \hline
 \end{tabular}
 \end{center}
@@ -154,7 +151,7 @@ Strings are sequences of zero or more characters.  String literals are character
 \section{Basic Concepts}
 
 \subsection{Blocks and Compound Statements}
-A block is a section of code consisting of a sequence of statements.  \\ A compound statement is a block surrounded by brackets \{ \}. \\
+A block is a section of code consisting of a sequence of statements.  A compound statement is a block surrounded by brackets \texttt{\{ \}}. \\
 
 \noindent This is a block: \\
 
@@ -175,9 +172,9 @@ A block is a section of code consisting of a sequence of statements.  \\ A compo
 \texttt{\}}
 
 \subsection{Scope}
-All declarations have global scope.   \\
+All declarations of locations, characters, items, strings, and integers have global scope.   \\
 
-\noindent Actions are listed within a \texttt{choose} statement, and their scope is that \texttt{choose} statement.  Actions are variables that are given values within that scope, but they are not explicitly declared in the declaration section.
+\noindent Actions are listed within a \texttt{choose} statement, and their scope is that \texttt{choose} statement.  Actions are variables that are given values within that scope, but they are not explicitly declared in a declaration statement.
 
 \subsection{Side Effects and Sequence Points}
 Any operation that affects an operand's storage has a side effect.  This includes the assignment operation, and operations that alter the items, attributes, etc. within a location or a character. \\
@@ -266,29 +263,29 @@ Variables and literals can be used in conjunction with operators to make more co
 \hline
 \textbf{Operator} & \textbf{Example} & \textbf{Description/Meaning} \\
 \hline
-.&c.a&Attribute selection in a character, location, or item \\
+\texttt{.}&\texttt{c.a}&Attribute selection in a character, location, or item \\
 \hline
-- [unary]& -a&Negative of a \\
+\texttt{-} [unary]&\texttt{-a}&Negative of a \\
 \hline
-+ & a + b & a plus b \\
-- [binary]& a - b & a minus b\\
-$*$ & a * b & a times b \\
-/ & a / b & a divided by b \\
+\texttt{+} & \texttt{a + b} & a plus b \\
+\texttt{-} [binary]& \texttt{a - b} & a minus b\\
+\texttt{$*$} & \texttt{a * b} & a times b \\
+\texttt{/} & \texttt{a / b} & a divided by b \\
 \hline
-$<$ & a $<$ b & 1 1 if a $<$ b; 0 otherwise \\
-$>$ & a $>$ b & 1 if a $>$ b; 0 otherwise \\
-$<$= & a $<$= b& 1 if a $\leq$ b; 0 otherwise\\
-$>$=& a $>$= b & 1 if a $\geq$ b; 0 otherwise \\
-== & a == b& 1 if a equal to b; 0 otherwise \\
-!= & a != b & 1 if a not equal to b; 0 otherwise \\
+\texttt{$<$} & \texttt{a $<$ b} & 1 1 if a $<$ b; 0 otherwise \\
+\texttt{$>$} & \texttt{a $>$ b} & 1 if a $>$ b; 0 otherwise \\
+\texttt{$<$=} & \texttt{a $<$= b}& 1 if a $\leq$ b; 0 otherwise\\
+\texttt{$>$=}& \texttt{a $>$= b} & 1 if a $\geq$ b; 0 otherwise \\
+\texttt{==} & \texttt{a == b}& 1 if a equal to b; 0 otherwise \\
+\texttt{!=} & \texttt{a != b} & 1 if a not equal to b; 0 otherwise \\
 \hline
-and & a and b & Logical AND of a and b (yields 0 or 1) \\
-or & a or b & Logical OR of a and b (yields 0 or 1) \\
-not & not a & Logical NOT of a (yields 0 or 1) \\
+\texttt{and} & \texttt{a and b} & Logical AND of a and b (yields 0 or 1) \\
+\texttt{or} & \texttt{a or b} & Logical OR of a and b (yields 0 or 1) \\
+\texttt{not} & \texttt{not a} & Logical NOT of a (yields 0 or 1) \\
 \hline
-= & a = b & a, after b is assigned to it \\
+\texttt{=} & \texttt{a = b} & a, after b is assigned to it \\
 \hline
-exists & exists x.a & 1 if a exists in location x or in the inventory of character x; \\ & & 0 otherwise \\
+\texttt{exists} & \texttt{exists x.a} & 1 if a exists in location x or in the inventory of character x; \\ & & 0 otherwise \\
 \hline
 \end{tabular}
 \end{center}
@@ -302,7 +299,7 @@ exists & exists x.a & 1 if a exists in location x or in the inventory of charact
 \item Assignment operators, which assign a value to a variable.
 \end{itemize}
 
-Operator precedence determines the grouping of terms in an expression.  This affects how an expression is evaluated.  Certain operators have higher precedence than others; for example, the multiplication operator has higher precedence than the addition operator: \\
+\noindent Operator precedence determines the grouping of terms in an expression.  This affects how an expression is evaluated.  Certain operators have higher precedence than others; for example, the multiplication operator has higher precedence than the addition operator: \\
 
 \texttt{x = 7 + 3 * 2; \hspace{20 mm}  /* x is assigned 13, not 20 */} \\
 
@@ -318,7 +315,7 @@ Operator precedence determines the grouping of terms in an expression.  This aff
 
 \texttt{A+B*C} \\
 
-\noindent The identifiers \texttt{B} and \texttt{C} are multiplied first because the multiplication operator (*) has higher precedence than the addition operator (+). \\
+\noindent The identifiers \texttt{B} and \texttt{C} are multiplied first because the multiplication operator (\texttt{*}) has higher precedence than the addition operator (\texttt{+}). \\
 
 \noindent Table~\ref{precedence} shows the precedence the Next compiler uses to evaluate operators.  Operators with the highest precedence appear at the top of the table; those with the lowest precedence appear at the bottom.  Operators of equal precedence appear in the same row. \\
 
@@ -329,25 +326,25 @@ Operator precedence determines the grouping of terms in an expression.  This aff
 \hline
 \textbf{Category} & \textbf{Operator} & \textbf{Associativity} \\
 \hline 
-Dot & . & Left to right \\
+Dot & \texttt{.} & Left to right \\
 \hline
-Gameplay operators & exists & Non-associative \\
+Gameplay operators & \texttt{exists} & Non-associative \\
 \hline
-Unary & - not & Right to left \\
+Unary & \texttt{- not} & Right to left \\
 \hline
-Multiplicative & * / & Left to right \\
+Multiplicative & \texttt{* /} & Left to right \\
 \hline
-Additive & + - & Left to right \\
+Additive & \texttt{+ -} & Left to right \\
 \hline
-Relational & $<$ $<=$ $>$ $>=$ & Left to right \\
+Relational & \texttt{$<$ $<=$ $>$ $>=$} & Left to right \\
 \hline
-Equality & == != & Left to right \\
+Equality & \texttt{== !=} & Left to right \\
 \hline
-Logical AND & and & Left to right \\
+Logical AND & \texttt{and} & Left to right \\
 \hline
-Logical OR & or & Left to right \\
+Logical OR & \texttt{or} & Left to right \\
 \hline
-Assignment & = & Right to left \\
+Assignment & \texttt{=} & Right to left \\
 \hline
 \end{tabular}
 \end{center}
@@ -381,22 +378,22 @@ The following expressions: \\
 \texttt{exists location.x} \\
 \indent \texttt{exists character.y} \\
 
-\noindent tells us whether x is present either in the given location (x must be an item or character) or in the given character's inventory (x must be an item).  The expression returns 1 if x exists and 0 otherwise.  The result is type \texttt{int}.
+\noindent tells us whether \texttt{x} is present either in the given location (\texttt{x} must be an \texttt{item} or \texttt{character}) or in the given character's inventory (\texttt{x} must be an \texttt{item}).  The expression returns 1 if x exists and 0 otherwise.  The result is type \texttt{int}.
 
 \subsection{Binary Operators}
 The binary operators are categorized as follows:
 \begin{itemize}
-\item Dot operator (.)
-\item Multiplicative operators: multiplication (*) and division (/)
-\item Additive operators: addition (+) and subtraction(-)
-\item Relational operators: less than ($<$), less than or equal to ($<$=), greater than ($>$), and greater than or equal to ($>$=)
-\item Equality operators: equality (==) and inequality (!=)
-\item Logical operators: AND (and) and OR (or)
-\item Assignment operator (discussed in next section) 
+\item Dot operator (\texttt{.})
+\item Multiplicative operators: multiplication (\texttt{*}) and division (\texttt{/})
+\item Additive operators: addition (\texttt{+}) and subtraction(\texttt{-})
+\item Relational operators: less than (\texttt{$<$}), less than or equal to (\texttt{$<$=}), greater than (\texttt{$>$}), and greater than or equal to (\texttt{$>$=})
+\item Equality operators: equality (\texttt{==}) and inequality (\texttt{!=})
+\item Logical operators: AND (\texttt{and}) and OR (\texttt{or})
+\item Assignment operator (\texttt{=}) 
 \end{itemize}
 
 \subsubsection{Dot operator}
-The dot (.) operator is used to select from among the attributes, items, or characters within an item, character, or location.  An item has only attributes; a character has attributes and items; and a location has attributes, items, and characters.  The syntax is: \\
+The dot (\texttt{.}) operator is used to select from among the attributes, items, or characters within an item, character, or location.  An \texttt{item} has only attributes; a \texttt{character} has attributes and items; and a \texttt{location} has attributes, items, and characters.  The syntax is: \\
 
 \texttt{x.y} \\
 
@@ -405,15 +402,15 @@ The dot (.) operator is used to select from among the attributes, items, or char
 \subsubsection{Multiplicative Operators}
 The multiplicative operators in Next are \texttt{*} and \texttt{/}.  Operands must have arithmetic type. \\
 
-\noindent The * operator performs multiplication. \\
+\noindent The \texttt{*} operator performs multiplication. \\
 
-\noindent The / operator performs division.  If two integers don't divide evenly, the result is truncated, not rounded.
+\noindent The \texttt{/} operator performs division.  If two integers don't divide evenly, the result is truncated, not rounded.
 
 \subsubsection{Additive Operators}
-The additive operators in Next are + and -.  They perform addition and subtraction respectively.
+The additive operators in Next are \texttt{+} and \texttt{-}.  They perform addition and subtraction respectively.
 
 \subsubsection{Relational Operators}
-The relational operators compare two operands and produce an integer literal result.  The result is 0 if the relation is false, and 1 if it is true.  The operators are: less than($<$), greater than ($>$), less than or equal($<=$), and greater than or equal ($>=$).  Both operands must have an arithmetic type. \\
+The relational operators compare two operands and produce an integer literal result.  The result is 0 if the relation is false, and 1 if it is true.  The operators are: less than (\texttt{$<$}), greater than (\texttt{$>$}), less than or equal (\texttt{$<=$}), and greater than or equal (\texttt{$>=$}).  Both operands must have an arithmetic type. \\
 
 \noindent The relational operators associate from left to right.  Therefore, the following statement first relates \texttt{a} to \texttt{b}, resulting in either 0 or 1.  The resulting 0 or 1 is compared with \texttt{c} for the expression result. \\
 
@@ -423,7 +420,7 @@ The relational operators compare two operands and produce an integer literal res
 \indent \} }
 
 \subsubsection{Equality Operators}
-The equality operators in Next, equal (==) and not-equal (!=), like relational operators, produce a result of an integer literal.  In the following statement, the result is 1 if both operands have the same value, and 0 if they do not: \\
+The equality operators in Next, equal (\texttt{==}) and not-equal (\texttt{!=}), like relational operators, produce a result of an integer literal.  In the following statement, the result is 1 if both operands have the same value, and 0 if they do not: \\
 
 \texttt{a == b} \\
 
@@ -443,7 +440,7 @@ The logical operators are \texttt{and} and \texttt{or}.  These operators have le
 \texttt{E1 or E2}
 
 \subsection{Assignment Operator}
-There is only one assignment operator in Next.  An assignment results in the value of the target variable after the assignment.  It can be used as subexpressions in larger expressions.  Outside of the declaration section, assignment operators can only operate on attributes in Next; these are integer and string literals.  Assignment expressions have two operands: a modifiable value on the left and an expression on the right.  In the following assignment: \\
+There is only one assignment operator (\texttt{=}) in Next.  An assignment results in the value of the target variable after the assignment.  It can be used as subexpressions in larger expressions.  Outside of the declaration section, assignment operators can only operate on attributes in Next; these are integer and string literals.  Assignment expressions have two operands: a modifiable value on the left and an expression on the right.  In the following assignment: \\
 
 \texttt{E1 = E2;} \\
 
@@ -497,38 +494,41 @@ The \texttt{if} statement has the following syntax: \\
 \noindent When \texttt{if} statements are nested, an \texttt{else} clause matches the most recent \texttt{if} statement that does not have an \texttt{else} clause, and is in the same block.
 
 \subsubsection{The choose Statement}
-Choose statement maps keyboard keys to specific actions and executes the statements associated with that action. \\
+The \texttt{choose} statement maps keyboard keys to specific actions and executes the statements associated with that action, given user input. \\
 
 \noindent Syntax:
 
 \begin{verbatim}
-    /* associates action1 with key1 and action2 with key2 */}
-    choose (action1,action1name,key1) (action2, action2name, key2) {
+    /* associates action1 with key1 and action2 with key2 */
+    choose (action1,action1name,key1) (action2, action2name, key2) 
+    {
         when action1 
         {
             statement
-         } next location
-         when action2 
-         {
-             statement
-         } next location
+        } next location
+        when action2 
+        {
+            statement
+        } next location
      }
 \end{verbatim}
 
 \noindent For example: 
 \begin{verbatim}
-choose (boom,"blowup","a") (punch,"punch","u") {
-    when boom 
+    choose (boom,"blowup","a") (punch,"punch","u") 
     {
-        link.life = link.life - 80;
-    } next palace
-    when punch 
-    {
-        [? prob 40 link.life = link.life - 1;
-           prob 60 link.life = link.life - 33; ?]
-     } next dungeon
-}
+        when boom 
+        {
+            link.life = link.life - 80;
+        } next palace
+        when punch 
+        {
+            [? prob 40 link.life = link.life - 1;
+               prob 60 link.life = link.life - 33; ?]
+         } next dungeon
+    }
 \end{verbatim}
+If the game player enters ``a" on the keyboard, code within the \texttt{boom} block is executed.  If the game player enters ``u" on the keyboard, code within the \texttt{punch} block is executed.
 
 \subsubsection{The prob Statement}
 A probability statement executes a statement randomly according to the given probabilities.  It selects and executes a statement randomly given a certain probability distribution.  The probabilities listed within a given \texttt{prob} statement must add up to 100. \\
@@ -570,7 +570,7 @@ The statements: \\
 \texttt{grab y.x;} \\
 \indent \texttt{drop y.x;} \\
 
-\noindent operate on the item x in character c's inventory.  The \texttt{grab} statement removes an item from the current location and adds in to the character's inventory.  The \texttt{drop} statement removes an item from the character's inventory and adds it to the current location.  The object x must be of type item.
+\noindent operate on the item \texttt{x} in character \texttt{y}'s inventory.  The \texttt{grab} statement removes an item from the current location and adds in to the character's inventory.  The \texttt{drop} statement removes an item from the character's inventory and adds it to the current location.  The object \texttt{x} must be of type \texttt{item}.
 
 \subsubsection{Hide and Show}
 The statements:\\
@@ -578,9 +578,7 @@ The statements:\\
 \texttt{hide y.x;} \\
 \indent \texttt{show y.x;} \\
 
-\noindent operate on the item or character x within the location or character inventory y.  The \texttt{hide} statement removes x from y, and the \texttt{show} statement adds x to y.  The object y must be a location or character, and x must be an item or character.
-
-\noindent
+\noindent operate on the item or character \texttt{x} within the location or character inventory \texttt{y}.  The \texttt{hide} statement removes \texttt{x} from \texttt{y}, and the \texttt{show} statement adds \texttt{x} to \texttt{y}.  The object \texttt{y} must be a \texttt{location} or \texttt{character}.  If \texttt{y} is a \texttt{location}, \texttt{x} must be an \texttt{item} or \texttt{character}; if \texttt{y} is a \texttt{character}, \texttt{x} must be an \texttt{item}.
 
 \subsubsection{Output}
 The statement: \\
@@ -594,18 +592,14 @@ The statement: \\
 
 \texttt{kill x;} \\
 
-\noindent removes x permanently from global memory, not just for a given character or location.  There is no way to retrieve x from any part of the game after this operation has taken place.  If you would like to make a character or item disappear temporarily, use the \texttt{hide} command.  The object  x must be of type \texttt{item} or \texttt{character}.
+\noindent removes \texttt{x} permanently from global memory, not just for a given character or location.  There is no way to retrieve \texttt{x} from any part of the game after this operation has taken place.  If you would like to make a character or item disappear temporarily, use the \texttt{hide} command.  The object  \texttt{x} must be of type \texttt{item} or \texttt{character}.
 
 \subsubsection{Next}
 The statement: \\
 
 \texttt{next l;} \\
 
-\noindent moves the main character from the current location to location l.  Code continues execution at the beginning of the \texttt{start} statement marked with identifier l.  If no location is given, as in: \\
-
-\texttt{next;} \\
-
-\noindent it simply returns code execution to the beginning of the current location's \texttt{start} statement.
+\noindent moves the main character from the current location to location \texttt{l}.  Code continues execution at the beginning of the \texttt{start} statement marked with identifier \texttt{l}.
 
 \section{Example Program}
 
