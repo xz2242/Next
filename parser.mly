@@ -99,7 +99,8 @@ expr:
 ;
 
 membervarlist:
-  membervar {[$1]}
+  {[]}
+|  membervar {[$1]}
 | membervarlist COMMA membervar {$3::$1}
 ;
 
