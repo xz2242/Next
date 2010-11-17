@@ -69,11 +69,83 @@ let rec evalstmt = function
 
 *)
 
-let _ =
-  let lexbuf = Lexing.from_channel stdin in Parser.program Scanner.token lexbuf
+
 (*  let block =  Parser.program Scanner.token lexbuf in
   let result = evalblock block in
   print_endline (string_of_int result); *)
+
+let java_of_prog program = "
+import java.util.*;
+
+public class Next {
+   Map<String, Location> locations;
+   Map<String, Character> characters;
+   Map<String, Item> items;
+   Map<String, String> types;
+
+   public static void main(String[] args) {
+      (new Next()).play();
+   }
+   public void play() {
+      System.out.println(\"this is a java program!\");
+   }
+} 
+
+abstract class Entity {
+
+   Map<String, Integer> intAttrs = new HashMap<String, Integer>();
+   Map<String, String> strAttrs = new HashMap<String, String>(); 
+
+   public void addIntAttr(String name, int value) {
+      intAttrs.put(name, value);
+   }
+
+   public void addStrAttr(String name, String value) {
+      strAttrs.put(name, value);
+   }
+}
+
+class Location extends Entity {
+   Set<String> characters = new HashSet<String>();
+   Set<String> items = new HashSet<String>();
+
+   public void showItem(String name) {
+      items.add(name);
+   }
+
+   public void hideItem(String name) {
+      items.remove(name);
+   }
+
+   public void showCharacter(String name) {
+      characters.add(name);
+   }
+
+   public void hideCharacter(String name) {
+      characters.remove(name);
+   }
+}
+
+class Character extends Entity {
+   Set<String> items = new HashSet<String>();
+
+   public void grab(String name) {
+      items.add(name);
+   }
+
+   public void drop(String name) {
+      items.remove(name);
+   }
+}
+
+class Item extends Entity {
+}"
+
+let _ =
+  let lexbuf = Lexing.from_channel stdin in 
+  let program = Parser.program Scanner.token lexbuf in
+  let listing = java_of_prog program in
+  print_endline listing
   
 
 

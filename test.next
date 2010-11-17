@@ -1,11 +1,11 @@
 int count;
-item the_greatest_sword_ever {int damage = 100000000}
+item the_greatest_sword_ever {(int damage = 100000000)}
 
-character xiaowei_the_greatest_man_ever {int life = 100000000, int level=99999, string haha="hahahahaha", the_greatest_sword_ever}
+character xiaowei_the_greatest_man_ever {(int life = 100000000, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever)}
 
-location where_is_this_place {xiaowei_the_greatest_man_ever, int sizex = 10000, int sizey=9283}
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (xiaowei_the_greatest_man_ever), ()}
 
-start where_is_this_place end xiaowei_the_greatest_man_ever.life < 0 {
+start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
 	choose (attack,"hia!","a") (up,"up","u") {
 		when attack 
 		{
