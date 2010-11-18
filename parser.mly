@@ -68,6 +68,7 @@ stmt:
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
 | pridec SEMICOLON {IntStrdec($1)}
+| OUTPUT expr { Print($2)} 
 ;
 
 block:
@@ -91,7 +92,6 @@ expr:
 | VARIABLE ASSIGN expr 		{ Asn($1, $3) }
 | LITERAL          			{ Lit($1) }
 | STRINGLIT					{ LitS($1) }
-| OUTPUT expr				{ Print($2)}
 | EXISTS VARIABLE DOT VARIABLE	{ Exists($2,$4)}
 | VARIABLE DOT VARIABLE		{ Has($1,$3)}
 | VARIABLE					{ Var($1)}

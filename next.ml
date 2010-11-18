@@ -1,6 +1,7 @@
 
 
 open Ast
+open Compile
 
 (*
 exception Varnotfound
@@ -74,21 +75,35 @@ let rec evalstmt = function
   let result = evalblock block in
   print_endline (string_of_int result); *)
 
-let java_of_prog program = "
+let java_of_prog program = 
+let (playcode, startfns) = Compile.javacode program in 
+"
 import java.util.*;
 
 public class Next {
-   Map<String, Location> locations;
-   Map<String, Character> characters;
-   Map<String, Item> items;
-   Map<String, String> types;
+   enum Type {INT, STRING, CHARACTER, ITEM, LOCATION}
+
+   Map<String, Location> locations = new HashMap<String, Location>();
+   Map<String, Character> characters = new HashMap<String, Character>();
+   Map<String, Item> items = new HashMap<String, Item>();
+   Map<String, Type> types = new HashMap<String, Type>();
 
    public static void main(String[] args) {
       (new Next()).play();
    }
+
+   public void endGame() {
+      System.out.println(\"GAME OVER!!!!!\");
+   }
+   
    public void play() {
       System.out.println(\"this is a java program!\");
-   }
+"
+ ^ (String.concat "\n" playcode) ^ "
+   endGame();
+   } \n"
+
+ ^ (String.concat "\n" startfns) ^ "
 } 
 
 abstract class Entity {
@@ -109,11 +124,11 @@ class Location extends Entity {
    Set<String> characters = new HashSet<String>();
    Set<String> items = new HashSet<String>();
 
-   public void showItem(String name) {
+   public void addItem(String name) {
       items.add(name);
    }
 
-   public void hideItem(String name) {
+   public void removeItem(String name) {
       items.remove(name);
    }
 
@@ -129,11 +144,11 @@ class Location extends Entity {
 class Character extends Entity {
    Set<String> items = new HashSet<String>();
 
-   public void grab(String name) {
+   public void addItem(String name) {
       items.add(name);
    }
 
-   public void drop(String name) {
+   public void removeItem(String name) {
       items.remove(name);
    }
 }
@@ -144,8 +159,8 @@ class Item extends Entity {
 let _ =
   let lexbuf = Lexing.from_channel stdin in 
   let program = Parser.program Scanner.token lexbuf in
-  let listing = java_of_prog program in
-  print_endline listing
+  let java = java_of_prog program in
+  print_endline java
   
 
 

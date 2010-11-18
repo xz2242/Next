@@ -28,7 +28,6 @@ and expr =
   | Asn of string * expr
   | Lit of int
   | LitS of string
-  | Print of expr
   | Exists of string * string
   | Has of string * string
   | Neg of expr
@@ -64,7 +63,10 @@ and stmt =
   | Cmpdstmt of block
   | Nostmt of int
   | IntStrdec of pridec
+  | Print of expr
 and block = stmt list
 and actiondeclist = actiondec list
 and whenexprlist = whenexpr list
 
+
+type program = stmt list
