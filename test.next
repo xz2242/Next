@@ -1,9 +1,13 @@
 int count;
 item the_greatest_sword_ever {(int damage = 100000000)}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
 
-character xiaowei_the_greatest_man_ever {(int life = 100000000, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever)}
+character xiaowei_the_greatest_man_ever {(int life = 100000000, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever, rubberDuckie)}
 
-location where_is_this_place {(int sizex = 10000, int sizey=9283), (xiaowei_the_greatest_man_ever), ()}
+character ernesto_the_averagest_dude_forever {(int life = 100000000, int level=99999+1, string hehe="hey beavis"), (the_greatest_sword_ever, rubberDuckie)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (columbiaBinder), (xiaowei_the_greatest_man_ever, ernesto_the_averagest_dude_forever)}
 
 start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
 	choose (attack,"hia!","a") (up,"up","u") {
