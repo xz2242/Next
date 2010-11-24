@@ -1,6 +1,7 @@
 
 
 open Ast
+open Compile
 
 (*
 exception Varnotfound
@@ -69,11 +70,100 @@ let rec evalstmt = function
 
 *)
 
-let _ =
-  let lexbuf = Lexing.from_channel stdin in Parser.program Scanner.token lexbuf
+
 (*  let block =  Parser.program Scanner.token lexbuf in
   let result = evalblock block in
   print_endline (string_of_int result); *)
+
+let java_of_prog program = 
+let (playcode, startfns) = Compile.javacode program in 
+"
+import java.util.*;
+
+public class Next {
+   enum Type {INT, STRING, CHARACTER, ITEM, LOCATION}
+
+   static Random r = new Random();
+
+   Map<String, Location> locations = new HashMap<String, Location>();
+   Map<String, Character> characters = new HashMap<String, Character>();
+   Map<String, Item> items = new HashMap<String, Item>();
+   Map<String, Type> types = new HashMap<String, Type>();
+
+   public static void main(String[] args) {
+      (new Next()).play();
+   }
+
+   public void endGame() {
+      System.out.println(\"GAME OVER!!!!!\");
+      System.exit(0);
+   }
+   
+   public void play() {
+      System.out.println(\"this is a java program!\");
+"
+ ^ (String.concat "\n" playcode) ^ "
+   endGame();
+   } \n"
+
+ ^ (String.concat "\n" startfns) ^ "
+} 
+
+abstract class Entity {
+
+   Map<String, Integer> intAttrs = new HashMap<String, Integer>();
+   Map<String, String> strAttrs = new HashMap<String, String>(); 
+
+   public void addIntAttr(String name, int value) {
+      intAttrs.put(name, value);
+   }
+
+   public void addStrAttr(String name, String value) {
+      strAttrs.put(name, value);
+   }
+}
+
+class Location extends Entity {
+   Set<String> characters = new HashSet<String>();
+   Set<String> items = new HashSet<String>();
+
+   public void addItem(String name) {
+      items.add(name);
+   }
+
+   public void removeItem(String name) {
+      items.remove(name);
+   }
+
+   public void showCharacter(String name) {
+      characters.add(name);
+   }
+
+   public void hideCharacter(String name) {
+      characters.remove(name);
+   }
+}
+
+class Character extends Entity {
+   Set<String> items = new HashSet<String>();
+
+   public void addItem(String name) {
+      items.add(name);
+   }
+
+   public void removeItem(String name) {
+      items.remove(name);
+   }
+}
+
+class Item extends Entity {
+}"
+
+let _ =
+  let lexbuf = Lexing.from_channel stdin in 
+  let program = Parser.program Scanner.token lexbuf in
+  let java = java_of_prog program in
+  print_endline java
   
 
 

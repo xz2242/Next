@@ -1,0 +1,60 @@
+2.2
+Actions have identifiers?
+
+2.5 
+on should be one
+
+3.1  example
+
+This is a block:
+	int x = 1;
+	x = x + 1;
+	output x;
+
+This is a compund statement:
+	{
+	int x = 1;
+	x = x + 1;
+	output x;
+	}
+
+3.2
+A little redundant:
+"but they are not explicitly declared and do not technically have a declaration."
+
+4
+Table 5 should probably be in this section
+
+6.4
+Missing dot and assignment from clasification of operators
+
+6.4.4
+should be "and 0 if they do not:"
+
+7.4.1
+else-statement should probably just be statement or statement2. else-statement is confusing i think. Also, the way the parser is set up right now we do not need parentheses in the expression after the if.
+
+example
+if x + 1 then output "x was not negative one";
+else output "x was negative one";
+
+7.5 
+Syntax:
+start location_identifier end expression statement
+
+start myplace end junior.life < 1
+{
+	junior.life = junior.life - 1;
+	output "You have reached the mountains of myplace!";
+}
+
+7.6.1
+Probably should be "The drop statement removes an item from the character's inventory and adds it to the current location"
+
+7.6.3
+The way output is set up to work right now it ouputs an expression! ... which is kinda cool
+
+
+
+
+	
