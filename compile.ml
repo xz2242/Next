@@ -17,6 +17,12 @@ module Compile : COMPILE = struct
 
 exception CompileError of string
 
+let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
+	[]->[]
+	
+	|hd::tl -> if (String.contains hd ';') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
+		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl) 
+
 let rec actiondeclist_to_java list = match list with
    [] -> []
    | hd::tail -> match hd with
@@ -61,7 +67,10 @@ let rec stmt_to_java (playcode, startfns) stmt = match stmt with
     | Charadec (str, attrlist, itemlist) -> (playcode @ (Declaration.charadec_to_java str attrlist itemlist), startfns)
     | Itemdec (str, list) -> (playcode @ (Declaration.itemdec_to_java str list), startfns)
     | Locdec (str, attrlist, itemlist, charlist) -> (playcode @ (Declaration.locdec_to_java str attrlist itemlist charlist), startfns)
-    | Startend (str, expr, stmt) -> (playcode @ ["//start"], startfns @ ["//start"])(*let (playcode2, startfns2) = (Start.startend_to_java str expr stmt) in (playcode @ playcode2, startfns @ startfns2) *)
+    | Startend (str, expr, stmt) -> playcode @ ["//Location function call"; str ^ "();"], startfns @ ["//start funtion"; "public void " ^ str ^ "() {"] @ 
+	(fst (Expression.expr_to_java_boolean expr)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr)) ^ "){"  ] 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr)) (fst (stmt_to_java ([], []) stmt)) ) 
+	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] 
     | Atomstmt (expr) -> (playcode @ (Statement.atomstmt_to_java expr), startfns)
     | Cmpdstmt (codeblock) ->
          List.fold_left stmt_to_java (playcode, startfns) codeblock
