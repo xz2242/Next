@@ -31,14 +31,15 @@
 
 
 %start program
-%type < Ast.block> program
-%type < Ast.block> file
+%type < Ast.globaldecs> program
+%type < Ast.globaldecs> file
 %type < Ast.block> block
 %type < Ast.expr> expr
 %type < Ast.stmt> stmt
 %type < Ast.pridec> pridec
 %type < Ast.membervar> membervar
 %type < Ast.probexpr> probexpr
+%type < Ast.globaldec> globaldec
 
 %%
 program:
@@ -47,28 +48,36 @@ program:
 
 file:
  		{[]}
-| block {List.rev $1}
+| globaldecs {List.rev $1}
 ;
-
+  
 stmt:
   IF expr THEN stmt ELSE stmt {Ifelse($2,$4,$6)}
-| START VARIABLE END LPAREN expr RPAREN stmt {Startend ($2, $5, $7)}
 | KILL VARIABLE SEMICOLON				{Kill($2)}
 | GRAB VARIABLE DOT VARIABLE SEMICOLON				{Grab($2,$4)}
 | DROP VARIABLE DOT VARIABLE SEMICOLON				{Drop($2,$4)}
 | HIDE VARIABLE DOT VARIABLE SEMICOLON				{Hide($2,$4)}
 | SHOW VARIABLE DOT VARIABLE SEMICOLON				{Show($2,$4)}
-| CHARACTER VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Charadec($2, List.rev $5, List.rev $9)}
-| LOCATION VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Locdec($2,List.rev $5,List.rev $9, List.rev $13)}
-| ITEM VARIABLE LBRACKET LPAREN membervarlist RPAREN RBRACKET {Itemdec($2, List.rev $5)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
 | LBRACKET block RBRACKET {Cmpdstmt ($2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
-| pridec SEMICOLON {IntStrdec($1)}
 | OUTPUT expr { Print($2)} 
+;
+
+globaldec:
+  pridec SEMICOLON {IntStrdec($1)}
+| CHARACTER VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Charadec($2, List.rev $5, List.rev $9)}
+| LOCATION VARIABLE LBRACKET LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN COMMA LPAREN membervarlist RPAREN RBRACKET {Locdec($2,List.rev $5,List.rev $9, List.rev $13)}
+| ITEM VARIABLE LBRACKET LPAREN membervarlist RPAREN RBRACKET {Itemdec($2, List.rev $5)}
+| START VARIABLE END LPAREN expr RPAREN stmt {Startend ($2, $5, $7)}
+;
+
+globaldecs:
+ globaldec {[$1]}
+| globaldecs globaldec {$2::$1}
 ;
 
 block:
@@ -89,14 +98,17 @@ expr:
 | expr LOGICAND expr 		{ Binop($1, And ,$3) } 
 | expr LOGICOR expr 		{ Binop($1, Or ,$3) } 
 | LPAREN expr RPAREN        { $2 }
-| VARIABLE ASSIGN expr 		{ Asn($1, $3) }
+| id ASSIGN expr 			{ Asn($1, $3) }
 | LITERAL          			{ Lit($1) }
 | STRINGLIT					{ LitS($1) }
 | EXISTS VARIABLE DOT VARIABLE	{ Exists($2,$4)}
-| VARIABLE DOT VARIABLE		{ Has($1,$3)}
-| VARIABLE					{ Var($1)}
-| MINUS expr %prec NEG  	{ Neg($2)} 
+| MINUS expr %prec NEG  	{ Neg($2)}
+| id						{ Ident($1)}
 ;
+
+id:
+  VARIABLE DOT VARIABLE		{ Has($1,$3)}
+| VARIABLE					{ Var($1)}
 
 membervarlist:
   {[]}

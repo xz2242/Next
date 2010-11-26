@@ -11,6 +11,7 @@ type operator =
   | Neq
 
 
+
 type pridec =
 	Strdec of string
   | Intdec of string
@@ -25,15 +26,17 @@ and membervar =
 
 and expr =
     Binop of expr * operator * expr
-  | Asn of string * expr
+  | Asn of id * expr
   | Lit of int
   | LitS of string
   | Exists of string * string
-  | Has of string * string
   | Neg of expr
   | Not of expr
-  | Var of string
+  | Ident of id
 
+and id = 
+	  Var of string
+	| Has of string * string
 
 and probexpr =
 	Unitprob of int * stmt
@@ -55,18 +58,21 @@ and stmt =
   | Drop of string * string
   | Show of string * string
   | Hide of string * string
-  | Charadec of string * membervar list * membervar list
-  | Itemdec of string * membervar list
-  | Locdec of string * membervar list * membervar list * membervar list
-  | Startend of string * expr * stmt
   | Atomstmt of expr
   | Cmpdstmt of block
   | Nostmt of int
-  | IntStrdec of pridec
   | Print of expr
 and block = stmt list
 and actiondeclist = actiondec list
 and whenexprlist = whenexpr list
 
+and globaldec = 
+    IntStrdec of pridec
+  | Charadec of string * membervar list * membervar list
+  | Itemdec of string * membervar list
+  | Locdec of string * membervar list * membervar list * membervar list
+  | Startend of string * expr * stmt
+  
+and globaldecs = globaldec list
 
-type program = stmt list
+and program = globaldecs
