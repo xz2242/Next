@@ -9,13 +9,22 @@ open Statement
 module type COMPILE = 
    sig
      exception CompileError of string
-     val javacode : stmt list -> string list * string list
+     val javacode : globaldec list -> string list * string list
      val stmt_to_java : string list * string list -> stmt -> string list * string list
+	 val global_dec_to_java : string list * string list -> globaldec -> string list * string list
    end
 
 module Compile : COMPILE = struct
 
 exception CompileError of string
+
+(* TODO: FIX THIS *)
+let global_dec_to_java (playcode, startfns) global_dec = match global_dec with
+	IntStrdec (pridec) -> ([], []) 
+  | Charadec (name, membervar1, membervar2) -> ([], [])
+  | Itemdec (name, membervar) -> ([], [])
+  | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
+  | Startend (name, condition_expr, stmt) -> ([], [])
 
 let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
 	[]->[]
@@ -64,18 +73,18 @@ let rec stmt_to_java (playcode, startfns) stmt = match stmt with
     | Drop (str1, str2) -> (playcode @ (Action.drop_to_java str1 str2), startfns)
     | Show (str1, str2) -> (playcode @ (Action.show_to_java str1 str2), startfns)
     | Hide (str1, str2) -> (playcode @ (Action.hide_to_java str1 str2), startfns)
-    | Charadec (str, attrlist, itemlist) -> (playcode @ (Declaration.charadec_to_java str attrlist itemlist), startfns)
+    (*| Charadec (str, attrlist, itemlist) -> (playcode @ (Declaration.charadec_to_java str attrlist itemlist), startfns)
     | Itemdec (str, list) -> (playcode @ (Declaration.itemdec_to_java str list), startfns)
     | Locdec (str, attrlist, itemlist, charlist) -> (playcode @ (Declaration.locdec_to_java str attrlist itemlist charlist), startfns)
     | Startend (str, expr, stmt) -> playcode @ ["//Location function call"; str ^ "();"], startfns @ ["//start funtion"; "public void " ^ str ^ "() {"] @ 
 	(fst (Expression.expr_to_java_boolean expr)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr)) ^ "){"  ] 
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr)) (fst (stmt_to_java ([], []) stmt)) ) 
-	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] 
+	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] *)
     | Atomstmt (expr) -> (playcode @ (Statement.atomstmt_to_java expr), startfns)
     | Cmpdstmt (codeblock) ->
          List.fold_left stmt_to_java (playcode, startfns) codeblock
     | Nostmt (i) -> (playcode @ (Statement.nostmt_to_java i), startfns)
-    | IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)
+    (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
     | Print (str) -> (playcode @ (Statement.print_to_java str), startfns)
 
 
@@ -101,6 +110,6 @@ and probexpr_to_java probexpr start_num = match probexpr with Unitprob(i, stmt) 
     let (prob_playcode, prob_startfns) = stmt_to_java ([], []) stmt in
     (["if(num >= " ^ string_of_int start_num ^ " && num < " ^ string_of_int (start_num + i) ^ ") {"] @ prob_playcode @ ["}"], prob_startfns, start_num + i)
 
-let javacode program = List.fold_left stmt_to_java ([], []) program
+let javacode program = List.fold_left global_dec_to_java ([], []) program
 
 end

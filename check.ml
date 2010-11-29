@@ -229,7 +229,7 @@ let rec check_membervarlist_chara symt subsymt = function
   												 if (VarMap.mem (varname,Character) subsymt) then
   												 	raise ( DupVar("duplicated identifier " ^ varname))
   												 else
-  												 	check_membervarlist_item symt (VarMap.add (varname,Character) VarMap.empty subsymt) tl
+  												 	check_membervarlist_chara symt (VarMap.add (varname,Character) VarMap.empty subsymt) tl
   
 
 let check_globaldec symt= function
@@ -281,7 +281,7 @@ let check_globaldec symt= function
 	
 
 let rec check_program symt = function
-    [] -> ()
+    [] -> symt
   | dec::tl -> check_program (check_globaldec symt dec) tl
 
 
