@@ -41,7 +41,7 @@ public void killFunction(String varName){
 }
 
 public int entityIdentInt(String key1, Type type1, String key2) {
-	int returnValue;
+	int returnValue = 0;
 	boolean foundReturnValue = false;
 	
 	if(type1 == Type.LOCATION) {
@@ -74,7 +74,7 @@ public int entityIdentInt(String key1, Type type1, String key2) {
 }
 
 public String entityIdentString(String key1, Type type1, String key2) {
-	String returnValue;
+	String returnValue = null;
 	if(type1 == Type.LOCATION) {
 		Location loc = locations.get(key1);
 		if(loc != null) {
@@ -102,7 +102,7 @@ public String entityIdentString(String key1, Type type1, String key2) {
 }
 
 public Item entityIdentItem(String key1, Type type1, String key2) {
-	Item returnValue;
+	Item returnValue = null;
 	if(type1 == Type.LOCATION) {
 		Location loc = locations.get(key1);
 		if(loc != null) {
@@ -128,7 +128,7 @@ public Item entityIdentItem(String key1, Type type1, String key2) {
 }
 
 public Character entityIdentCharacter(String key1, Type type1, String key2) {
-	Character returnValue;
+	Character returnValue = null;
 	if(type1 == Type.LOCATION) {
 		Location loc = locations.get(key1);
 		if(loc != null) {
