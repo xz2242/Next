@@ -40,105 +40,110 @@ public void killFunction(String varName){
 	}
 }
 
-	public int entityIdentInt(String key1, Type type1, String key2) {
-		int returnValue;
-		if(type1 == Type.LOCATION) {
-			Locatation loc = locations.get(key1);
-			if(loc != null) {
-				returnValue = loc.intAttr.get(key2);
-			}
-		}
-		else if(type1 == Type.CHARACTER) {
-			Character character = characters.get(key1);
-			if(character != null) {
-				returnValue = character.intAttr.get(key2);
-			}
-		}
-		else if(type1 == Type.ITEM) {
-			Item item = items.get(key1);
-			if(item != null) {
-				returnValue = item.intAttr.get(key2);
-			}
-		}
+public int entityIdentInt(String key1, Type type1, String key2) {
+	int returnValue;
+	boolean foundReturnValue = false;
 	
-		if(returnValue == null) {
-			throw new RuntimeException;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			returnValue = loc.intAttrs.get(key2);
+			foundReturnValue = true;
 		}
-	
-		return returnValue;
+	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			returnValue = character.intAttrs.get(key2);
+			foundReturnValue = true;
+		}
+	}
+	else if(type1 == Type.ITEM) {
+		Item item = items.get(key1);
+		if(item != null) {
+			returnValue = item.intAttrs.get(key2);
+			foundReturnValue = true;
+		}
 	}
 	
-	public int entityIdentString(String key1, Type type1, String key2) {
-		String returnValue;
-		if(type1 == Type.LOCATION) {
-			Locatation loc = locations.get(key1);
-			if(loc != null) {
-				returnValue = loc.strAttr.get(key2);
-			}
-		}
-		else if(type1 == Type.CHARACTER) {
-			Character character = characters.get(key1);
-			if(character != null) {
-				returnValue = character.strAttr.get(key2);
-			}
-		}
-		else if(type1 == Type.ITEM) {
-			Item item = items.get(key1);
-			if(item != null) {
-				returnValue = item.strAttr.get(key2);
-			}
-		}
-	
-		if(returnValue == null) {
-			throw new RuntimeException;
-		}
-	
-		return returnValue;
+	if(foundReturnValue == false) {
+		throw new RuntimeException();
 	}
+	
+	return returnValue;
+}
 
-	public Item entityIdentItem(String key1, Type type1, String key2) {
-		Item returnValue;
-		if(type1 == Type.LOCATION) {
-			Locatation loc = locations.get(key1);
-			if(loc != null) {
-				String itemKey = loc.items.get(key2);
-				if(!itemKey.isEmpty()) {
-					returnValue = items.get(itemKey);
-				}
-			}
+public String entityIdentString(String key1, Type type1, String key2) {
+	String returnValue;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			returnValue = loc.strAttrs.get(key2);
 		}
-		else if(type1 == Type.CHARACTER) {
-			Character character = characters.get(key1);
-			if(character != null) {
-				returnValue = character.intAttr.get(key2);
-			}
+	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			returnValue = character.strAttrs.get(key2);
 		}
-		
-		if(returnValue == null) {
-			throw new RuntimeException;
+	}
+	else if(type1 == Type.ITEM) {
+		Item item = items.get(key1);
+		if(item != null) {
+			returnValue = item.strAttrs.get(key2);
 		}
-		
-		return returnValue;
 	}
 	
-	public Item entityIdentCharacter(String key1, Type type1, String key2) {
-		Character returnValue;
-		if(type1 == Type.LOCATION) {
-			Locatation loc = locations.get(key1);
-			if(loc != null) {
-				String itemKey = loc.characters.get(key2);
-				if(!itemKey.isEmpty()) {
-					returnValue = characters.get(itemKey);
-				}
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
+	
+	return returnValue;
+}
+
+public Item entityIdentItem(String key1, Type type1, String key2) {
+	Item returnValue;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			if(loc.items.contains(key2)) {
+				returnValue = items.get(key2);
 			}
 		}
-		
-		if(returnValue == null) {
-			throw new RuntimeException;
-		}
-		
-		return returnValue;
 	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			if(character.items.contains(key2)) {
+				returnValue = items.get(key2);
+			}
+		}
+	}
+	
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
+	
+	return returnValue;
+}
+
+public Character entityIdentCharacter(String key1, Type type1, String key2) {
+	Character returnValue;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			if(loc.characters.contains(key2)) {
+				returnValue = characters.get(key2);
+			}
+		}
+	}
+	
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
+	
+	return returnValue;
+}
 	
    public void endGame() {
       System.out.println(\"GAME OVER!!!!!\");
