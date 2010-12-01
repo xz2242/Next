@@ -10,9 +10,9 @@ open Check
 module type COMPILE = 
    sig
      exception CompileError of string
-     val javacode : globaldec list -> string list * string list
+     val javacode : globaldec list -> ('a VarMap.t VarMap.t) -> string list * string list
      val stmt_to_java : string list * string list -> stmt -> ('a VarMap.t VarMap.t) -> string list * string list
-	 val global_dec_to_java : string list * string list -> ('a VarMap.t VarMap.t) -> globaldec -> string list * string list
+	 val global_dec_to_java : string list * string list -> globaldec -> ('a VarMap.t VarMap.t) -> string list * string list
    end
 
 module Compile : COMPILE = struct
@@ -52,13 +52,13 @@ let rec stmt_to_java (playcode, startfns) stmt tmap = match stmt with
                     "}";
                     "System.out.println(\"You typed \" + input);";
                    "String action = keysToActionName.get(input);" ] in
-   let whenexprs_playcode, whenexprs_startfns = whenexprs_to_java whenexprlist in
+   let whenexprs_playcode, whenexprs_startfns = whenexprs_to_java whenexprlist tmap in
 (playcode @ mapDecl @ actiondecs @ getinput @ whenexprs_playcode, startfns @ whenexprs_startfns)
 
     | Prob (probexprlist) -> let sum = prob_sum probexprlist in
     if sum != 100 then raise (CompileError "Probabilities did not sum to 100")
     else let randomcode = ["int num = r.nextInt(100);"] in
-    let (probexprs_code, probexprs_startfns) = probexprs_to_java 0 probexprlist in
+    let (probexprs_code, probexprs_startfns) = probexprs_to_java 0 probexprlist tmap in
 (playcode @ randomcode @ probexprs_code, startfns @ probexprs_startfns)
 
     | Kill (str) -> (playcode @ (Action.kill_to_java str), startfns)
@@ -74,36 +74,35 @@ let rec stmt_to_java (playcode, startfns) stmt tmap = match stmt with
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt)) ) 
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"] *)
     | Atomstmt (expr) -> (playcode @ (Statement.atomstmt_to_java expr), startfns)
-    | Cmpdstmt (codeblock) ->
-         List.fold_left (stmt_to_java (playcode, startfns) codeblock) tmap
+    | Cmpdstmt (codeblock) -> (playcode, startfns) 
     | Nostmt (i) -> (playcode @ (Statement.nostmt_to_java i), startfns)
     (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
     | Print (str) -> (playcode @ (Statement.print_to_java str), startfns)
 
 
-and whenexprs_to_java list = match list with
+and whenexprs_to_java list tmap = match list with
    [] -> ([], [])
-   | hd :: tail -> let (hd_playcode, hd_startfns) = whenexpr_to_java hd in
-         let (tail_playcode, tail_startfns) = whenexprs_to_java tail in
+   | hd :: tail -> let (hd_playcode, hd_startfns) = whenexpr_to_java hd tmap in
+         let (tail_playcode, tail_startfns) = whenexprs_to_java tail tmap in
       (hd_playcode @ tail_playcode, hd_startfns @ tail_startfns)
 
-and whenexpr_to_java whenexpr = match whenexpr with Unitwhen(action, stmt, loc) -> 
-   let (when_playcode, when_startfns) = stmt_to_java ([], []) stmt in 
+and whenexpr_to_java whenexpr tmap = match whenexpr with Unitwhen(action, stmt, loc) -> 
+   let (when_playcode, when_startfns) = stmt_to_java ([], []) stmt tmap in 
    let nextcode = ["//" ^ loc ^ "();"] in
     (["if(action.equals(\"" ^ action ^ "\")) {"]
         @ when_playcode @ nextcode @ ["}"], when_startfns)
 
-and probexprs_to_java start_num list = match list with
+and probexprs_to_java start_num list tmap = match list with
    [] -> ([], [])
-   | hd::tail -> let (hd_playcode, hd_startfns, curr_num) = probexpr_to_java hd start_num in
-        let (tail_playcode, tail_startfns) = probexprs_to_java curr_num tail in
+   | hd::tail -> let (hd_playcode, hd_startfns, curr_num) = probexpr_to_java hd start_num tmap in
+        let (tail_playcode, tail_startfns) = probexprs_to_java curr_num tail tmap in
        (hd_playcode @ tail_playcode, hd_startfns @ tail_startfns)
 
-and probexpr_to_java probexpr start_num = match probexpr with Unitprob(i, stmt) -> 
-    let (prob_playcode, prob_startfns) = stmt_to_java ([], []) stmt in
+and probexpr_to_java probexpr start_num tmap = match probexpr with Unitprob(i, stmt) -> 
+    let (prob_playcode, prob_startfns) = stmt_to_java ([], []) stmt tmap in
     (["if(num >= " ^ string_of_int start_num ^ " && num < " ^ string_of_int (start_num + i) ^ ") {"] @ prob_playcode @ ["}"], prob_startfns, start_num + i)
 
-let javacode program = List.fold_left global_dec_to_java ([], []) program
+let javacode program symt = ([], [])
 
 (* TODO: FIX THIS *)
 let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec with
@@ -113,7 +112,7 @@ let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec w
   | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
   | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
 	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
-	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt)) ) 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt tmap)) ) 
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"]
 	
 end
