@@ -5,35 +5,25 @@ open Action
 open Selection
 open Start
 open Statement
+open Check
 
 module type COMPILE = 
    sig
      exception CompileError of string
      val javacode : globaldec list -> string list * string list
-     val stmt_to_java : string list * string list -> stmt -> string list * string list
-	 val global_dec_to_java : string list * string list -> globaldec -> string list * string list
+     val stmt_to_java : string list * string list -> stmt -> ('a VarMap.t VarMap.t) -> string list * string list
+	 val global_dec_to_java : string list * string list -> ('a VarMap.t VarMap.t) -> globaldec -> string list * string list
    end
 
 module Compile : COMPILE = struct
 
 exception CompileError of string
 
-(* TODO: FIX THIS *)
-let global_dec_to_java (playcode, startfns) global_dec = match global_dec with
-	IntStrdec (pridec) -> ([], []) 
-  | Charadec (name, membervar1, membervar2) -> ([], [])
-  | Itemdec (name, membervar) -> ([], [])
-  | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
-  | Startend (name, condition_expr, stmt) -> playcode @ ["//Location function call"; str ^ "();"], startfns @ ["//start funtion"; "public void " ^ str ^ "() {"] @ 
-	(fst (Expression.expr_to_java_boolean expr)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr)) ^ "){"  ] 
-	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr)) (fst (stmt_to_java ([], []) stmt)) ) 
-	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] *)
-
 let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
 	[]->[]
 	
 	|hd::tl -> if (String.contains hd ';') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
-		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl) 
+		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl)
 
 let rec actiondeclist_to_java list = match list with
    [] -> []
@@ -46,10 +36,10 @@ let rec prob_sum list = match list with
    [] -> 0
    | hd::tail -> match hd with Unitprob(i, stmt) -> i + (prob_sum tail)
 
-let rec stmt_to_java (playcode, startfns) stmt = match stmt with
-    Ifelse (expr, stmt1, stmt2) -> let (expr_precode, expr_exp) = Expression.expr_to_java_boolean expr in 
-        let (stmt1_playcode, stmt1_startfns) = stmt_to_java ([], []) stmt1 in 
-        let (stmt2_playcode, stmt2_startfns) = stmt_to_java ([], []) stmt2 in
+let rec stmt_to_java (playcode, startfns) stmt tmap = match stmt with
+    Ifelse (expr, stmt1, stmt2) -> let (expr_precode, expr_exp) = Expression.expr_to_java_boolean expr tmap in 
+        let (stmt1_playcode, stmt1_startfns) = stmt_to_java ([], []) stmt1 tmap in 
+        let (stmt2_playcode, stmt2_startfns) = stmt_to_java ([], []) stmt2 tmap in
         (playcode @ expr_precode @ ["if(" ^ expr_exp ^ ") {"] @ stmt1_playcode @ ["} else {"] @ stmt2_playcode @ ["}"], startfns @ stmt1_startfns @ stmt2_startfns)
 
     | Chwhen (actiondeclist, whenexprlist) -> let mapDecl = ["Map<String,String> keysToActionName = new HashMap<String, String>();"; "Map<String, String> actionNameToOutput = new HashMap<String, String>();"] in
@@ -80,12 +70,12 @@ let rec stmt_to_java (playcode, startfns) stmt = match stmt with
     | Itemdec (str, list) -> (playcode @ (Declaration.itemdec_to_java str list), startfns)
     | Locdec (str, attrlist, itemlist, charlist) -> (playcode @ (Declaration.locdec_to_java str attrlist itemlist charlist), startfns)
     | Startend (str, expr, stmt) -> playcode @ ["//Location function call"; str ^ "();"], startfns @ ["//start funtion"; "public void " ^ str ^ "() {"] @ 
-	(fst (Expression.expr_to_java_boolean expr)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr)) ^ "){"  ] 
-	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr)) (fst (stmt_to_java ([], []) stmt)) ) 
-	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] *)
+	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt)) ) 
+	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"] *)
     | Atomstmt (expr) -> (playcode @ (Statement.atomstmt_to_java expr), startfns)
     | Cmpdstmt (codeblock) ->
-         List.fold_left stmt_to_java (playcode, startfns) codeblock
+         List.fold_left (stmt_to_java (playcode, startfns) codeblock) tmap
     | Nostmt (i) -> (playcode @ (Statement.nostmt_to_java i), startfns)
     (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
     | Print (str) -> (playcode @ (Statement.print_to_java str), startfns)
@@ -115,4 +105,15 @@ and probexpr_to_java probexpr start_num = match probexpr with Unitprob(i, stmt) 
 
 let javacode program = List.fold_left global_dec_to_java ([], []) program
 
+(* TODO: FIX THIS *)
+let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec with
+	IntStrdec (pridec) -> ([], []) 
+  | Charadec (name, membervar1, membervar2) -> ([], [])
+  | Itemdec (name, membervar) -> ([], [])
+  | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
+  | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
+	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt)) ) 
+	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"]
+	
 end
