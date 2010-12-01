@@ -21,6 +21,25 @@ public class Next {
       (new Next()).play();
    }
 
+	
+public void killFunction(String varName){
+	if (characters.containsKey(varName)){
+		characters.remove(varName);
+		for (String key: locations.keySet()){
+				locations.get(key).hideCharacter(varName);
+		}
+	}
+	else if (items.containsKey(varName)){
+		items.remove(varName);
+		for (String key:locations.keySet()){
+			locations.get(key).removeItem(varName);
+			}
+		for (String key : characters.keySet()){
+			characters.get(key).removeItem(varName);
+		}
+	}
+}
+
 	public int entityIdentInt(String key1, Type type1, String key2) {
 		int returnValue;
 		if(type1 == Type.LOCATION) {
