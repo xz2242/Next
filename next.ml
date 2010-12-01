@@ -2,8 +2,8 @@ open Ast
 open Compile
 open Check
 
-let java_of_prog program = 
-let (playcode, startfns) = Compile.javacode program in 
+let java_of_prog program symt = 
+let (playcode, startfns) = Compile.javacode program symt in 
 "
 import java.util.*;
 
@@ -208,7 +208,8 @@ class Item extends Entity {
 let _ =
   let lexbuf = Lexing.from_channel stdin in 
   let program = Parser.program Scanner.token lexbuf in
-  let java = java_of_prog program in
+  let symt = check_program VarMap.empty program in
+  let java = java_of_prog program symt in
   print_endline java
   
 

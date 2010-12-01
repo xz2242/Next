@@ -24,7 +24,10 @@ let global_dec_to_java (playcode, startfns) global_dec = match global_dec with
   | Charadec (name, membervar1, membervar2) -> ([], [])
   | Itemdec (name, membervar) -> ([], [])
   | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
-  | Startend (name, condition_expr, stmt) -> ([], [])
+  | Startend (name, condition_expr, stmt) -> playcode @ ["//Location function call"; str ^ "();"], startfns @ ["//start funtion"; "public void " ^ str ^ "() {"] @ 
+	(fst (Expression.expr_to_java_boolean expr)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr)) ^ "){"  ] 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr)) (fst (stmt_to_java ([], []) stmt)) ) 
+	@ (fst (Expression.expr_to_java_boolean expr))@ ["} }"] *)
 
 let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
 	[]->[]
