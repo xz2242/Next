@@ -12,7 +12,7 @@ module type COMPILE =
      exception CompileError of string
      val javacode : globaldec list -> ('a VarMap.t VarMap.t) -> string list * string list
      val stmt_to_java : string list * string list -> stmt -> ('a VarMap.t VarMap.t) -> string list * string list
-	 val global_dec_to_java : string list * string list -> globaldec -> ('a VarMap.t VarMap.t) -> string list * string list
+     val global_dec_to_java : string list * string list -> globaldec -> ('a VarMap.t VarMap.t) -> string list * string list
    end
 
 module Compile : COMPILE = struct
@@ -102,17 +102,21 @@ and probexpr_to_java probexpr start_num tmap = match probexpr with Unitprob(i, s
     let (prob_playcode, prob_startfns) = stmt_to_java ([], []) stmt tmap in
     (["if(num >= " ^ string_of_int start_num ^ " && num < " ^ string_of_int (start_num + i) ^ ") {"] @ prob_playcode @ ["}"], prob_startfns, start_num + i)
 
-let javacode program symt = ([], [])
+
 
 (* TODO: FIX THIS *)
 let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec with
-	IntStrdec (pridec) -> ([], []) 
-  | Charadec (name, membervar1, membervar2) -> ([], [])
-  | Itemdec (name, membervar) -> ([], [])
-  | Locdec (name, membervar1, membervar2, membervar3) -> ([], [])
+	IntStrdec (pridec) -> (Declaration.intstrdec_to_java pridec tmap) @ playcode, startfns
+  | Charadec (name, membervar1, membervar2) -> (Declaration.charadec_to_java name membervar1 membervar2 tmap) @ playcode, startfns
+  | Itemdec (name, membervar) -> (Declaration.itemdec_to_java name membervar tmap) @ playcode, startfns
+  | Locdec (name, membervar1, membervar2, membervar3) -> (Declaration.locdec_to_java name membervar1 membervar2 membervar3 tmap) @ playcode, startfns
   | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
 	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
-	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt tmap)) ) 
+	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt tmap)) )   
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"]
+
+let rec javacode program symt = match program with
+[] -> ([], [])
+|hd::tl -> (fst (global_dec_to_java ([], []) hd symt))@ (fst (javacode tl symt)), (snd (global_dec_to_java ([], []) hd symt))@ (snd (javacode tl symt))
 	
 end
