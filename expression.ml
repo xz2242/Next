@@ -8,7 +8,8 @@ module type EXPRESSION =
     val expr_to_java : expr -> ('a VarMap.t VarMap.t) -> string
     val expr_to_java_boolean : expr -> ('a VarMap.t VarMap.t) -> string list * string (* string list contains statements that need to happen before the string condition is checked *)
     val next_type_to_string : Checktype.t -> string
-    val check_type : string -> ('a VarMap.t VarMap.t) -> string
+    val check_type_to_string : string -> ('a VarMap.t VarMap.t) -> string
+    val check_subtype_to_string: string -> string -> ('a VarMap.t VarMap.t) -> string
    end
 
 module Expression : EXPRESSION = struct
@@ -22,12 +23,38 @@ let next_type_to_string = function
     | Action -> "action"
     | Key -> "key"
 
-let check_type name  = function
-    symt -> if (VarMap.mem (name,String) symt) then "String" 
-	        else if (VarMap.mem (name,Integer) symt) then "Integer"
+let check_type_to_string name  = function
+    symt -> if (not (VarMap.mem (name,String) symt)) && (not (VarMap.mem (name,Integer) symt)) && (not (VarMap.mem (name,Location) symt))
+  						&& (not (VarMap.mem (name,Character) symt)) && (not (VarMap.mem (name,Item) symt)) 
+  			then raise ( NotFound("undefined variable " ^ name))
+            else if (VarMap.mem (name,String) symt) then "String" 
+	        else if (VarMap.mem (name,Integer) symt) then "Int"
 	        else if (VarMap.mem (name,Location) symt) then "Location"
 	        else if(VarMap.mem (name,Character) symt) then "Character"
             else "Item"
+            
+let check_subtype_to_string name subname =  function
+    symt -> 	if (VarMap.mem (name,Character) symt) then
+   			        let subsymt = VarMap.find (name,Character) symt in
+   				    if (not (VarMap.mem (subname, Integer) subsymt))&& (not (VarMap.mem (subname, Item) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) then
+   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
+   				    else if (VarMap.mem (subname,String) subsymt) then "String" 
+        	        else if (VarMap.mem (subname,Integer) subsymt) then "Int"
+   					else "Item"
+   		        else if (VarMap.mem (name,Location) symt) then
+   			        let subsymt = VarMap.find (name,Location) symt in
+   				    if (not (VarMap.mem (subname, Integer) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) && (not (VarMap.mem (subname, Item) subsymt))  && (not (VarMap.mem (subname, Character) subsymt)) then
+   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
+   				    else if (VarMap.mem (subname,String) subsymt) then "String" 
+        	        else if (VarMap.mem (subname,Integer) subsymt) then "Int"
+        	        else if(VarMap.mem (subname,Character) subsymt) then "Character"
+                    else "Item"
+   		        else
+   			        let subsymt = VarMap.find (name,Item) symt in
+   				    if (not (VarMap.mem (subname, Integer) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) then
+   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
+   				    else if (VarMap.mem (subname, Integer) subsymt) then "Int" 
+   					else "String"
 
 let rec expr_to_java exp tmap = match exp with
    Binop (exp1, op, exp2) -> if op == Add then "(" ^ (expr_to_java exp1 tmap) ^ ") + (" ^ (expr_to_java exp2 tmap) ^ ")"
@@ -48,9 +75,9 @@ let rec expr_to_java exp tmap = match exp with
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
    | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
-   | Ident (id) ->      (match id with
-                          Var(name) -> name
-                        | Has(name, subname) -> "(entityHas" ^ (check_type name tmap) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type subname tmap))  ^ ", \"" ^ subname ^ "\"))")    
+   | Ident (id) ->  (match id with
+                      Var(name) -> name
+                    | Has(name, subname) -> "(entityHas" ^ (check_subtype_to_string name subname tmap) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\"))")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "(!" ^ (expr_to_java exp tmap) ^ ")"
    (*| Var (str) -> str*)
@@ -69,14 +96,13 @@ let rec expr_to_java_boolean exp tmap = match exp with
                         	else if op == And then (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " && " ^ (snd (expr_to_java_boolean exp2 tmap)))
 	                        else ([], "false")
 	   | Asn (id, exp) -> ([], "true")
-	   | Lit (i) -> ([], string_of_int i ^ " != 0")
+	   | Lit (i) -> ([], string_of_int i ^ " != null") (*check null and empty?*)
 	   | LitS (str) -> ([], "true")
 	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
 	   | Ident (id) -> ([], (expr_to_java exp tmap) ^ "!= null")
 	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
 	   (*| Var (str) -> ([], str ^ " != 0 ")*)
-
 
 end
 
