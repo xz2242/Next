@@ -127,13 +127,15 @@ and check_stmt symt =  function
   				   			else ()
   | Show (name, subname) -> if (not (VarMap.mem (name,Location) symt) )
   								then raise ( NotFound("Location not found, invalid show " ^ name))
-  				   			else if (not (VarMap.mem (subname,Item) symt) )
-  				   				then raise ( NotFound("Item not found, invalid show " ^ subname))
+  				   			else if ( 	(not (VarMap.mem (subname,Item) symt)) && 
+  				   						(not (VarMap.mem (subname,Character) symt)) )
+  				   				then raise ( NotFound("Item or Character not found, invalid show " ^ subname))
   				   			else ()
   | Hide (name, subname) -> if (not (VarMap.mem (name,Location) symt) )
   								then raise ( NotFound("Location not found, invalid hide " ^ name))
-  				   			else if (not (VarMap.mem (subname,Item) symt) )
-  				   				then raise ( NotFound("Item not found, invalid hide " ^ subname))
+  				   			else if (	(not (VarMap.mem (subname,Item) symt)) &&
+  				   						(not (VarMap.mem (subname,Character) symt)) )
+  				   				then raise ( NotFound("Item or Character not found, invalid hide " ^ subname))
   				   			else ()
   | Atomstmt (exp) -> ignore (check_expr symt exp)
   | Cmpdstmt (blk) -> List.iter (check_stmt symt) blk
