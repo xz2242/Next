@@ -8,6 +8,7 @@ module type EXPRESSION =
     val expr_to_java : expr -> ('a VarMap.t VarMap.t) -> string
     val expr_to_java_boolean : expr -> ('a VarMap.t VarMap.t) -> string list * string (* string list contains statements that need to happen before the string condition is checked *)
     val next_type_to_string : Checktype.t -> string
+    val check_type : string -> ('a VarMap.t VarMap.t) -> string
    end
 
 module Expression : EXPRESSION = struct
@@ -20,6 +21,13 @@ let next_type_to_string = function
     | Location -> "location"
     | Action -> "action"
     | Key -> "key"
+
+let check_type name  = function
+    symt -> if (VarMap.mem (name,String) symt) then "String" 
+	        else if (VarMap.mem (name,Integer) symt) then "Integer"
+	        else if (VarMap.mem (name,Location) symt) then "Location"
+	        else if(VarMap.mem (name,Character) symt) then "Character"
+            else "Item"
 
 let rec expr_to_java exp tmap = match exp with
    Binop (exp1, op, exp2) -> if op == Add then "(" ^ (expr_to_java exp1 tmap) ^ ") + (" ^ (expr_to_java exp2 tmap) ^ ")"
@@ -40,8 +48,9 @@ let rec expr_to_java exp tmap = match exp with
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
    | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
-   | Ident (id) -> "let t = check_id tmap id in"
-					
+   | Ident (id) ->      (match id with
+                          Var(name) -> name
+                        | Has(name, subname) -> "(entityHas" ^ (check_type name tmap) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type subname tmap))  ^ ", \"" ^ subname ^ "\"))")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "(!" ^ (expr_to_java exp tmap) ^ ")"
    (*| Var (str) -> str*)
@@ -63,7 +72,7 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Lit (i) -> ([], string_of_int i ^ " != 0")
 	   | LitS (str) -> ([], "true")
 	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
-	   | Ident (id) -> ([], "true")
+	   | Ident (id) -> ([], (expr_to_java exp tmap) ^ "!= null")
 	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
 	   (*| Var (str) -> ([], str ^ " != 0 ")*)
