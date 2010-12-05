@@ -22,7 +22,7 @@ exception CompileError of string
 let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
 	[]->[]
 	
-	|hd::tl -> if (String.contains hd ';') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
+	|hd::tl -> if (String.contains hd '}') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
 		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl)
 
 let rec actiondeclist_to_java list = match list with
@@ -114,7 +114,7 @@ let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec w
   | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
 	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java tmap ([], []) stmt)) )   
-	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"]
+	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["}" ; "endGame();" ; "}"]
 
 let rec javacode program symt = match program with
 [] -> ([], [])
