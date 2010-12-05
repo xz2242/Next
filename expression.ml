@@ -9,7 +9,6 @@ module type EXPRESSION =
     val expr_to_java_boolean : expr -> ('a VarMap.t VarMap.t) -> string list * string (* string list contains statements that need to happen before the string condition is checked *)
     val next_type_to_string : Checktype.t -> string
     val check_type_to_string : string -> ('a VarMap.t VarMap.t) -> string
-    val check_subtype_to_string: string -> string -> ('a VarMap.t VarMap.t) -> string
    end
 
 module Expression : EXPRESSION = struct
@@ -32,29 +31,6 @@ let check_type_to_string name  = function
 	        else if (VarMap.mem (name,Location) symt) then "Location"
 	        else if(VarMap.mem (name,Character) symt) then "Character"
             else "Item"
-            
-let check_subtype_to_string name subname =  function
-    symt -> 	if (VarMap.mem (name,Character) symt) then
-   			        let subsymt = VarMap.find (name,Character) symt in
-   				    if (not (VarMap.mem (subname, Integer) subsymt))&& (not (VarMap.mem (subname, Item) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) then
-   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
-   				    else if (VarMap.mem (subname,String) subsymt) then "String" 
-        	        else if (VarMap.mem (subname,Integer) subsymt) then "Int"
-   					else "Item"
-   		        else if (VarMap.mem (name,Location) symt) then
-   			        let subsymt = VarMap.find (name,Location) symt in
-   				    if (not (VarMap.mem (subname, Integer) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) && (not (VarMap.mem (subname, Item) subsymt))  && (not (VarMap.mem (subname, Character) subsymt)) then
-   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
-   				    else if (VarMap.mem (subname,String) subsymt) then "String" 
-        	        else if (VarMap.mem (subname,Integer) subsymt) then "Int"
-        	        else if(VarMap.mem (subname,Character) subsymt) then "Character"
-                    else "Item"
-   		        else
-   			        let subsymt = VarMap.find (name,Item) symt in
-   				    if (not (VarMap.mem (subname, Integer) subsymt)) && (not (VarMap.mem (subname, String) subsymt)) then
-   					    raise ( NotFound("member not found " ^ name ^"." ^ subname))
-   				    else if (VarMap.mem (subname, Integer) subsymt) then "Int" 
-   					else "String"
 
 let rec expr_to_java exp tmap = match exp with
    Binop (exp1, op, exp2) -> if op == Add then "(" ^ (expr_to_java exp1 tmap) ^ ") + (" ^ (expr_to_java exp2 tmap) ^ ")"
@@ -75,9 +51,10 @@ let rec expr_to_java exp tmap = match exp with
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
    | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
-   | Ident (id) ->  (match id with
+   | Ident (id) ->  let t = check_id tmap id in 
+                    (match id with
                       Var(name) -> name
-                    | Has(name, subname) -> "(entityHas" ^ (check_subtype_to_string name subname tmap) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\"))")    
+                    | Has(name, subname) -> "(entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\"))")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "(!" ^ (expr_to_java exp tmap) ^ ")"
    (*| Var (str) -> str*)
