@@ -1,0 +1,51 @@
+x = 2;
+x = x*x;
+y=4;
+z=5;
+
+output "tested assignment and multiplication";
+
+if x > z then
+{
+	output "error greater than";
+	
+}
+else {
+     output "Testing";
+     output 2;
+     output "Testing: ", 2;
+     output "tested string int output and greater than false";
+     output "Tested else and code blocks"; 
+}
+if y == z then
+
+     output "equals went wrong";
+
+else if y == x then output 4, "equals works", 2+4, "previous should be six";
+
+else
+output "tested more mixed output, addition, equals and if else if";
+
+if x < z then{
+output 6, "Tested true less than";
+}
+
+else {
+output "error on less than";
+}
+
+if x != y then output "error on not equal";
+else if x != z then output 16 /2, "tested division and not equals";
+else output "something went wrong";
+
+if x != z and x != y then output "and went wrong";
+else if x != z and x==y then output 5-4, "tested subtraction and and";
+else output "and went wrong, reached else";
+
+if x ==z or x != y then output "wrong or";
+else if x==y or x == z then output "tested or";
+else output "wrong";
+
+if z < x then  output "wrong";
+else if z > x then output "greater than works";
+else output "wrong";
