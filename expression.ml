@@ -57,7 +57,6 @@ let rec expr_to_java exp tmap = match exp with
                     | Has(name, subname) -> "(entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\"))")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "(!" ^ (expr_to_java exp tmap) ^ ")"
-   (*| Var (str) -> str*)
 
 
 let rec expr_to_java_boolean exp tmap = match exp with
@@ -75,11 +74,10 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Asn (id, exp) -> ([], "true")
 	   | Lit (i) -> ([], string_of_int i ^ " != null") (*check null and empty?*)
 	   | LitS (str) -> ([], "true")
-	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
-	   | Ident (id) -> ([], (expr_to_java exp tmap) ^ "!= null")
+	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
+	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
 	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
-	   (*| Var (str) -> ([], str ^ " != 0 ")*)
 
 end
 
