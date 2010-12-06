@@ -46,8 +46,8 @@ let rec expr_to_java exp tmap = match exp with
                         else "WHAT"
    | Asn (id, exp) -> let t = check_id tmap id in 
                         (match id with
-                        Var(str) -> (next_type_to_string t) ^ " " ^ str ^ " = " ^ (expr_to_java exp tmap)
-                      | Has(str1, str2) -> (next_type_to_string t) ^ " " ^ str2 ^ " = " ^ (expr_to_java exp tmap))
+                        Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
+                      | Has(name, subname) -> "(entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(" ^ name ^ ", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", " ^ subname ^ ", " ^ (expr_to_java exp tmap) ^ "))")
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
    | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
@@ -76,7 +76,7 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | LitS (str) -> ([], "true")
 	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
 	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
-	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ ") != 0 ")
+	   | Neg (exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
 
 end

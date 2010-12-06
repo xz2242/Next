@@ -16,9 +16,64 @@ public class Next {
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
    Map<String, Type> types = new HashMap<String, Type>();
-
-   public static void main(String[] args) {
-      (new Next()).play();
+   
+   public void entitySetString(String key1, Type type1, String key2, String value) {
+    boolean valueSet = false;
+   	if(type1 == Type.LOCATION) {
+   		Location loc = locations.get(key1);
+   		if(loc != null) {
+   			loc.strAttrs.put(key2, value);
+   			valueSet = true;
+   		}
+   	}
+   	else if(type1 == Type.CHARACTER) {
+   		Character character = characters.get(key1);
+   		if(character != null) {
+   			character.strAttrs.put(key2, value);
+   			valueSet = true;
+   		}
+   	}
+   	else if(type1 == Type.ITEM) {
+   		Item item = items.get(key1);
+   		if(item != null) {
+   			item.strAttrs.put(key2, value);
+   			valueSet = true;
+   		}
+   	}
+	
+   	if(!valueSet) {
+   		throw new RuntimeException();
+   	}
+   }
+   
+   public void entitySetInt(String key1, Type type1, String key2, int value) {
+   	boolean foundReturnValue = false;
+	
+   	if(type1 == Type.LOCATION) {
+   		Location loc = locations.get(key1);
+   		if(loc != null) {
+            loc.intAttrs.put(key2, value);
+   			foundReturnValue = true;
+   		}
+   	}
+   	else if(type1 == Type.CHARACTER) {
+   		Character character = characters.get(key1);
+   		if(character != null) {
+   			character.intAttrs.put(key2, value);
+   			foundReturnValue = true;
+   		}
+   	}
+   	else if(type1 == Type.ITEM) {
+   		Item item = items.get(key1);
+   		if(item != null) {
+   			item.intAttrs.put(key2, value);
+   			foundReturnValue = true;
+   		}
+   	}
+	
+   	if(foundReturnValue == false) {
+   		throw new RuntimeException();
+   	}
    }
    
 	public boolean isTrue(Object object) {
