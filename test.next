@@ -13,7 +13,7 @@ start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
 	choose (attack,"hia!","a") (up,"up","u") {
 		when attack 
 		{
-			xiaowei_the_greatest_man_ever.life+1;
+			xiaowei_the_greatest_man_ever.life=xiaowei_the_greatest_man_ever.life+1;
 		} next where_is_this_place
 		when up 
 		{

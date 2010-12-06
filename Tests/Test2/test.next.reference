@@ -10,208 +10,134 @@ public class Next {
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
    Map<String, Type> types = new HashMap<String, Type>();
-   
-   public void entitySetString(String key1, Type type1, String key2, String value) {
-    boolean valueSet = false;
-   	if(type1 == Type.LOCATION) {
-   		Location loc = locations.get(key1);
-   		if(loc != null) {
-   			loc.strAttrs.put(key2, value);
-   			valueSet = true;
-   		}
-   	}
-   	else if(type1 == Type.CHARACTER) {
-   		Character character = characters.get(key1);
-   		if(character != null) {
-   			character.strAttrs.put(key2, value);
-   			valueSet = true;
-   		}
-   	}
-   	else if(type1 == Type.ITEM) {
-   		Item item = items.get(key1);
-   		if(item != null) {
-   			item.strAttrs.put(key2, value);
-   			valueSet = true;
-   		}
-   	}
-	
-   	if(!valueSet) {
-   		throw new RuntimeException();
-   	}
+
+   public static void main(String[] args) {
+      (new Next()).play();
    }
-   
-   public void entitySetInt(String key1, Type type1, String key2, int value) {
-   	boolean foundReturnValue = false;
+
 	
-   	if(type1 == Type.LOCATION) {
-   		Location loc = locations.get(key1);
-   		if(loc != null) {
-            loc.intAttrs.put(key2, value);
-   			foundReturnValue = true;
-   		}
-   	}
-   	else if(type1 == Type.CHARACTER) {
-   		Character character = characters.get(key1);
-   		if(character != null) {
-   			character.intAttrs.put(key2, value);
-   			foundReturnValue = true;
-   		}
-   	}
-   	else if(type1 == Type.ITEM) {
-   		Item item = items.get(key1);
-   		if(item != null) {
-   			item.intAttrs.put(key2, value);
-   			foundReturnValue = true;
-   		}
-   	}
+public void killFunction(String varName){
+	if (characters.containsKey(varName)){
+		characters.remove(varName);
+		for (String key: locations.keySet()){
+				locations.get(key).hideCharacter(varName);
+		}
+	}
+	else if (items.containsKey(varName)){
+		items.remove(varName);
+		for (String key:locations.keySet()){
+			locations.get(key).removeItem(varName);
+			}
+		for (String key : characters.keySet()){
+			characters.get(key).removeItem(varName);
+		}
+	}
+}
+
+public int entityHasInt(String key1, Type type1, String key2) {
+	int returnValue = 0;
+	boolean foundReturnValue = false;
 	
-   	if(foundReturnValue == false) {
-   		throw new RuntimeException();
-   	}
-   }
-   
-	public boolean isTrue(Object object) {
-	    if(object instanceof String) {
-	       if(((String)object).isEmpty()) {
-	           return false;
-	       }
-	    }
-	    else if(object instanceof Integer) {
-	       if((Integer)object == 0) {
-	           return false;
-	       } 
-	    }
-	    else {
-	        if(object == null) {
-	            return false;
-	        }
-	    }
-	    
-	    return true;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			returnValue = loc.intAttrs.get(key2);
+			foundReturnValue = true;
+		}
+	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			returnValue = character.intAttrs.get(key2);
+			foundReturnValue = true;
+		}
+	}
+	else if(type1 == Type.ITEM) {
+		Item item = items.get(key1);
+		if(item != null) {
+			returnValue = item.intAttrs.get(key2);
+			foundReturnValue = true;
+		}
 	}
 	
-    public void killFunction(String varName){
-    	if (characters.containsKey(varName)){
-    		characters.remove(varName);
-    		for (String key: locations.keySet()){
-    				locations.get(key).hideCharacter(varName);
-    		}
-    	}
-    	else if (items.containsKey(varName)){
-    		items.remove(varName);
-    		for (String key:locations.keySet()){
-    			locations.get(key).removeItem(varName);
-    			}
-    		for (String key : characters.keySet()){
-    			characters.get(key).removeItem(varName);
-    		}
-    	}
-    }
+	if(foundReturnValue == false) {
+		throw new RuntimeException();
+	}
+	
+	return returnValue;
+}
 
-    public int entityHasInt(String key1, Type type1, String key2) {
-    	int returnValue = 0;
-    	boolean foundReturnValue = false;
+public String entityHasString(String key1, Type type1, String key2) {
+	String returnValue = null;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			returnValue = loc.strAttrs.get(key2);
+		}
+	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			returnValue = character.strAttrs.get(key2);
+		}
+	}
+	else if(type1 == Type.ITEM) {
+		Item item = items.get(key1);
+		if(item != null) {
+			returnValue = item.strAttrs.get(key2);
+		}
+	}
 	
-    	if(type1 == Type.LOCATION) {
-    		Location loc = locations.get(key1);
-    		if(loc != null) {
-    			returnValue = loc.intAttrs.get(key2);
-    			foundReturnValue = true;
-    		}
-    	}
-    	else if(type1 == Type.CHARACTER) {
-    		Character character = characters.get(key1);
-    		if(character != null) {
-    			returnValue = character.intAttrs.get(key2);
-    			foundReturnValue = true;
-    		}
-    	}
-    	else if(type1 == Type.ITEM) {
-    		Item item = items.get(key1);
-    		if(item != null) {
-    			returnValue = item.intAttrs.get(key2);
-    			foundReturnValue = true;
-    		}
-    	}
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
 	
-    	if(foundReturnValue == false) {
-    		throw new RuntimeException();
-    	}
-	
-    	return returnValue;
-    }
+	return returnValue;
+}
 
-    public String entityHasString(String key1, Type type1, String key2) {
-    	String returnValue = null;
-    	if(type1 == Type.LOCATION) {
-    		Location loc = locations.get(key1);
-    		if(loc != null) {
-    			returnValue = loc.strAttrs.get(key2);
-    		}
-    	}
-    	else if(type1 == Type.CHARACTER) {
-    		Character character = characters.get(key1);
-    		if(character != null) {
-    			returnValue = character.strAttrs.get(key2);
-    		}
-    	}
-    	else if(type1 == Type.ITEM) {
-    		Item item = items.get(key1);
-    		if(item != null) {
-    			returnValue = item.strAttrs.get(key2);
-    		}
-    	}
+public Item entityHasItem(String key1, Type type1, String key2) {
+	Item returnValue = null;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			if(loc.items.contains(key2)) {
+				returnValue = items.get(key2);
+			}
+		}
+	}
+	else if(type1 == Type.CHARACTER) {
+		Character character = characters.get(key1);
+		if(character != null) {
+			if(character.items.contains(key2)) {
+				returnValue = items.get(key2);
+			}
+		}
+	}
 	
-    	if(returnValue == null) {
-    		throw new RuntimeException();
-    	}
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
 	
-    	return returnValue;
-    }
+	return returnValue;
+}
 
-    public Item entityHasItem(String key1, Type type1, String key2) {
-    	Item returnValue = null;
-    	if(type1 == Type.LOCATION) {
-    		Location loc = locations.get(key1);
-    		if(loc != null) {
-    			if(loc.items.contains(key2)) {
-    				returnValue = items.get(key2);
-    			}
-    		}
-    	}
-    	else if(type1 == Type.CHARACTER) {
-    		Character character = characters.get(key1);
-    		if(character != null) {
-    			if(character.items.contains(key2)) {
-    				returnValue = items.get(key2);
-    			}
-    		}
-    	}
+public Character entityHasCharacter(String key1, Type type1, String key2) {
+	Character returnValue = null;
+	if(type1 == Type.LOCATION) {
+		Location loc = locations.get(key1);
+		if(loc != null) {
+			if(loc.characters.contains(key2)) {
+				returnValue = characters.get(key2);
+			}
+		}
+	}
 	
-    	if(returnValue == null) {
-    		throw new RuntimeException();
-    	}
+	if(returnValue == null) {
+		throw new RuntimeException();
+	}
 	
-    	return returnValue;
-    }
-
-    public Character entityHasCharacter(String key1, Type type1, String key2) {
-    	Character returnValue = null;
-    	if(type1 == Type.LOCATION) {
-    		Location loc = locations.get(key1);
-    		if(loc != null) {
-    			if(loc.characters.contains(key2)) {
-    				returnValue = characters.get(key2);
-    			}
-    		}
-    	}
-
-    	if(returnValue == null) {
-    		throw new RuntimeException();
-    	}
-
-    	return returnValue;
-    }
+	return returnValue;
+}
 	
    public void endGame() {
       System.out.println("GAME OVER!!!!!");
@@ -326,7 +252,7 @@ if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life")) < (0
 endGame();
 if(action.equals("attack")) {
 {
-int dummy = ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life"))) + ((1));
+((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life"))) + ((1));
 if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life")) < (0))
 endGame();
 }
@@ -340,12 +266,12 @@ int num = r.nextInt(100);
 if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life")) < (0))
 endGame();
 if(num >= 0 && num < 40) {
-int dummy = count = (count) - ((1));
+int count = (count) - ((1));
 if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life")) < (0))
 endGame();
 }
 if(num >= 40 && num < 100) {
-int dummy = count = (count) + ((1));
+int count = (count) + ((1));
 if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life")) < (0))
 endGame();
 }
