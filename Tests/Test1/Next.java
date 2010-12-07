@@ -1,10 +1,4 @@
-open Ast
-open Compile
-open Check
 
-let java_of_prog program symt = 
-let (playcode, startfns) = Compile.javacode program symt in 
-"
 import java.util.*;
 
 public class Next {
@@ -16,10 +10,6 @@ public class Next {
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
    Map<String, Type> types = new HashMap<String, Type>();
-   
-   public static void main(String[] args) {
-    (new Next()).play();
-   }
    
    public void entitySetString(String key1, Type type1, String key2, String value) {
     boolean valueSet = false;
@@ -224,18 +214,63 @@ public class Next {
     }
 	
    public void endGame() {
-      System.out.println(\"GAME OVER!!!!!\");
+      System.out.println("GAME OVER!!!!!");
       System.exit(0);
    }
    
    public void play() {
-      System.out.println(\"this is a java program!\");
-"
- ^ (String.concat "\n" playcode) ^ "
+      System.out.println("this is a java program!");
+//itemdec
+Item the_greatest_sword_ever = new Item();
+types.put("the_greatest_sword_ever", Type.ITEM);
+the_greatest_sword_ever.addIntAttr("damage", (100000000));
+types.put("damage", Type.INT);
+//itemdec
+Item rubberDuckie = new Item();
+types.put("rubberDuckie", Type.ITEM);
+rubberDuckie.addStrAttr("squeak",("squeak"));
+types.put("squeak", Type.STRING);
+//itemdec
+Item columbiaBinder = new Item();
+types.put("columbiaBinder", Type.ITEM);
+columbiaBinder.addIntAttr("size", (50));
+types.put("size", Type.INT);
+//intdecinit
+int count = (0);
+//charadec
+Character xiaowei_the_greatest_man_ever = new Character();
+types.put("xiaowei_the_greatest_man_ever", Type.CHARACTER);
+xiaowei_the_greatest_man_ever.addIntAttr("life", (1));
+types.put("life", Type.INT);
+xiaowei_the_greatest_man_ever.addIntAttr("level", (99999));
+types.put("level", Type.INT);
+xiaowei_the_greatest_man_ever.addStrAttr("haha",("hahahahaha"));
+types.put("haha", Type.STRING);
+xiaowei_the_greatest_man_ever.addItem("the_greatest_sword_ever");
+xiaowei_the_greatest_man_ever.addItem("rubberDuckie");
+//locdec
+Location where_is_this_place = new Location();
+types.put("where_is_this_place", Type.LOCATION);
+where_is_this_place.addIntAttr("sizex", (10000));
+types.put("sizex", Type.INT);
+where_is_this_place.addIntAttr("sizey", (9283));
+types.put("sizey", Type.INT);
+where_is_this_place.addItem("columbiaBinder");
+where_is_this_place.showCharacter("xiaowei_the_greatest_man_ever");
+//Location function call
+where_is_this_place();
    endGame();
-   } \n"
-
- ^ (String.concat "\n" startfns) ^ "
+   } 
+//start funtion
+public void where_is_this_place() {
+while (count != (0)){
+{
+//Empty stmt
+System.out.println(""+("Hello World"));
+if (count != (0))
+endGame();
+}
+} }
 } 
 
 abstract class Entity {
@@ -286,18 +321,4 @@ class Character extends Entity {
 }
 
 class Item extends Entity {
-}"
-
-let _ =
-  let lexbuf = Lexing.from_channel stdin in 
-  let program = Parser.program Scanner.token lexbuf in
-  let symt = check_program VarMap.empty program in
-  let java = java_of_prog program symt in
-  print_endline java
-  
-
-
-
-
-
-
+}

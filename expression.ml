@@ -46,8 +46,8 @@ let rec expr_to_java exp tmap = match exp with
                         else "WHAT"
    | Asn (id, exp) -> let t = check_id tmap id in 
                         (match id with
-                        Var(str) -> (next_type_to_string t) ^ " " ^ str ^ " = " ^ (expr_to_java exp tmap)
-                      | Has(str1, str2) -> (next_type_to_string t) ^ " " ^ str2 ^ " = " ^ (expr_to_java exp tmap))
+                        Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
+                      | Has(name, subname) -> "(entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(" ^ name ^ ", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", " ^ subname ^ ", " ^ (expr_to_java exp tmap) ^ "))")
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
    | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
@@ -57,7 +57,6 @@ let rec expr_to_java exp tmap = match exp with
                     | Has(name, subname) -> "(entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\"))")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "(!" ^ (expr_to_java exp tmap) ^ ")"
-   (*| Var (str) -> str*)
 
 
 let rec expr_to_java_boolean exp tmap = match exp with
@@ -72,14 +71,13 @@ let rec expr_to_java_boolean exp tmap = match exp with
 							else if op == Or then  (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " || " ^ (snd (expr_to_java_boolean exp2 tmap)))
                         	else if op == And then (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " && " ^ (snd (expr_to_java_boolean exp2 tmap)))
 	                        else ([], "false")
-	   | Asn (id, exp) -> ([], "true")
-	   | Lit (i) -> ([], string_of_int i ^ " != null") (*check null and empty?*)
-	   | LitS (str) -> ([], "true")
-	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
-	   | Ident (id) -> ([], (expr_to_java exp tmap) ^ "!= null")
-	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ ") != 0 ")
+	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
+	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
+	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
+	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
+	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
+	   | Neg (exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
-	   (*| Var (str) -> ([], str ^ " != 0 ")*)
 
 end
 

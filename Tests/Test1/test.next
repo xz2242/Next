@@ -1,0 +1,13 @@
+item the_greatest_sword_ever {(int damage = 100000000)}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+int count = 0;
+character xiaowei_the_greatest_man_ever {(int life = 1, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever, rubberDuckie)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (columbiaBinder), (xiaowei_the_greatest_man_ever)}
+
+start where_is_this_place end (count == 0) {
+	output "Hello World";
+}
+
+

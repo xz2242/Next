@@ -49,7 +49,7 @@ let locdec_to_java str attrlist itemlist charlist tmap = ["//locdec"; "Location 
 let intstrdec_to_java pridec tmap = match pridec with
    Strdec(str) -> ["//strdec"; "String " ^ str ^ ";"]
    | Intdec(str) -> ["//intdec"; "int " ^ str ^ ";"]
-   | Strdecinit(str, expr) -> ["//strdecinit"; "String " ^ str ^ " " ^ (Expression.expr_to_java expr tmap) ^ ";"]
-   | Intdecinit(str, expr) -> ["//intdecinit"; "int " ^ str ^ " " ^ (Expression.expr_to_java expr tmap) ^ ";"]
+   | Strdecinit(str, expr) -> ["//strdecinit"; "String " ^ str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
+   | Intdecinit(str, expr) -> ["//intdecinit"; "int " ^ str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
 
 end
