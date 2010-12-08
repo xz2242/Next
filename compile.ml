@@ -75,7 +75,7 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"] *)
     | Atomstmt (expr) -> (playcode @ [(Expression.expr_to_java expr tmap)^";"], startfns)
     | Cmpdstmt (codeblock) -> let (blockcode, startfns) = List.fold_left (stmt_to_java tmap) ([], []) codeblock
-    							in (playcode @ ["{"] @ blockcode @ ["}"], startfns)   							
+    							in (playcode @ ["{"] @ (List.rev blockcode) @ ["}"], startfns)   							
     | Nostmt (i) -> (playcode @ ["//Empty stmt"], startfns)
     (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
     | Print (str) -> (playcode @ ["System.out.println(\"\"+" ^Expression.expr_to_java str tmap^");"], startfns)
