@@ -40,7 +40,7 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
     Ifelse (expr, stmt1, stmt2) -> let (expr_precode, expr_exp) = Expression.expr_to_java_boolean expr tmap in 
         let (stmt1_playcode, stmt1_startfns) = stmt_to_java tmap ([], []) stmt1  in 
         let (stmt2_playcode, stmt2_startfns) = stmt_to_java tmap ([], []) stmt2  in
-        (playcode @ expr_precode @ ["if(" ^ expr_exp ^ ") {"] @ stmt1_playcode @ ["} else {"] @ stmt2_playcode @ ["}"], startfns @ stmt1_startfns @ stmt2_startfns)
+        (playcode @ expr_precode @ ["if(" ^ expr_exp ^ ") {"] @ stmt1_playcode @ ["}"; "else {"] @ stmt2_playcode @ ["}"], startfns @ stmt1_startfns @ stmt2_startfns)
 
     | Chwhen (actiondeclist, whenexprlist) -> let mapDecl = ["Map<String,String> keysToActionName = new HashMap<String, String>();"; "Map<String, String> actionNameToOutput = new HashMap<String, String>();"] in
    let actiondecs = ["System.out.println(\"CHOOSE AN ACTION:\");"] @ actiondeclist_to_java actiondeclist in
@@ -64,8 +64,8 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
     | Kill (str) -> (playcode @ (Action.kill_to_java str), startfns)
     | Grab (str1, str2) -> (playcode @ (Action.grab_to_java str1 str2), startfns)
     | Drop (str1, str2) -> (playcode @ (Action.drop_to_java str1 str2), startfns)
-    | Show (str1, str2) -> (playcode @ (Action.show_to_java str1 str2), startfns)
-    | Hide (str1, str2) -> (playcode @ (Action.hide_to_java str1 str2), startfns)
+    | Show (str1, str2) -> (playcode @ (Action.show_to_java str1 str2 tmap), startfns)
+    | Hide (str1, str2) -> (playcode @ (Action.hide_to_java str1 str2 tmap), startfns)
     (*| Charadec (str, attrlist, itemlist) -> (playcode @ (Declaration.charadec_to_java str attrlist itemlist), startfns)
     | Itemdec (str, list) -> (playcode @ (Declaration.itemdec_to_java str list), startfns)
     | Locdec (str, attrlist, itemlist, charlist) -> (playcode @ (Declaration.locdec_to_java str attrlist itemlist charlist), startfns)
