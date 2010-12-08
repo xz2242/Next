@@ -7,35 +7,31 @@ my @failedTestFiles = ();
 
 @testFileDirs = <Tests/*>;
 
-#remove previously compiled files
-foreach $testFileDir(@testFileDirs) {
-    @testFileDir = <$testFileDir/*>;
-    foreach $testFile(@testFileDir) {
-        # remove any previously compiled files
-        if($testFile =~ /\.java$/i) {
-            system("rm " . $testFile);
-        }
-    }
-}
-
-
 foreach $testFileDir(@testFileDirs) {
     @testFileDir = <$testFileDir/*>;
     foreach $testFile(@testFileDir) {
         if($testFile =~ /\.next$/i) {
             #do the compilation
-            system("./next < " . $testFile . " > " . $testFile . ".java");
+            $testFileDir =~ /(.+)\/(.+)/;
+            system("./next < " . $testFile . " > " . $testFileDir . "/Next.java");
+            
+            #do java compilation
+            system("javac " . $testFileDir . "/Next.java");
+            
+            #run java
+            system("java -classpath " . $testFileDir . " Next > " . $testFileDir . "/output");
             
             #compare output with reference
             #if comparison returns 0 they are the same, otherwise they are not
             #write to log file of ones that are not
-            if(File::Compare::compare_text($testFile . ".java", $testFile . ".reference")) {
-                push(@failedTestFiles, $testFile);
+            if(File::Compare::compare_text($testFileDir . "/output", $testFileDir . "/reference")) {
+                push(@failedTestFiles, $testFileDir);
             }
 
         }
     }
 }
+
 
 #write to log file
 $fh = FileHandle -> new();
