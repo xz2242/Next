@@ -60,7 +60,7 @@ stmt:
 | SHOW VARIABLE DOT VARIABLE SEMICOLON				{Show($2,$4)}
 | RPROBBLOCK probexprlist LPROBBLOCK {Prob(List.rev $2)}
 | expr SEMICOLON {Atomstmt ($1) }
-| LBRACKET block RBRACKET {Cmpdstmt ($2) }
+| LBRACKET block RBRACKET {Cmpdstmt (List.rev $2) }
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}

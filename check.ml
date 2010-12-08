@@ -71,19 +71,19 @@ let rec check_expr symt = function
   | Lit (intvalue) -> Integer
   | LitS (strvalue) -> String
   | Exists (name, subname) -> if (VarMap.mem (name, Location) symt) then
-  								let subsymt = VarMap.find (name, Location) symt in
-  									if ( (not (VarMap.mem (name, Item) subsymt)) && (not (VarMap.mem (name, Character) subsymt)) ) then
-  										raise ( NotFound("Exist error " ^ name ^"." ^ subname))
+  									(*print_symboltable subsymt;*)
+  									if ( (not (VarMap.mem (subname, Item) symt)) && (not (VarMap.mem (subname, Character) symt)) ) then
+  										raise ( NotFound("Exist error 1" ^ name ^"." ^ subname))
   									else
   										Integer
   							  else if (VarMap.mem (name, Character) symt) then
-  							  	let subsymt = VarMap.find (name,Character) symt in
-  							  		if ( not (VarMap.mem (name, Item) subsymt) ) then
-  							  			raise ( NotFound("Exist error " ^ name ^"." ^ subname))
+  							  	(*let subsymt = VarMap.find (name,Character) symt in*)
+  							  		if ( not (VarMap.mem (subname, Item) symt) ) then
+  							  			raise ( NotFound("Exist error 2" ^ name ^"." ^ subname))
   							  		else
   							  			Integer
   							  else
-  							  	raise ( NotFound("Exist error " ^ name ^"." ^ subname))
+  							  	raise ( NotFound("Exist error 3" ^ name ^"." ^ subname))
   							  							   				
   | Neg (expr) -> if (check_expr symt expr) = Integer then Integer else raise (WrongType("Type does not match"))
   | Not (expr) -> if (check_expr symt expr) = Integer then Integer else raise (WrongType("Type does not match"))
