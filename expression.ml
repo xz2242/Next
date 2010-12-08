@@ -85,7 +85,7 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
 	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
-	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
+	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
 	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
 	   | Neg (exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
