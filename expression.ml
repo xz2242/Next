@@ -50,7 +50,7 @@ let rec expr_to_java exp tmap = match exp with
                       | Has(name, subname) -> "(entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(" ^ name ^ ", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", " ^ subname ^ ", " ^ (expr_to_java exp tmap) ^ "))")
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
-   | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
+   | Exists (str1, str2) -> "isTrue(" ^ (expr_to_java (Ident(Has(str1, str2))) tmap) ^ ")"
    | Ident (id) ->  let t = check_id tmap id in 
                     (match id with
                       Var(name) -> name
