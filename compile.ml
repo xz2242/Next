@@ -73,7 +73,7 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
 	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ "){"  ] 
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java ([], []) stmt)) ) 
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"] *)
-    | Atomstmt (expr) -> (playcode @ ["int dummy = " ^ (Expression.expr_to_java expr tmap)^";"], startfns)
+    | Atomstmt (expr) -> (playcode @ [(Expression.expr_to_java expr tmap)^";"], startfns)
     | Cmpdstmt (codeblock) -> let (blockcode, startfns) = List.fold_left (stmt_to_java tmap) ([], []) codeblock
     							in (playcode @ ["{"] @ blockcode @ ["}"], startfns)   							
     | Nostmt (i) -> (playcode @ ["//Empty stmt"], startfns)
