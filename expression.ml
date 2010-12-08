@@ -13,6 +13,8 @@ module type EXPRESSION =
 
 module Expression : EXPRESSION = struct
 
+exception InvalidComparison of string
+
 let next_type_to_string = function
   	Integer -> "int"
     | String -> "string"
@@ -37,9 +39,12 @@ let rec expr_to_java exp tmap = match exp with
                         else if op == Sub then "(" ^ (expr_to_java exp1 tmap) ^ ") - (" ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Mul then "(" ^ (expr_to_java exp1 tmap) ^ ") * (" ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Div then "(" ^ (expr_to_java exp1 tmap) ^ ") / (" ^ (expr_to_java exp2 tmap) ^ ")"
-                        (*else if op == Or then (expr_to_java exp1) ^ " || " ^ (expr_to_java exp2)
-                        else if op == And then (expr_to_java exp1) ^ " && " ^ (expr_to_java exp2)*)
-                        else if op == Eq then "(" ^ (expr_to_java exp1 tmap) ^ ") == (" ^ (expr_to_java exp2 tmap) ^ ")" (* what about string equality? *)
+                        else if op == Or then raise (InvalidComparison("Invalid Comparison"))
+                        else if op == And then raise (InvalidComparison("Invalid Comparison"))
+                        else if op == Eq then let t = check_expr tmap exp1 in 
+                                                (match t with
+                                                    String -> "(" ^ (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ "))"
+                                                    | Integer -> "(" ^ (expr_to_java exp1 tmap) ^ ") == (" ^ (expr_to_java exp2 tmap) ^ ")")
                         else if op == Lt then "(" ^ (expr_to_java exp1 tmap) ^ ") < (" ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Gt then "(" ^ (expr_to_java exp1 tmap) ^ ") > (" ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Neq then "(" ^ (expr_to_java exp1 tmap) ^ ") != (" ^ (expr_to_java exp2 tmap) ^ ")"
@@ -47,10 +52,10 @@ let rec expr_to_java exp tmap = match exp with
    | Asn (id, exp) -> let t = check_id tmap id in 
                         (match id with
                         Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
-                      | Has(name, subname) -> "(entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(" ^ name ^ ", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", " ^ subname ^ ", " ^ (expr_to_java exp tmap) ^ "))")
+                      | Has(name, subname) -> "(entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ "))")
    | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "(\"" ^ str ^ "\")"
-   | Exists (str1, str2) -> str1 ^ ".containsKey(\"" ^ str2 ^ "\")"
+   | Exists (str1, str2) -> "isTrue(" ^ (expr_to_java (Ident(Has(str1, str2))) tmap) ^ ")"
    | Ident (id) ->  let t = check_id tmap id in 
                     (match id with
                       Var(name) -> name
@@ -74,7 +79,7 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
 	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
-	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
+	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
 	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
 	   | Neg (exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Not (exp) -> ([], (expr_to_java exp tmap))
