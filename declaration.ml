@@ -24,7 +24,7 @@ let rec attrlist_to_java var attrlist tmap = match attrlist with
     [] -> []
     | hd::tl -> (attr_to_java tmap var hd) @ (attrlist_to_java var tl tmap)
 
-let itemdec_to_java str attrlist tmap = ["//itemdec"; "Item " ^ str ^ " = new Item();"; "types.put(\"" ^ str ^ "\", Type.ITEM);"] @ (attrlist_to_java str attrlist tmap)
+let itemdec_to_java str attrlist tmap = ["//itemdec"; "Item " ^ str ^ " = new Item();"; "items.put(\"" ^ str ^ "\"," ^ str ^ ");"; "types.put(\"" ^ str ^ "\", Type.ITEM);"] @ (attrlist_to_java str attrlist tmap)
 
 let item_to_java (var:string) (item:membervar) : string list = match item with
     Varref(str) -> [var ^".addItem(\"" ^str^ "\");"]
@@ -34,7 +34,7 @@ let rec itemlist_to_java var itemlist = match itemlist with
     [] -> []
     | hd::tl -> (item_to_java var hd) @ (itemlist_to_java var tl)
 
-let charadec_to_java str attrlist itemlist tmap = ["//charadec"; "Character " ^ str ^ " = new Character();"; "types.put(\"" ^ str ^ "\", Type.CHARACTER);"]@ (attrlist_to_java str attrlist tmap) @ (itemlist_to_java str itemlist)
+let charadec_to_java str attrlist itemlist tmap = ["//charadec"; "Character " ^ str ^ " = new Character();"; "characters.put(\"" ^ str ^ "\"," ^ str ^ ");"; "types.put(\"" ^ str ^ "\", Type.CHARACTER);"]@ (attrlist_to_java str attrlist tmap) @ (itemlist_to_java str itemlist)
 
 let character_to_java (var:string) (character:membervar) : string list = match character with
     Varref(str) -> [var ^".showCharacter(\"" ^str^ "\");"]
@@ -44,7 +44,7 @@ let rec characterlist_to_java var characterlist = match characterlist with
     [] -> []
     | hd::tl -> (character_to_java var hd) @ (characterlist_to_java var tl)
 
-let locdec_to_java str attrlist itemlist charlist tmap = ["//locdec"; "Location " ^ str ^ " = new Location();"; "types.put(\"" ^ str ^ "\", Type.LOCATION);"]@ (attrlist_to_java str attrlist tmap) @ (itemlist_to_java str itemlist) @ (characterlist_to_java str charlist) 
+let locdec_to_java str attrlist itemlist charlist tmap = ["//locdec"; "Location " ^ str ^ " = new Location();"; "locations.put(\"" ^ str ^ "\"," ^ str ^ ");"; "types.put(\"" ^ str ^ "\", Type.LOCATION);"]@ (attrlist_to_java str attrlist tmap) @ (itemlist_to_java str itemlist) @ (characterlist_to_java str charlist) 
 
 let intstrdec_to_java pridec tmap = match pridec with
    Strdec(str) -> ["//strdec"; "String " ^ str ^ ";"]
