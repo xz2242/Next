@@ -64,7 +64,7 @@ stmt:
 | LBRACKET RBRACKET { Nostmt (0) }
 | SEMICOLON { Nostmt (0) }
 | CHOOSE actiondeclist LBRACKET whenexprlist RBRACKET {Chwhen (List.rev $2, List.rev $4)}
-| OUTPUT expr SEMICOLON{ Print($2)} 
+| OUTPUT expr SEMICOLON { Print($2)} 
 ;
 
 globaldec:

@@ -75,7 +75,7 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["} }"] *)
     | Atomstmt (expr) -> (playcode @ [(Expression.expr_to_java expr tmap)^";"], startfns)
     | Cmpdstmt (codeblock) -> let (blockcode, startfns) = List.fold_left (stmt_to_java tmap) ([], []) codeblock
-    							in (playcode @ ["{"] @ blockcode @ ["}"], startfns)   							
+    							in (playcode @ ["{"] @ (List.rev blockcode) @ ["}"], startfns)   							
     | Nostmt (i) -> (playcode @ ["//Empty stmt"], startfns)
     (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
     | Print (str) -> (playcode @ ["System.out.println(\"\"+" ^Expression.expr_to_java str tmap^");"], startfns)
@@ -103,7 +103,7 @@ and probexpr_to_java probexpr start_num tmap = match probexpr with Unitprob(i, s
     let (prob_playcode, prob_startfns) = stmt_to_java tmap ([], []) stmt in
     (["if(num >= " ^ string_of_int start_num ^ " && num < " ^ string_of_int (start_num + i) ^ ") {"] @ prob_playcode @ ["}"], prob_startfns, start_num + i)
 
-
+exception InvalidCode of string
 
 (* TODO: FIX THIS *)
 let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec with
@@ -111,22 +111,26 @@ let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec w
 	    let l = Declaration.intstrdec_to_java pridec tmap in
 	        (match l with
             []-> (playcode, startfns)
-            | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2]))
+            | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2])
+            | _::tl -> raise (InvalidCode("Invalid Code")))
   | Charadec (name, membervar1, membervar2) -> 
         let l = Declaration.charadec_to_java name membervar1 membervar2 tmap in
 	        (match l with
             []-> (playcode, startfns)
-            | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2]))
+            | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2])
+            | _::tl -> raise (InvalidCode("Invalid Code")))
   | Itemdec (name, membervar) -> 
          let l = Declaration.itemdec_to_java name membervar tmap in
     	        (match l with
                 []-> (playcode, startfns)
-                | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2]))
+                | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2])
+                | _::tl -> raise (InvalidCode("Invalid Code")))
   | Locdec (name, membervar1, membervar2, membervar3) -> 
           let l = Declaration.locdec_to_java name membervar1 membervar2 membervar3 tmap in
         	        (match l with
                     []-> (playcode, startfns)
-                    | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2]))
+                    | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2])
+                    | _::tl -> raise (InvalidCode("Invalid Code")))
   | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
 	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["while (!(" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ ")){"  ] 
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java tmap ([], []) stmt)) )   
