@@ -222,7 +222,51 @@ public class Next {
 
     	return returnValue;
     }
-	
+
+    public boolean entityExistsItem(String key1, Type type1, String key2) {
+    	Object returnValue = null;
+    	if(type1 == Type.LOCATION) {
+    		Location loc = locations.get(key1);
+    		if(loc != null) {
+    			if(loc.items.contains(key2)) {
+    				returnValue = items.get(key2);
+    			}
+    		}
+    	}
+    	else if(type1 == Type.CHARACTER) {
+    		Character character = characters.get(key1);
+    		if(character != null) {
+    			if(character.items.contains(key2)) {
+    				returnValue = items.get(key2);
+    			}
+    		}
+    	}
+
+    	if(returnValue == null) {
+    		return false;
+    	}
+
+    	return true;
+    }
+
+    public boolean entityHasCharacter(String key1, Type type1, String key2) {
+    	Object returnValue = null;
+    	if(type1 == Type.LOCATION) {
+    		Location loc = locations.get(key1);
+    		if(loc != null) {
+    			if(loc.characters.contains(key2)) {
+    				returnValue = characters.get(key2);
+    			}
+    		}
+    	}
+
+    	if(returnValue == null) {
+    		return false;
+    	}
+
+    	return true;
+    }
+    
    public void endGame() {
       System.out.println(\"GAME OVER!!!!!\");
       System.exit(0);
