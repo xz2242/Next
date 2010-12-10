@@ -17,8 +17,15 @@ start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
 		} next where_is_this_place
 		when up 
 		{
-			[? prob 40 count = count-1;
-			   prob 60 count = count+1; ?]
+			[? prob 40 {
+				count = count-1;
+				output count;
+			}
+			   prob 60 {
+				count = count+1;
+				output count;
+				}
+			 ?]
 		} next where_is_this_place
 	}
 }
