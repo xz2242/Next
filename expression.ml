@@ -75,7 +75,11 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	                        else if op == Sub then ([], (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap) ^ " != 0")
 	                        else if op == Mul then ([], (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) ^ " != 0")
 	                        else if op == Div then ([], (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap) ^ " != 0")
-	                        else if op == Eq then ([], (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap)) (* what about string equality? *)
+	                        else if op == Eq then let t = check_expr tmap exp1 in 
+                                                    (match t with
+                                                        String -> ([], (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ ")")
+                                                        | Integer -> ([], (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap))
+                                                        | _ -> raise (InvalidComparison("Invalid Comparison")))
 	                        else if op == Lt then ([], (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap))
 		                    else if op == Gt then ([], (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap))
 		                    else if op == Neq then ([], (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap))
