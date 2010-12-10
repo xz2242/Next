@@ -1,0 +1,23 @@
+int stop = 0;
+string myString = "go go go";
+
+item myItem1 {(int size = 50)}
+item myItem2 {(int anotherSize = 100)}
+item myItem3 {(int what = 1000)}
+
+character myCharacter1 {(int life = 1), (myItem1)}
+character myCharacter2 {(int id = 123), (myItem2)}
+character myCharacter3 {(int health = 4), (myItem3)}
+
+location place {(int count = 10), (myItem1, myItem2), (myCharacter1, myCharacter2, myCharacter3)}
+
+start place end (stop == 1) {
+	if(exists place.myItem1 == 1) then {
+	    output "Yes!";
+	}
+	else {
+	    output "Something went wrong";
+	}
+	
+    stop = 1;
+}
