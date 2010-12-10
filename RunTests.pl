@@ -3,6 +3,8 @@
 use File::Compare;
 use FileHandle;
 
+system("perl CleanTests.pl");
+
 my @failedTestFiles = ();
 
 @testFileDirs = <Tests/*>;
@@ -13,13 +15,12 @@ foreach $testFileDir(@testFileDirs) {
         if($testFile =~ /\.next$/i) {
             #do the compilation
             $testFileDir =~ /(.+)\/(.+)/;
-            system("./next < " . $testFile . " > " . $testFileDir . "/Next.java");
-            
-            #do java compilation
-            system("javac " . $testFileDir . "/Next.java");
-            
-            #run java
-            system("java -classpath " . $testFileDir . " Next > " . $testFileDir . "/output");
+            if(system("./next < " . $testFile . " > " . $testFileDir . "/Next.java") == 0) {
+                #do java compilation
+                if(system("javac " . $testFileDir . "/Next.java") == 0) {
+                    system("java -classpath " . $testFileDir . " Next > " . $testFileDir . "/output");
+                }
+            }
             
             #compare output with reference
             #if comparison returns 0 they are the same, otherwise they are not
