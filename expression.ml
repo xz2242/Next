@@ -54,13 +54,13 @@ let rec expr_to_java exp tmap = match exp with
                         (match id with
                         Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
                       | Has(name, subname) -> "entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")")
-   | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
-   | LitS (str) -> "(\"" ^ str ^ "\")"
+   | Lit (i) -> (string_of_int i)
+   | LitS (str) -> "\"" ^ str ^ "\""
    | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
                                 let t2 = check_id tmap (Var(str2)) in
                                     (match t2 with
-                                    Item -> "entityHasItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
-                                    | Character -> "entityHasCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
+                                    Item -> "entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
+                                    | Character -> "entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
                                     | _ -> raise (InvalidComparison("Invalid Comparison")))
    | Ident (id) ->  let t = check_id tmap id in 
                     (match id with
@@ -85,7 +85,7 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
 	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
-	   | Exists (str1, str2) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
+	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
 	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
 	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ " != 0 ")
 	   | Not (exp) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")

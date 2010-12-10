@@ -267,58 +267,85 @@ public class Next {
    }
    
    public void play() {
-items.put("the_greatest_sword_ever",the_greatest_sword_ever);
-types.put("the_greatest_sword_ever", Type.ITEM);
-the_greatest_sword_ever.addIntAttr("damage", 100000000);
-types.put("damage", Type.INT);
-items.put("rubberDuckie",rubberDuckie);
-types.put("rubberDuckie", Type.ITEM);
-rubberDuckie.addStrAttr("squeak","squeak");
-types.put("squeak", Type.STRING);
-items.put("columbiaBinder",columbiaBinder);
-types.put("columbiaBinder", Type.ITEM);
-columbiaBinder.addIntAttr("size", 50);
+items.put("myItem1",myItem1);
+types.put("myItem1", Type.ITEM);
+myItem1.addIntAttr("size", 50);
 types.put("size", Type.INT);
-characters.put("xiaowei_the_greatest_man_ever",xiaowei_the_greatest_man_ever);
-types.put("xiaowei_the_greatest_man_ever", Type.CHARACTER);
-xiaowei_the_greatest_man_ever.addIntAttr("life", 1);
+items.put("myItem2",myItem2);
+types.put("myItem2", Type.ITEM);
+myItem2.addIntAttr("anotherSize", 100);
+types.put("anotherSize", Type.INT);
+items.put("myItem3",myItem3);
+types.put("myItem3", Type.ITEM);
+myItem3.addIntAttr("what", 1000);
+types.put("what", Type.INT);
+characters.put("myCharacter1",myCharacter1);
+types.put("myCharacter1", Type.CHARACTER);
+myCharacter1.addIntAttr("life", 1);
 types.put("life", Type.INT);
-xiaowei_the_greatest_man_ever.addIntAttr("level", 99999);
-types.put("level", Type.INT);
-xiaowei_the_greatest_man_ever.addStrAttr("haha","hahahahaha");
-types.put("haha", Type.STRING);
-xiaowei_the_greatest_man_ever.addItem("the_greatest_sword_ever");
-xiaowei_the_greatest_man_ever.addItem("rubberDuckie");
-locations.put("where_is_this_place",where_is_this_place);
-types.put("where_is_this_place", Type.LOCATION);
-where_is_this_place.addIntAttr("sizex", 10000);
-types.put("sizex", Type.INT);
-where_is_this_place.addIntAttr("sizey", 9283);
-types.put("sizey", Type.INT);
-where_is_this_place.addItem("columbiaBinder");
-where_is_this_place.showCharacter("xiaowei_the_greatest_man_ever");
+myCharacter1.addItem("myItem1");
+characters.put("myCharacter2",myCharacter2);
+types.put("myCharacter2", Type.CHARACTER);
+myCharacter2.addIntAttr("id", 123);
+types.put("id", Type.INT);
+myCharacter2.addItem("myItem2");
+characters.put("myCharacter3",myCharacter3);
+types.put("myCharacter3", Type.CHARACTER);
+myCharacter3.addIntAttr("health", 4);
+types.put("health", Type.INT);
+myCharacter3.addItem("myItem3");
+locations.put("place",place);
+types.put("place", Type.LOCATION);
+place.addIntAttr("count", 10);
+types.put("count", Type.INT);
+place.addItem("myItem1");
+place.addItem("myItem2");
+place.showCharacter("myCharacter1");
+place.showCharacter("myCharacter2");
+place.showCharacter("myCharacter3");
 //Location function call
-where_is_this_place();
+place();
    endGame();
    } 
-//itemdec
-Item the_greatest_sword_ever = new Item();
-//itemdec
-Item rubberDuckie = new Item();
-//itemdec
-Item columbiaBinder = new Item();
 //intdecinit
-int count = 0;
+int stop = 0;
+//strdecinit
+String myString = "go go go";
+//itemdec
+Item myItem1 = new Item();
+//itemdec
+Item myItem2 = new Item();
+//itemdec
+Item myItem3 = new Item();
 //charadec
-Character xiaowei_the_greatest_man_ever = new Character();
+Character myCharacter1 = new Character();
+//charadec
+Character myCharacter2 = new Character();
+//charadec
+Character myCharacter3 = new Character();
 //locdec
-Location where_is_this_place = new Location();
+Location place = new Location();
 //start funtion
-public void where_is_this_place() {
-while (!(count == 0)){
+public void place() {
+while (!(stop == 1)){
 {
-System.out.println(""+"Hello World");
-if (count == 0)
+System.out.println(""+stop);
+if (stop == 1)
+endGame();
+System.out.println(""+myString);
+if (stop == 1)
+endGame();
+System.out.println(""+entityHasInt("myItem1", Type.ITEM, "size"));
+if (stop == 1)
+endGame();
+System.out.println(""+entityHasInt("myCharacter1", Type.CHARACTER, "life"));
+if (stop == 1)
+endGame();
+System.out.println(""+entityHasInt("place", Type.LOCATION, "count"));
+if (stop == 1)
+endGame();
+stop = 1;
+if (stop == 1)
 endGame();
 }
 }
