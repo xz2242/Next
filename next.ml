@@ -249,7 +249,7 @@ public class Next {
     	return true;
     }
 
-    public boolean entityHasCharacter(String key1, Type type1, String key2) {
+    public boolean entityExistsCharacter(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -273,7 +273,6 @@ public class Next {
    }
    
    public void play() {
-      System.out.println(\"this is a java program!\");
 "
  ^ (String.concat "\n" playcode) ^ "
    endGame();
