@@ -22,7 +22,7 @@ exception CompileError of string
 let rec startend_stmt_check (expression:string) (statement:string list) = match statement with
 	[]->[]
 	
-	|hd::tl -> if (String.contains hd '}') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
+	|hd::tl -> if (String.contains hd ';') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
 		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl)
 
 let rec actiondeclist_to_java list = match list with
