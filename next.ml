@@ -223,7 +223,7 @@ public class Next {
     	return returnValue;
     }
 
-    public boolean entityExistsItem(String key1, Type type1, String key2) {
+    public int entityExistsItem(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -243,13 +243,13 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
 
-    public boolean entityExistsCharacter(String key1, Type type1, String key2) {
+    public int entityExistsCharacter(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -261,10 +261,10 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
     
    public void endGame() {

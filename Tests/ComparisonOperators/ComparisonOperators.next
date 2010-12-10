@@ -1,0 +1,72 @@
+int stop = 0;
+string myString = "go go go";
+
+item myItem1 {(int size = 50)}
+item myItem2 {(int anotherSize = 100)}
+item myItem3 {(int what = 1000)}
+
+character myCharacter1 {(int life = 1), (myItem1)}
+character myCharacter2 {(int id = 123), (myItem2)}
+character myCharacter3 {(int health = 4), (myItem3)}
+
+location place {(int count = 10), (myItem1, myItem2), (myCharacter1, myCharacter2, myCharacter3)}
+
+start place end (stop == 11) {
+    if (1 < 2) then {
+        output "1 is less than 2";
+    }
+    else {
+        output "comparison problem";
+    }
+    
+    if (1 > 2) then {
+        output "1 is greater than 2";
+    }
+    else {
+        output "1 is less than 2";
+    }
+    
+    if (1 <= 1) then {
+        output "1 is less or equal to 1";
+    }
+    else {
+        output "1 is greater than 1";
+    }
+    
+    if (1 <= 2) then {
+        output "1 is less than or equal to 2";
+    }
+    else {
+        output "2 is less than 1";
+    }
+    
+    if (1 >= 2) then {
+        output "1 is greater than or equal to 2";
+    }
+    else {
+        output "1 is less than 2";
+    }
+    
+    if (1 >= 1) then {
+        output "1 is greater than or equal to 2";
+    }
+    else {
+        output "1 is less than 2";
+    }
+    
+    if (1 == 1) then {
+        output "1 is equal to 1";
+    }
+    else {
+        output "1 is not equal to 1";
+    }
+    
+    if (1 != 1) then {
+        output "1 not equal to 1";
+    }
+    else {
+        output "1 is equal to 1";
+    }
+    
+    stop = 11;
+}

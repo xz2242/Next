@@ -89,7 +89,12 @@ let rec expr_to_java_boolean exp tmap = match exp with
 	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
 	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
 	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
-	   | Exists (str1, str2) -> ([], (expr_to_java exp tmap))
+	   | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
+                                       let t2 = check_id tmap (Var(str2)) in
+                                           (match t2 with
+                                           Item -> ([], "isTrue(entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
+                                           | Character -> ([], "isTrue(entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
+                                           | _ -> raise (InvalidComparison("Invalid Comparison")))
 	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
 	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ " != 0 ")
 	   | Not (exp) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")")
