@@ -5,7 +5,7 @@ public class Next {
    enum Type {INT, STRING, CHARACTER, ITEM, LOCATION}
 
    static Random r = new Random();
-
+   Object dummy;
    Map<String, Location> locations = new HashMap<String, Location>();
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
@@ -217,7 +217,7 @@ public class Next {
     	return returnValue;
     }
 
-    public boolean entityExistsItem(String key1, Type type1, String key2) {
+    public int entityExistsItem(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -237,13 +237,13 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
 
-    public boolean entityExistsCharacter(String key1, Type type1, String key2) {
+    public int entityExistsCharacter(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -255,10 +255,10 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
     
    public void endGame() {
@@ -293,7 +293,7 @@ characters.put("ernesto_the_averagest_dude_forever",ernesto_the_averagest_dude_f
 types.put("ernesto_the_averagest_dude_forever", Type.CHARACTER);
 ernesto_the_averagest_dude_forever.addIntAttr("life", 100000000);
 types.put("life", Type.INT);
-ernesto_the_averagest_dude_forever.addIntAttr("level", 99999 + 1);
+ernesto_the_averagest_dude_forever.addIntAttr("level", (99999 + 1));
 types.put("level", Type.INT);
 ernesto_the_averagest_dude_forever.addStrAttr("hehe","hey beavis");
 types.put("hehe", Type.STRING);
@@ -328,83 +328,86 @@ Character ernesto_the_averagest_dude_forever = new Character();
 Location where_is_this_place = new Location();
 //start funtion
 public void where_is_this_place() {
-while (!(entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)){
+while (!((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))){
 {
+dummy = (entitySetInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life", -1));
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
+endGame();
 Map<String,String> keysToActionName = new HashMap<String, String>();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 Map<String, String> actionNameToOutput = new HashMap<String, String>();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 System.out.println("CHOOSE AN ACTION:");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 keysToActionName.put("a", "attack");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 actionNameToOutput.put("attack", "hia!");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 System.out.println("Type a for hia!");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 keysToActionName.put("u", "up");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 actionNameToOutput.put("up", "up");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 System.out.println("Type u for up");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 Scanner in = new Scanner(System.in);
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 String input = in.nextLine();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 while(!keysToActionName.containsKey(input)) {
 System.out.println("Invalid input, try again");
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 input = in.nextLine();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 System.out.println("You typed " + input);
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 String action = keysToActionName.get(input);
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 if(action.equals("attack")) {
 {
-entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") + 1;
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+dummy = ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") + 1));
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 //where_is_this_place();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 if(action.equals("up")) {
 {
 int num = r.nextInt(100);
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 if(num >= 0 && num < 40) {
-count = count - 1;
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+dummy = (count = (count - 1));
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 if(num >= 40 && num < 100) {
-count = count + 1;
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+dummy = (count = (count + 1));
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 }
 //where_is_this_place();
-if (entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0)
+if ((entityHasInt("xiaowei_the_greatest_man_ever", Type.CHARACTER, "life") < 0))
 endGame();
 }
 }

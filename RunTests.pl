@@ -10,11 +10,10 @@ my @failedTestFiles = ();
 @testFileDirs = <Tests/*>;
 
 foreach $testFileDir(@testFileDirs) {
-    @testFileDir = <$testFileDir/*>;
-    foreach $testFile(@testFileDir) {
+    @testFiles = <$testFileDir/*>;
+    foreach $testFile(@testFiles) {
         if($testFile =~ /\.next$/i) {
             #do the compilation
-            $testFileDir =~ /(.+)\/(.+)/;
             if(system("./next < " . $testFile . " > " . $testFileDir . "/Next.java") == 0) {
                 #do java compilation
                 if(system("javac " . $testFileDir . "/Next.java") == 0) {
@@ -28,6 +27,8 @@ foreach $testFileDir(@testFileDirs) {
             if(File::Compare::compare_text($testFileDir . "/output", $testFileDir . "/reference")) {
                 push(@failedTestFiles, $testFileDir);
             }
+            
+            print $testFile . "\n";
 
         }
     }
