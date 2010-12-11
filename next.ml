@@ -21,7 +21,7 @@ public class Next {
     (new Next()).play();
    }
    
-   public void entitySetString(String key1, Type type1, String key2, String value) {
+   public boolean entitySetString(String key1, Type type1, String key2, String value) {
     boolean valueSet = false;
    	if(type1 == Type.LOCATION) {
    		Location loc = locations.get(key1);
@@ -48,9 +48,11 @@ public class Next {
    	if(!valueSet) {
    		throw new RuntimeException();
    	}
+   	
+   	return true;
    }
    
-   public void entitySetInt(String key1, Type type1, String key2, int value) {
+   public boolean entitySetInt(String key1, Type type1, String key2, int value) {
    	boolean foundReturnValue = false;
 	
    	if(type1 == Type.LOCATION) {
@@ -78,6 +80,8 @@ public class Next {
    	if(foundReturnValue == false) {
    		throw new RuntimeException();
    	}
+   	
+   	return true;
    }
    
 	public boolean isTrue(Object object) {
