@@ -1,0 +1,25 @@
+/*Testing upper case to lower case acceptance and differentiation. Forms of declaration of items */
+item the_greatest_sword_ever {()}
+item rubberDuckie {(string squeak = "squeak")}
+item shirt5{(string size = "medium", int number = 20, string color = "red", int arm = 10)} 
+item columbiaBinder {(int size = 50)}
+item ColumbiaBinder {(int size = 30)}
+int count = 1;
+
+
+location here {(int sizex = 10000, int sizey=9283), (columbiaBinder), ()}
+
+start here end (count == 0){
+	output rubberDuckie.squeak;
+	output shirt5.size;
+	output shirt5.number;
+	output shirt5.color;
+	output shirt5.arm;
+	output columbiaBinder.size;
+	output ColumbiaBinder.size;
+	count = count - 1;
+	
+
+
+}
+	
