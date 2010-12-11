@@ -1,7 +1,7 @@
 %{ open Ast %}
 
 
-%token PLUS MINUS TIMES DIVIDE LESSTHAN GREATERTHAN EQUAL NEQUAL LOGICAND LOGICOR ASSIGN LOGICNOT
+%token PLUS MINUS TIMES DIVIDE LESSTHAN GREATERTHAN EQUAL NEQUAL LOGICAND LOGICOR ASSIGN LOGICNOT LEQTHAN GEQTHAN
 %token COMMA SEMICOLON DOT
 %token LBRACKET RBRACKET LPAREN RPAREN RPROBBLOCK LPROBBLOCK
 %token IF THEN ELSE START END PROB WHEN NEXT CHOOSE KILL GRAB HIDE EXISTS DROP SHOW
@@ -92,7 +92,9 @@ expr:
 | expr TIMES  expr 			{ Binop($1, Mul, $3) } 
 | expr DIVIDE expr 			{ Binop($1, Div, $3) } 
 | expr LESSTHAN expr 		{ Binop($1, Lt, $3) }
-| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) } 
+| expr GREATERTHAN expr 	{ Binop($1, Gt ,$3) }
+| expr LEQTHAN expr			{ Binop($1, Leq, $3)}
+| expr GEQTHAN expr			{ Binop($1, Geq, $3)}
 | expr EQUAL expr 			{ Binop($1, Eq ,$3) } 
 | expr NEQUAL expr 			{ Binop($1, Neq ,$3) } 
 | expr LOGICAND expr 		{ Binop($1, And ,$3) } 
