@@ -272,7 +272,6 @@ public class Next {
     }
     
    public void endGame() {
-      System.out.println(\"GAME OVER!!!!!\");
       System.exit(0);
    }
    

@@ -5,7 +5,7 @@ public class Next {
    enum Type {INT, STRING, CHARACTER, ITEM, LOCATION}
 
    static Random r = new Random();
-
+   Object dummy;
    Map<String, Location> locations = new HashMap<String, Location>();
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
@@ -15,7 +15,7 @@ public class Next {
     (new Next()).play();
    }
    
-   public void entitySetString(String key1, Type type1, String key2, String value) {
+   public boolean entitySetString(String key1, Type type1, String key2, String value) {
     boolean valueSet = false;
    	if(type1 == Type.LOCATION) {
    		Location loc = locations.get(key1);
@@ -42,9 +42,11 @@ public class Next {
    	if(!valueSet) {
    		throw new RuntimeException();
    	}
+   	
+   	return true;
    }
    
-   public void entitySetInt(String key1, Type type1, String key2, int value) {
+   public boolean entitySetInt(String key1, Type type1, String key2, int value) {
    	boolean foundReturnValue = false;
 	
    	if(type1 == Type.LOCATION) {
@@ -72,6 +74,8 @@ public class Next {
    	if(foundReturnValue == false) {
    		throw new RuntimeException();
    	}
+   	
+   	return true;
    }
    
 	public boolean isTrue(Object object) {
@@ -217,7 +221,7 @@ public class Next {
     	return returnValue;
     }
 
-    public boolean entityExistsItem(String key1, Type type1, String key2) {
+    public int entityExistsItem(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -237,13 +241,13 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
 
-    public boolean entityExistsCharacter(String key1, Type type1, String key2) {
+    public int entityExistsCharacter(String key1, Type type1, String key2) {
     	Object returnValue = null;
     	if(type1 == Type.LOCATION) {
     		Location loc = locations.get(key1);
@@ -255,14 +259,13 @@ public class Next {
     	}
 
     	if(returnValue == null) {
-    		return false;
+    		return 0;
     	}
 
-    	return true;
+    	return 1;
     }
     
    public void endGame() {
-      System.out.println("GAME OVER!!!!!");
       System.exit(0);
    }
    
@@ -315,10 +318,10 @@ Character xiaowei_the_greatest_man_ever = new Character();
 Location where_is_this_place = new Location();
 //start funtion
 public void where_is_this_place() {
-while (!(count == 0)){
+while (!((count == 0))){
 {
 System.out.println(""+"Hello World");
-if (count == 0)
+if ((count == 0))
 endGame();
 }
 }
