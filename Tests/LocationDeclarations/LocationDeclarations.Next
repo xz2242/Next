@@ -1,0 +1,38 @@
+/*Testing naming conventions. Forms of declaration of Locations */
+
+item the_greatest_sword_ever {()}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+
+
+character noone{(),()}
+character me {(),(rubberDuckie)}
+character you {(int life = 50),(rubberDuckie)}
+character her {(int life),(rubberDuckie)}
+character him {(int life, string name="him"),(rubberDuckie, columbiaBinder, the_greatest_sword_ever)}
+character someone{(string name),()}
+
+int count = 1;
+
+
+location limbo {(),(),()}
+location empty {(string ew6 = "not much"),( rubberDuckie, columbiaBinder),(me,you,her)}
+location cool{(), (the_greatest_sword_ever), (him, someone,her)}
+location COOL{(int look = 100, int size = 5, string name = "COOL"),(),(her,him,me,someone,you)}
+
+location here {(int sizex = 10000, int sizey=9283), (columbiaBinder), ()}
+
+start here end (count == 0){
+	
+	output empty.ew6;
+	output COOL.look;
+	output COOL.size;
+	output COOL.name;
+	output here.sizex;
+	output here.sizey;
+	
+	count = count - 1;
+	
+
+
+}

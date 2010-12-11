@@ -1,0 +1,32 @@
+/*Testing upper case to lower case acceptance and differentiation. Forms of declaration of Characters */
+
+item the_greatest_sword_ever {()}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+
+
+character noone{(),()}
+character me {(),(rubberDuckie)}
+character you {(int life = 50),(rubberDuckie)}
+character her {(int life),(rubberDuckie)}
+character him {(int life, string name="him"),(rubberDuckie, columbiaBinder, the_greatest_sword_ever)}
+character someone{(string name),()}
+
+int count = 1;
+
+
+location here {(int sizex = 10000, int sizey=9283), (columbiaBinder), ()}
+
+start here end (count == 0){
+	
+	output you.life;
+	output her.life;
+	output him.life;
+	output him.name;
+	output someone.name;
+	
+	count = count - 1;
+	
+
+
+}
