@@ -9,6 +9,8 @@ type operator =
   | Lt 
   | Gt 
   | Neq
+  | Leq
+  | Geq
 
 
 

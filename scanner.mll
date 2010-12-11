@@ -10,6 +10,8 @@ rule token = parse
 | '*' { TIMES }
 | '/' { DIVIDE }
 | '<' { LESSTHAN }
+| "<=" {LEQTHAN}
+| ">=" {GEQTHAN}
 | '>' { GREATERTHAN }
 | "==" { EQUAL }
 | "!=" { NEQUAL }
