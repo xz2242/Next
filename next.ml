@@ -11,7 +11,7 @@ public class Next {
    enum Type {INT, STRING, CHARACTER, ITEM, LOCATION}
 
    static Random r = new Random();
-
+   Object dummy;
    Map<String, Location> locations = new HashMap<String, Location>();
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
