@@ -89,7 +89,7 @@ and whenexprs_to_java list tmap = match list with
 
 and whenexpr_to_java whenexpr tmap = match whenexpr with Unitwhen(action, stmt, loc) -> 
    let (when_playcode, when_startfns) = stmt_to_java tmap ([], []) stmt in 
-   let nextcode = ["//" ^ loc ^ "();"] in
+   let nextcode = [loc ^ "();"] in
     (["if(action.equals(\"" ^ action ^ "\")) {"]
         @ when_playcode @ nextcode @ ["}"], when_startfns)
 
