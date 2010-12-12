@@ -17,13 +17,13 @@ end
 module Action : ACTION = struct
 
 let kill_to_java str = ["killFunction(\"" ^ str ^ "\");"]
-let grab_to_java str1 str2 = [str1 ^ ".addItem (\"" ^ str2 ^"\");"]
-let drop_to_java str1 str2 = [str1 ^ ".removeItem (\"" ^ str2 ^"\");"]
+let grab_to_java str1 str2 = [str1 ^ ".addItem (\"" ^ str2 ^"\", currentLocation, locations);"]
+let drop_to_java str1 str2 = [str1 ^ ".removeItem (\"" ^ str2 ^"\", currentLocation, locations);"]
 
 let show_to_java str1 str2 mapt = 
 	if (VarMap.mem (str2,Item) mapt) then
-		[str1 ^ ".addItem (\"" ^ str2^ "\");"]
-		else [str1 ^ ".showCharacter (\"" ^ str2^ "\");"]
+		[str1 ^ ".addItem (\"" ^ str2^ "\",items);"]
+		else [str1 ^ ".showCharacter (\"" ^ str2^ "\", characters);"]
 
 let hide_to_java str1 str2 mapt = 
 	if (VarMap.mem (str2,Item) mapt) then

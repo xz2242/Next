@@ -12,6 +12,7 @@ public class Next {
 
    static Random r = new Random();
    Object dummy;
+   String currentLocation;
    Map<String, Location> locations = new HashMap<String, Location>();
    Map<String, Character> characters = new HashMap<String, Character>();
    Map<String, Item> items = new HashMap<String, Item>();
@@ -302,17 +303,31 @@ class Location extends Entity {
    Set<String> characters = new HashSet<String>();
    Set<String> items = new HashSet<String>();
 
-   public void addItem(String name) {
-      items.add(name);
+   public void addItem(String name, Map<String, Item> itemses) {
+	if(itemses.containsKey(name))
+      		items.add(name);
+	else
+		System.out.println(\"Error: The item you attempted to add no longer exists\");
    }
+
+   public void addItem(String name){
+	items.add(name);
+	}
 
    public void removeItem(String name) {
       items.remove(name);
    }
 
-   public void showCharacter(String name) {
-      characters.add(name);
+   public void showCharacter(String name, Map<String, Character> characterses) {
+      if(characterses.containsKey(name))
+	characters.add(name);
+	else 
+		System.out.println(\"Error: The character you attempted to use no longer exists\");
    }
+   public void showCharacter(String name){
+	
+	characters.add(name);
+	}
 
    public void hideCharacter(String name) {
       characters.remove(name);
@@ -321,6 +336,25 @@ class Location extends Entity {
 
 class Character extends Entity {
    Set<String> items = new HashSet<String>();
+
+   public void addItem(String name, String locationNow, Map<String, Location> locations){
+
+	if(locations.get(locationNow).items.contains(name)){
+		locations.get(locationNow).removeItem(name);
+		items.add(name);		
+	}
+	else
+		System.out.println(\"Error: The item you attempted to grab is not in this location\");
+}
+
+public void removeItem(String name, String locationNow, Map<String, Location> locations) {
+      	if (items.contains(name)){
+		items.remove(name);
+		locations.get(locationNow).addItem(name);
+   }
+	else
+		System.out.println(\"Error: The character does not have the item you attempted to drop\");
+}
 
    public void addItem(String name) {
       items.add(name);
