@@ -337,7 +337,7 @@ class Item extends Entity {
 let _ =
   let lexbuf = Lexing.from_channel stdin in 
   let program = Parser.program Scanner.token lexbuf in
-  let symt = check_program VarMap.empty program in
+  let symt = check_program (VarMap.empty, StringMap.empty) program in
   let java = java_of_prog program symt in
   print_endline java
   
