@@ -35,10 +35,10 @@ let check_type_to_string name  = function
             else "Item"
 
 let rec expr_to_java exp tmap = match exp with
-   Binop (exp1, op, exp2) -> if op == Add then (expr_to_java exp1 tmap) ^ " + " ^ (expr_to_java exp2 tmap)
-                        else if op == Sub then (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap)
-                        else if op == Mul then (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) 
-                        else if op == Div then (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap)
+   Binop (exp1, op, exp2) -> if op == Add then "(" ^ (expr_to_java exp1 tmap) ^ " + " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Sub then "(" ^ (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Mul then "(" ^ (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Div then "(" ^ (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Or then raise (InvalidComparison("Invalid Comparison"))
                         else if op == And then raise (InvalidComparison("Invalid Comparison"))
                         else if op == Eq then let t = check_expr tmap exp1 in 
@@ -46,15 +46,17 @@ let rec expr_to_java exp tmap = match exp with
                                                     String -> (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ ")"
                                                     | Integer -> (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap)
                                                     | _ -> raise (InvalidComparison("Invalid Comparison")))
-                        else if op == Lt then (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap)
-                        else if op == Gt then (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap)
-                        else if op == Neq then (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap)
-                        else "WHAT"
+                        else if op == Lt then "(" ^ (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Gt then "(" ^ (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Leq then "(" ^ (expr_to_java exp1 tmap) ^ " <= " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Geq then "(" ^ (expr_to_java exp1 tmap) ^ " >= " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Neq then "(" ^ (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else raise (InvalidComparison("Invalid Comparison"))
    | Asn (id, exp) -> let t = check_id tmap id in 
                         (match id with
                         Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
                       | Has(name, subname) -> "entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")")
-   | Lit (i) -> (string_of_int i)
+   | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
    | LitS (str) -> "\"" ^ str ^ "\""
    | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
                                 let t2 = check_id tmap (Var(str2)) in
@@ -66,23 +68,25 @@ let rec expr_to_java exp tmap = match exp with
                     (match id with
                       Var(name) -> name
                     | Has(name, subname) -> "entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\")")    
-   | Neg (exp) -> "-" ^ (expr_to_java exp tmap)
+   | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
    | Not (exp) -> "!" ^ (expr_to_java exp tmap)
 
 
 let rec expr_to_java_boolean exp tmap = match exp with
-	Binop (exp1, op, exp2) -> if op == Add then ([], (expr_to_java exp1 tmap) ^ " + " ^ (expr_to_java exp2 tmap) ^ " != 0" )
-	                        else if op == Sub then ([], (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap) ^ " != 0")
-	                        else if op == Mul then ([], (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) ^ " != 0")
-	                        else if op == Div then ([], (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap) ^ " != 0")
+	Binop (exp1, op, exp2) -> if op == Add then ([], "(" ^ (expr_to_java exp1 tmap) ^ " + " ^ (expr_to_java exp2 tmap) ^ ") != 0" )
+	                        else if op == Sub then ([], "(" ^ (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap) ^ ") != 0")
+	                        else if op == Mul then ([], "(" ^ (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) ^ ") != 0")
+	                        else if op == Div then ([], "(" ^ (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap) ^ ") != 0")
 	                        else if op == Eq then let t = check_expr tmap exp1 in 
                                                     (match t with
                                                         String -> ([], (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ ")")
                                                         | Integer -> ([], (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap))
                                                         | _ -> raise (InvalidComparison("Invalid Comparison")))
-	                        else if op == Lt then ([], (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap))
-		                    else if op == Gt then ([], (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap))
-		                    else if op == Neq then ([], (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap))
+	                        else if op == Lt then ([], "(" ^ (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap) ^ ")")
+		                    else if op == Gt then ([], "(" ^ (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap) ^ ")")
+		                    else if op == Neq then ([], "(" ^ (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap) ^ ")")
+						    else if op == Leq then ([], "(" ^ (expr_to_java exp1 tmap) ^ " <= " ^ (expr_to_java exp2 tmap) ^ ")")
+                            else if op == Geq then ([], "(" ^ (expr_to_java exp1 tmap) ^ " >= " ^ (expr_to_java exp2 tmap) ^ ")")
 							else if op == Or then  (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " || " ^ (snd (expr_to_java_boolean exp2 tmap)))
                         	else if op == And then (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " && " ^ (snd (expr_to_java_boolean exp2 tmap)))
 	                        else ([], "false")
