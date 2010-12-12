@@ -1,0 +1,42 @@
+
+
+item i1 {()}
+item i2 {(string squeak = "squeak")}
+item i3 {(int size = 50)}
+
+
+character c1 {(int life = 10),()}
+character c2 {(int life = 10),()}
+
+int count = 10;
+
+location l1 {(int sizex = 10000, int sizey=9283), (i1), (c1)}
+location l2 {(),(),()}
+
+
+start l1 end (count == 0 or c1.life == 0){
+
+	output "output test";
+	output 777777;
+	output count+count;
+	output count-count;
+	output count*count;
+	output count/count;
+	output count=count;
+	output count or count;
+	output count and count;
+	output not count;
+	output l1.sizex;
+	output l1.sizex = 100; 
+	output exist l2.i1;
+	output -count;
+	output count < count+1;
+	output count > count+1;
+	output count >= count+1;
+	output count <= count+1;
+	output count == count;
+	output count != count;
+}
+
+
+
