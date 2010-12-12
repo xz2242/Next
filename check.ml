@@ -6,6 +6,7 @@ type t = string * Checktype.t
 let compare x y = Pervasives.compare x y
 end)
 
+module StringMap = Map.Make(String)
 
 exception DupVar of string
 exception NotFound of string
@@ -248,57 +249,66 @@ let rec check_membervarlist_chara symt subsymt = function
   												 	check_membervarlist_chara symt (VarMap.add (varname,Character) VarMap.empty subsymt) tl
   
 
-let check_globaldec symt= function
-    IntStrdec (pridec) -> check_pridec symt pridec
+let check_globaldec symt locmap = function
+    IntStrdec (pridec) -> check_pridec symt pridec, locmap
   | Charadec (name, memberlist1, memberlist2) -> (*print_symboltable symt;*)
   												if (VarMap.mem (name, Location) symt) || 
   													(VarMap.mem (name, Character) symt) || 
   													(VarMap.mem (name, Item) symt) || 
   													(VarMap.mem (name, String) symt) || 
   													(VarMap.mem (name, Integer) symt) then
-  													raise ( DupVar("duplicated identifier " ^ name))
+  													raise ( DupVar("duplicated identifier in character dec " ^ name))
   												else
   													let subsymt = VarMap.empty in
   														let subsymt = check_membervarlist_intstr subsymt memberlist1 in
   															let subsymt = check_membervarlist_item symt subsymt memberlist2 in
-  																VarMap.add (name, Character) subsymt symt
+  																(VarMap.add (name, Character) subsymt symt) , locmap
   | Itemdec (name, memberlist1) -> (*print_symboltable symt;*)
   									if (VarMap.mem (name, Location) symt) || 
   										(VarMap.mem (name, Character) symt) || 
   										(VarMap.mem (name, Item) symt) || 
   										(VarMap.mem (name, String) symt) || 
   										(VarMap.mem (name, Integer) symt) then
-  										raise ( DupVar("duplicated identifier " ^ name))
+  										raise ( DupVar("duplicated identifier in item dec " ^ name))
   									else
   										let subsymt = VarMap.empty in
   											let subsymt = check_membervarlist_intstr subsymt memberlist1 in
-  												VarMap.add (name, Item) subsymt symt
+  												(VarMap.add (name, Item) subsymt symt) , locmap
   | Locdec (name, memberlist1,memberlist2, memberlist3)-> (*print_symboltable symt;*)
   															if (VarMap.mem (name, Location) symt) || 
   															(VarMap.mem (name, Character) symt) || 
   															(VarMap.mem (name, Item) symt) || 
   															(VarMap.mem (name, String) symt) || 
   															(VarMap.mem (name, Integer) symt) then
-			  													raise ( DupVar("duplicated identifier " ^ name))
+			  													raise ( DupVar("duplicated identifier in location dec " ^ name))
 			  												else
 			  													let subsymt = VarMap.empty in
 			  														let subsymt = check_membervarlist_intstr subsymt memberlist1 in
 			  															let subsymt = check_membervarlist_item symt subsymt memberlist2 in
 			  																let subsymt = check_membervarlist_chara symt subsymt memberlist3 in
-			  																	VarMap.add (name, Location) subsymt symt
+			  																	(VarMap.add (name, Location) subsymt symt), locmap
   | Startend (name, cond, logicstmt) -> (*print_symboltable symt;*)
   										if not (VarMap.mem (name, Location) symt)  then
-  											raise ( NotFound("undefined variable " ^ name))
+  											raise ( NotFound("undefined variable in start stmt " ^ name))
   										else
   											ignore (check_expr symt cond);
   											check_stmt symt logicstmt;
-  											symt
+  											symt, (StringMap.add name 1 locmap)
 
 	
 
-let rec check_program symt = function
-    [] -> symt
-  | dec::tl -> check_program (check_globaldec symt dec) tl
+let rec check_program (symt,locmap) = function
+    [] -> let match_loc tuple dc = 
+    		let name = fst tuple in
+    			let t = snd tuple in
+    				if (t = Location) && (not (StringMap.mem name locmap)) then
+    					raise ( NotFound("No body definition for location " ^ name))
+    				else
+    					()
+    	  in 
+    	  	VarMap.iter match_loc symt;
+    	  	symt
+  | dec::tl -> check_program  (check_globaldec symt locmap dec) tl
 
 
 
