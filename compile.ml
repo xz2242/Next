@@ -78,7 +78,7 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
     							in (playcode @ ["{"] @ (blockcode) @ ["}"], startfns)   							
     | Nostmt (i) -> (playcode @ ["//Empty stmt"], startfns)
     (*| IntStrdec (pridec) -> (playcode @ (Declaration.intstrdec_to_java pridec), startfns)*)
-    | Print (str) -> (playcode @ ["System.out.println(\"\"+" ^Expression.expr_to_java str tmap^");"], startfns)
+    | Print (str) -> (playcode @ ["System.out.println(\"\"+ (" ^Expression.expr_to_java str tmap^"));"], startfns)
 
 
 and whenexprs_to_java list tmap = match list with
