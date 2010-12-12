@@ -1,0 +1,36 @@
+
+
+item i1 {()}
+item i2 {(string squeak = "squeak")}
+item i3 {(int size = 50)}
+
+
+character c1 {(int life = 10),()}
+character c2 {(int life = 10),()}
+
+int count = 10;
+
+location l1 {(int sizex = 10000, int sizey=9283), (), ()}
+location l2 {(),(),()}
+
+
+start l1 end (count == 0 or c1.life == 0){
+
+	[? 
+		prob 30 {
+			output count = count-1;
+		}
+		prob 20 {
+			output count = count+1;
+		}
+		prob 30 {
+			output c1.life = c1.life-1;
+		}
+		prob 20 {
+			output c1.life = c1.life+1;
+		}
+	?]
+}
+
+
+
