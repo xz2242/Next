@@ -12,6 +12,8 @@ my @failedTestFiles = ();
 foreach $testFileDir(@testFileDirs) {
     @testFiles = <$testFileDir/*>;
     foreach $testFile(@testFiles) {
+        print $testFile . "\n";
+        
         if($testFile =~ /\.next$/i) {
             #do the compilation
             if(system("./next < " . $testFile . " > " . $testFileDir . "/Next.java") == 0) {
@@ -27,9 +29,6 @@ foreach $testFileDir(@testFileDirs) {
             if(File::Compare::compare_text($testFileDir . "/output", $testFileDir . "/reference")) {
                 push(@failedTestFiles, $testFileDir);
             }
-            
-            print $testFile . "\n";
-
         }
     }
 }
