@@ -39,8 +39,8 @@ let rec expr_to_java exp tmap = match exp with
                         else if op == Sub then "(" ^ (expr_to_java exp1 tmap) ^ " - " ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Mul then "(" ^ (expr_to_java exp1 tmap) ^ " * " ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Div then "(" ^ (expr_to_java exp1 tmap) ^ " / " ^ (expr_to_java exp2 tmap) ^ ")"
-                        else if op == Or then raise (InvalidComparison("Invalid Comparison"))
-                        else if op == And then raise (InvalidComparison("Invalid Comparison"))
+                        else if op == Or then "boolToInt(isTrue(" ^ (expr_to_java exp1 tmap) ^ ") || isTrue(" ^ (expr_to_java exp2 tmap) ^ "))" 
+                        else if op == And then "boolToInt(isTrue(" ^ (expr_to_java exp1 tmap) ^ ") && isTrue(" ^ (expr_to_java exp2 tmap) ^ "))" 
                         else if op == Eq then let t = check_expr tmap exp1 in 
                                                 (match t with
                                                     String -> (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ ")"

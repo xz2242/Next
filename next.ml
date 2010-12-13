@@ -22,6 +22,15 @@ public class Next {
     (new Next()).play();
    }
    
+   public int boolToInt(boolean value) {
+        if(value) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+   }
+   
    public String entitySetString(String key1, Type type1, String key2, String value) {
     boolean valueSet = false;
    	if(type1 == Type.LOCATION) {
