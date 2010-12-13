@@ -1,0 +1,39 @@
+/*Need to check if hide and show are being used on character or item*/
+
+item the_greatest_sword_ever {(int damage = 100000000)}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+int count = 4;
+string hi = "Hello World";
+character xiaowei_the_greatest_man_ever {(int life = 1, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever, rubberDuckie)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (columbiaBinder), (xiaowei_the_greatest_man_ever)}
+
+start where_is_this_place end (count == -1) {
+	
+	output hi;
+	count = count - 1;
+	if (exists where_is_this_place.columbiaBinder) then {
+		output "Give it to Ernesto";
+		hide where_is_this_place.columbiaBinder;}
+
+	else {output "Take morgan's and put it back";
+		show where_is_this_place.columbiaBinder;}
+
+	if (exists where_is_this_place.xiaowei_the_greatest_man_ever) then {
+		output "Xiao has left the building";
+		hide where_is_this_place.xiaowei_the_greatest_man_ever;}
+
+	else {output "He is back!!";
+		show where_is_this_place.xiaowei_the_greatest_man_ever;}
+	output  count;
+
+	if (count < 3) then{
+		kill columbiaBinder;
+		kill xiaowei_the_greatest_man_ever;
+	}
+	else ;
+
+}
+
+
