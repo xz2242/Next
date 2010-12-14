@@ -43,14 +43,14 @@ let rec expr_to_java exp tmap = match exp with
                         else if op == And then "boolToInt(isTrue(" ^ (expr_to_java exp1 tmap) ^ ") && isTrue(" ^ (expr_to_java exp2 tmap) ^ "))" 
                         else if op == Eq then let t = check_expr tmap exp1 in 
                                                 (match t with
-                                                    String -> (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ ")"
-                                                    | Integer -> (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap)
+                                                    String -> "boolToInt(" ^ (expr_to_java exp1 tmap) ^ ".equals(" ^ (expr_to_java exp2 tmap) ^ "))"
+                                                    | Integer -> "boolToInt(" ^ (expr_to_java exp1 tmap) ^ " == " ^ (expr_to_java exp2 tmap) ^ ")"
                                                     | _ -> raise (InvalidComparison("Invalid Comparison")))
-                        else if op == Lt then "(" ^ (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap) ^ ")"
-                        else if op == Gt then "(" ^ (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap) ^ ")"
-                        else if op == Leq then "(" ^ (expr_to_java exp1 tmap) ^ " <= " ^ (expr_to_java exp2 tmap) ^ ")"
-                        else if op == Geq then "(" ^ (expr_to_java exp1 tmap) ^ " >= " ^ (expr_to_java exp2 tmap) ^ ")"
-                        else if op == Neq then "(" ^ (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Lt then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " < " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Gt then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " > " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Leq then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " <= " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Geq then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " >= " ^ (expr_to_java exp2 tmap) ^ ")"
+                        else if op == Neq then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap) ^ ")"
                         else raise (InvalidComparison("Invalid Comparison"))
    | Asn (id, exp) -> let t = check_id tmap id in 
                         (match id with
@@ -69,7 +69,7 @@ let rec expr_to_java exp tmap = match exp with
                       Var(name) -> name
                     | Has(name, subname) -> "entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\")")    
    | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
-   | Not (exp) -> "!" ^ (expr_to_java exp tmap)
+   | Not (exp) -> "boolToInt(!" ^ "isTrue(" ^ (expr_to_java exp tmap) ^ ") )"
 
 
 let rec expr_to_java_boolean exp tmap = match exp with
