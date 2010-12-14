@@ -1,0 +1,44 @@
+/*Checks if kill removes from all lists*/
+
+item the_greatest_sword_ever {(int damage = 100000000)}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+int count = 4;
+
+character xiaowei_the_greatest_man_ever {(int life = 1, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever, rubberDuckie, columbiaBinder)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (columbiaBinder, rubberDuckie), (xiaowei_the_greatest_man_ever)}
+
+start where_is_this_place end (count == -1) {
+	
+	
+	count = count - 1;
+	output count;
+	if (count == 2) then kill columbiaBinder;
+	else if (count == 1) then kill xiaowei_the_greatest_man_ever;
+	else ;
+
+	if  (exists xiaowei_the_greatest_man_ever.columbiaBinder) then
+		output "binder exists in Xiao";
+	else output "Binder no longer exists in Xiao";
+
+	if  (exists where_is_this_place.columbiaBinder) then
+		output "binder exists in place";
+	else output "Binder no longer exists in place";
+
+	if  (exists xiaowei_the_greatest_man_ever.rubberDuckie) then
+		output "duckie exists in Xiao";
+	else output "duckie no longer exists in Xiao";
+
+	if  (exists where_is_this_place.rubberDuckie) then
+		output "duckie exists in place";
+	else output "duckie no longer exists in place";
+
+	if  (exists where_is_this_place.xiaowei_the_greatest_man_ever) then
+		output "Xiao is alive";
+	else output "Xiao is dead!!";
+	
+
+}
+
+

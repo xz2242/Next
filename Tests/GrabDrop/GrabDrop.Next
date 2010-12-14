@@ -1,0 +1,53 @@
+/*Checks if kill removes from all lists*/
+
+item nothingItem {()}
+item the_greatest_sword_ever {(int damage = 100000000)}
+item rubberDuckie {(string squeak = "squeak")}
+item columbiaBinder {(int size = 50)}
+int count = 8;
+
+character xiaowei_the_greatest_man_ever {(int life = 1, int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever, rubberDuckie)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (columbiaBinder, rubberDuckie), (xiaowei_the_greatest_man_ever)}
+
+start where_is_this_place end (count == -1) {
+	
+	
+	count = count - 1;
+	output count;
+	if (count == 6) then drop xiaowei_the_greatest_man_ever.nothingItem;
+	else if (count == 5) then grab xiaowei_the_greatest_man_ever.nothingItem;
+	else if (count == 4) then grab xiaowei_the_greatest_man_ever.columbiaBinder;
+	else if (count == 3) then drop xiaowei_the_greatest_man_ever.the_greatest_sword_ever;
+	else if (count == 2) then drop xiaowei_the_greatest_man_ever.rubberDuckie;
+	else if (count == 1) then grab xiaowei_the_greatest_man_ever.rubberDuckie;
+	else ;
+
+	if  (exists xiaowei_the_greatest_man_ever.columbiaBinder) then
+		output "binder exists in Xiao";
+	else output "Binder does not exists in Xiao";
+
+	if  (exists where_is_this_place.columbiaBinder) then
+		output "binder exists in place";
+	else output "Binder does not exists in place";
+
+	if  (exists xiaowei_the_greatest_man_ever.rubberDuckie) then
+		output "duckie exists in Xiao";
+	else output "duckie does not exists in Xiao";
+
+	if  (exists where_is_this_place.rubberDuckie) then
+		output "duckie exists in place";
+	else output "duckie does not exists in place";
+
+	if  (exists xiaowei_the_greatest_man_ever.the_greatest_sword_ever) then
+		output "the_greatest_sword_ever exists in Xiao";
+	else output "the_greatest_sword_ever does not exists in Xiao";
+
+	if  (exists where_is_this_place.the_greatest_sword_ever) then
+		output "the_greatest_sword_ever exists in place";
+	else output "the_greatest_sword_ever does not exists in place";
+	
+
+}
+
+
