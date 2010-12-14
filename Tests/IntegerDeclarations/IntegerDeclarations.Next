@@ -1,0 +1,27 @@
+/* Forms of declaration of ints */
+location here {(int sizex = 10000, int sizey=9283), (), ()}
+int x;
+int y = x;
+int z = y + 2;
+int m = 8 + z;
+int n = m + z;
+int i = here.sizex;
+
+int count = 1;
+
+
+
+
+start here end (count == 0){
+	
+	
+	
+	output x;
+	output y;
+	output z;
+	output m;
+	output n;
+	output i;
+	count = count - 1;
+}
+	
