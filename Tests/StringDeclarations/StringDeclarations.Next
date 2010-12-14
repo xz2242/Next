@@ -1,0 +1,28 @@
+/* Forms of declaration of strings */
+location here {(string name = "here", int sizey=9283), (), ()}
+string x;
+string y = x;
+string z = "HI there";
+string m = "You, ";
+string n = z;
+
+string i = here.name;
+
+int count = 1;
+
+
+
+
+start here end (count == 0){
+	
+	
+	
+	output x;
+	output y;
+	output z;
+	output m;
+	output n;
+	output i;
+	count = count - 1;
+}
+	
