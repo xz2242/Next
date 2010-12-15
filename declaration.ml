@@ -47,9 +47,9 @@ let rec characterlist_to_java var characterlist = match characterlist with
 let locdec_to_java str attrlist itemlist charlist tmap = ["//locdec"; "Location " ^ str ^ " = new Location();"; "locations.put(\"" ^ str ^ "\"," ^ str ^ ");"; "types.put(\"" ^ str ^ "\", Type.LOCATION);"]@ (attrlist_to_java str attrlist tmap) @ (itemlist_to_java str itemlist) @ (characterlist_to_java str charlist) 
 
 let intstrdec_to_java pridec tmap = match pridec with
-   Strdec(str) -> ["//strdec"; "String " ^ str ^ ";"]
+   Strdec(str) -> ["//strdec"; "String " ^ str ^ " = \"\";"]
    | Intdec(str) -> ["//intdec"; "int " ^ str ^ ";"]
-   | Strdecinit(str, expr) -> ["//strdecinit"; "String " ^ str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
-   | Intdecinit(str, expr) -> ["//intdecinit"; "int " ^ str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
+   | Strdecinit(str, expr) -> ["//strdecinit"; "String " ^ str ^ ";"; str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
+   | Intdecinit(str, expr) -> ["//intdecinit"; "int " ^ str ^ ";"; str ^ " = " ^ (Expression.expr_to_java expr tmap) ^ ";"]
 
 end
