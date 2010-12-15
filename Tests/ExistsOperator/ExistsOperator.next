@@ -18,6 +18,27 @@ start place end (stop == 1) {
 	else {
 	    output "Something went wrong";
 	}
+
+	if(exists place.myCharacter2) then {
+	    output "Yes!!";
+	}
+	else {
+	     output "No :(";
+        }
+
+	if (exists myCharacter1.myItem2) then {
+	    output "Yes";
+        }
+	else {
+	     output "Nope";
+	}
+
+	if (exists myCharacter3.myItem3) then {
+	    output "yay";
+        }
+	else {
+	     output "oops";
+	}
 	
     stop = 1;
 }

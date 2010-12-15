@@ -1,0 +1,38 @@
+int stop = 0;
+string myString = "go go go";
+
+item myItem {(int size = 50)}
+
+character myCharacter {(int life = 1), (myItem1)}
+
+location place {(int count = 10), (myItem), (myCharacter)}
+
+start place end (place.count == 1) {
+    {
+	myString = "stop stop stop";
+	myCharacter.life = 10;
+	stop = myCharacter.life - 9;
+
+    }
+
+    if (myString == "stop stop stop") then {
+       output "correct";
+    } 
+    else {
+        output "incorrect";
+    }
+  
+    {
+	if (myCharacter.life > 1) then {
+            output "correct";
+    	}
+	else {
+            output "incorrect";
+        }
+
+    
+        place.count = stop;
+    }
+
+    
+}

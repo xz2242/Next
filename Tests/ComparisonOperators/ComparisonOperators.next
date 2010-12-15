@@ -67,6 +67,20 @@ start place end (stop == 11) {
     else {
         output "1 is equal to 1";
     }
+
+    if ("hi" == "hi") then {
+       output "hi is equal to hi";
+    }
+    else {
+        output "hi is not equal to hi";
+    }
+    
+    if ("hi" != "hi") then {
+       output "hi not equal to hi";
+    }
+    else {
+        output "hi is equal to hi";
+    }
     
     stop = 11;
 }
