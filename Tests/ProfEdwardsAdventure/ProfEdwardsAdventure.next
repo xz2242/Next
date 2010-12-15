@@ -1,0 +1,65 @@
+item laser{(string color = "Green")}
+item PDP_8{(int memory = 10)}
+item not_windows_computer {(string OS = "Not-Windows")}
+item fish_sandwich {(int portion_left = 100, string taste = "yummy")}
+character prof_edwards {(int life = 10000, int awesomeness = 300, string slogan = "Add another layer of indirection!"), (laser, PDP_8, fish_sandwich)}
+
+item dragon_book {(int damage = 5)}
+character prof_aho{(int life = 20, int awesomeness = 20, string slogan = "I believe thats on page 42 of the Dragon Book!"), ()}
+
+character plt_mob {(int life = 99999, int damage = 6), ()}
+
+
+character bill_gates {(int life = 2, string money = "$$$54 billion$$$", string slogan = "It just works"), ()}
+
+
+location dragon_cave {(int depth = 500), (laser, dragon_book), (prof_edwards, prof_aho)}
+location ucb {(), (), ()}
+location mcdonalds {(), (), ()}
+location taiwan {(), (), ()}
+
+
+location columbia{(int temp = 20), (), (prof_edwards)}
+
+start columbia end(prof_edwards.life < 0) {
+    output "Professor Edwards wants to implement a compiler but Professor has the Dragon Book!";
+    output "His items of compiler power have been stolen he must go forth and find them";
+    
+    choose (dcave, "Press d to go to the dragon cave", "d") 
+           (tai, "Press t to go to Taiwan", "t") 
+           (u, "Press u to go to UC Berkeley", "u") 
+           (mcd, "Press m to go to McDonalds", "m") {
+    
+        when dcave {
+            output "Off to the Dragon Cave to battle Aho";
+        } next dragon_cave
+    
+        when tai {
+            output "Off to Taiwan to the photo shoot";
+        } next taiwan
+    
+        when u {
+            output "Off to UC Berkeley!";
+        } next ucb
+    
+        when mcd {
+            output "Off to McDonalds for a fish burger";
+        } next mcdonalds
+    }
+}
+
+start dragon_cave end (prof_edwards.life < 0) {
+    
+}
+
+start ucb end (prof_edwards.life < 0) {
+
+}
+
+start mcdonalds end  (prof_edwards.life < 0) {
+
+}
+
+start taiwan end (prof_edwards.life < 0) {
+
+}

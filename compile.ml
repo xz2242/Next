@@ -136,8 +136,20 @@ let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec w
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java tmap ([], []) stmt)) )   
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["}" ; "endGame();" ; "}"]
 
+let print_globaldec global_dec = match global_dec with
+IntStrdec (pridec) ->
+    print_endline "pridec"
+| Charadec (name, membervar1, membervar2) -> 
+    print_endline ("char " ^ name)
+| Itemdec (name, membervar) -> 
+     print_endline ("item " ^ name)
+| Locdec (name, membervar1, membervar2, membervar3) -> 
+      print_endline ("loc " ^ name)
+| Startend (name, expr, stmt) -> print_endline ("Start "^name)
+
 let rec javacode program symt = match program with
 [] -> ([], [])
-|hd::tl -> (fst (global_dec_to_java ([], []) hd symt))@ (fst (javacode tl symt)), (snd (global_dec_to_java ([], []) hd symt))@ (snd (javacode tl symt))
-	
+|hd::tl -> let tuple = javacode tl symt in
+                (fst (global_dec_to_java ([], []) hd symt))@ (fst tuple), (snd (global_dec_to_java ([], []) hd symt))@ (snd tuple)
+
 end
