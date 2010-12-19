@@ -52,7 +52,7 @@ rule token = parse
 |"string" {STRING}
 
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
-| ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as var { VARIABLE (var) }
+| ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as var { VARIABLE ("_" ^ var) }
 | eof { EOF }
 
 and comment = parse
