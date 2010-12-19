@@ -25,12 +25,12 @@ let rec startend_stmt_check (expression:string) (statement:string list) = match 
 	|hd::tl -> if (String.contains hd ';') then [hd] @ ["if (" ^expression ^")"; "endGame();"] @ 
 		(startend_stmt_check expression tl) else [hd] @ (startend_stmt_check expression tl)
 
-let rec actiondeclist_to_java list = match list with
+let rec actiondeclist_to_java list num = match list with
    [] -> []
    | hd::tail -> match hd with
-         Unitaction(action, actionname, key) -> ["keysToActionName.put(\"" ^ key ^ "\", \"" ^ action ^ "\"" ^ ");";
-            "actionNameToOutput.put(\"" ^ action ^ "\", \"" ^ actionname ^ "\");";
-            "System.out.println(\"Type " ^ key ^ " for " ^ actionname ^ "\");"] @ actiondeclist_to_java tail
+         Unitaction(action, actionname, key) -> ["keysToActionName" ^ string_of_int num ^ ".put(\"" ^ key ^ "\", \"" ^ action ^ "\"" ^ ");";
+            "actionNameToOutput" ^ string_of_int num ^ ".put(\"" ^ action ^ "\", \"" ^ actionname ^ "\");";
+            "System.out.println(\"Type " ^ key ^ " for " ^ actionname ^ "\");"] @ actiondeclist_to_java tail num
 
 let rec prob_sum list = match list with
    [] -> 0
@@ -42,17 +42,17 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
         let (stmt2_playcode, stmt2_startfns) = stmt_to_java tmap ([], []) stmt2  in
         (playcode @ expr_precode @ ["if(" ^ expr_exp ^ ") {"] @ stmt1_playcode @ ["}"; "else {"] @ stmt2_playcode @ ["}"], startfns @ stmt1_startfns @ stmt2_startfns)
 
-    | Chwhen (actiondeclist, whenexprlist) -> let mapDecl = ["Map<String,String> keysToActionName = new HashMap<String, String>();"; "Map<String, String> actionNameToOutput = new HashMap<String, String>();"] in
-   let actiondecs = ["System.out.println(\"CHOOSE AN ACTION:\");"] @ actiondeclist_to_java actiondeclist in
-   let getinput = ["Scanner in = new Scanner(System.in);";
-                   "String input = in.nextLine();";
-                    "while(!keysToActionName.containsKey(input)) {";
+    | Chwhen (actiondeclist, whenexprlist) -> let num = List.length(playcode) in let mapDecl = ["Map<String,String> keysToActionName" ^ string_of_int num ^ " = new HashMap<String, String>();"; "Map<String, String> actionNameToOutput" ^ string_of_int num ^ " = new HashMap<String, String>();"] in
+   let actiondecs = ["System.out.println(\"CHOOSE AN ACTION:\");"] @ actiondeclist_to_java actiondeclist num in
+   let getinput = ["Scanner in" ^ string_of_int num ^ " = new Scanner(System.in);";
+                   "String input" ^ string_of_int num ^ " = in" ^ string_of_int num ^ ".nextLine();";
+                    "while(!keysToActionName" ^ string_of_int num ^ ".containsKey(input" ^ string_of_int num ^ ")) {";
                     "System.out.println(\"Invalid input, try again\");";
-                    "input = in.nextLine();";
+                    "input" ^ string_of_int num ^ " = in" ^ string_of_int num ^ ".nextLine();";
                     "}";
-                    "System.out.println(\"You typed \" + input);";
-                   "String action = keysToActionName.get(input);" ] in
-   let whenexprs_playcode, whenexprs_startfns = whenexprs_to_java whenexprlist tmap in
+                    "System.out.println(\"You typed \" + input" ^ string_of_int num ^ ");";
+                   "String action" ^ string_of_int num ^ " = keysToActionName" ^ string_of_int num ^ ".get(input" ^ string_of_int num ^ ");" ] in
+   let whenexprs_playcode, whenexprs_startfns = whenexprs_to_java whenexprlist num tmap in
 (playcode @ mapDecl @ actiondecs @ getinput @ whenexprs_playcode, startfns @ whenexprs_startfns)
 
     | Prob (probexprlist) -> let sum = prob_sum probexprlist in
@@ -81,16 +81,16 @@ let rec stmt_to_java tmap (playcode, startfns) stmt = match stmt with
     | Print (str) -> (playcode @ ["System.out.println(\"\"+ (" ^Expression.expr_to_java str tmap^"));"], startfns)
 
 
-and whenexprs_to_java list tmap = match list with
+and whenexprs_to_java list num tmap = match list with
    [] -> ([], [])
-   | hd :: tail -> let (hd_playcode, hd_startfns) = whenexpr_to_java hd tmap in
-         let (tail_playcode, tail_startfns) = whenexprs_to_java tail tmap in
+   | hd :: tail -> let (hd_playcode, hd_startfns) = whenexpr_to_java hd num tmap in
+         let (tail_playcode, tail_startfns) = whenexprs_to_java tail num tmap in
       (hd_playcode @ tail_playcode, hd_startfns @ tail_startfns)
 
-and whenexpr_to_java whenexpr tmap = match whenexpr with Unitwhen(action, stmt, loc) -> 
+and whenexpr_to_java whenexpr num tmap = match whenexpr with Unitwhen(action, stmt, loc) -> 
    let (when_playcode, when_startfns) = stmt_to_java tmap ([], []) stmt in 
    let nextcode = [loc ^ "();"] in
-    (["if(action.equals(\"" ^ action ^ "\")) {"]
+    (["if(action" ^ string_of_int num ^ ".equals(\"" ^ action ^   "\")) {"]
         @ when_playcode @ nextcode @ ["}"], when_startfns)
 
 and probexprs_to_java start_num list tmap = match list with
