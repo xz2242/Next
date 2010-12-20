@@ -11,7 +11,7 @@ foreach $testFileDir(@testFileDirs) {
     @testFileDir = <$testFileDir/*>;
     foreach $testFile(@testFileDir) {
         if($testFile =~ /\.next$/i) {
-            #do the compilation
+            #do the compilation and record if the compilation was successful
             if(system("./next < " . $testFile . " > " . $testFileDir . "/Next.java") == 0) {
                 push(@failedTestFiles, $testFileDir);
             }
