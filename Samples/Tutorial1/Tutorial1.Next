@@ -1,0 +1,13 @@
+int num = 0;
+string announce = "not in the world:";
+character you {(string slogan = "Hello world!"),()}
+location here {(),(),(you)}
+
+start here end (num == 1) {
+	if (exists here.you) then
+	output you.slogan;
+	else
+	output announce;
+	num = 1;
+	
+} 
