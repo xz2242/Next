@@ -33,8 +33,9 @@ start l1 end (count == 0 or c1.life == 0){
 	}
 }
 
-start l2 end (count == 0 or c1.life == 0){
+start l2 end (count = 0 or c1.life == 0){
 	output "in l2";
+	output count;
 	choose (a,"1","1") (b,"2","2") (c,"3","3"){
 		when a 
 		{
