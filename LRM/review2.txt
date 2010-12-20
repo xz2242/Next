@@ -1,0 +1,15 @@
+2.4 Ok this is interesting. Start is no longer a statement, it is a declaration, but its not really a data type so on the list of keywords used that will have to change, aybe either put start by itself or change the data type wording to declaration?
+
+5.2 Items_list and character_list members must be declared before they can be used in a character or location
+
+6.4.5
+LRM specifies that operands must have arithmetic type but we allow strings as well
+
+6.5 this is not quite true
+"Outside of the declaration section, assignment operators can only operate on attributes in Next"
+
+7.2 then for if statement missing
+
+7.5 Might want to make start its own section or put it on declarations. Start is now a kind of declaration and we now need a start statement for every location declared. Also, now all game logic that is not a declaration must go inside the start statement
+
+7.6.2 Pending on what we decide this may have to change to only include locations and not characters
