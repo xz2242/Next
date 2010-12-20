@@ -3,7 +3,7 @@ string myString = "go go go";
 
 item myItem {(int size = 50)}
 
-character myCharacter {(int life = 1), (myItem1)}
+character myCharacter {(int life = 1), (myItem)}
 
 location place {(int count = 10), (myItem), (myCharacter)}
 

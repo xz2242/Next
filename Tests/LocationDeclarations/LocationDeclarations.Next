@@ -36,3 +36,7 @@ start here end (count == 0){
 
 
 }
+start limbo end (0);
+start empty end (0);
+start cool end (1);
+start COOL end (1);

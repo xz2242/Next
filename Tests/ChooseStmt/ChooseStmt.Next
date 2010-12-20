@@ -30,5 +30,7 @@ start l1 end (count == 0 or c1.life == 0){
 	}
 }
 
+start l2 end (count == 0);
+
 
 
