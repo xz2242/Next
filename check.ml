@@ -65,7 +65,17 @@ let check_id symt = function
   
 
 let rec check_expr symt = function
-    Binop (expr1 , op, expr2) -> if (check_expr symt expr1)=Integer && (check_expr symt expr2) = Integer then Integer else raise (WrongType("Type does not match"))
+    Binop (expr1 , op, expr2) -> if ((op = Eq) || (op = Neq)) then
+    								(if ((check_expr symt expr1)=String && (check_expr symt expr2) = String) then
+    									Integer
+    								else if ((check_expr symt expr1)=Integer && (check_expr symt expr2) = Integer) then
+    									Integer
+    								else
+    									raise (WrongType("Type does not match")))
+    							else 
+    								(if (check_expr symt expr1)=Integer && (check_expr symt expr2) = Integer then 
+    									Integer 
+    								else raise (WrongType("Type does not match")))
   | Asn (id, expr) -> if ((check_id symt id) = Integer && (check_expr symt expr) = Integer) then Integer
   					  else if ((check_id symt id) = String && (check_expr symt expr) = String) then String
   					  else raise (WrongType("Type does not match"))  						
