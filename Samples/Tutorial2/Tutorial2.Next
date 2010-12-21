@@ -1,0 +1,52 @@
+int num;
+
+character person {(),()}
+location here {(),(),()}
+item object {()}
+
+start here end (num == 1) {
+	
+	[? 
+		prob 50 output "This is line 1 of a possible 2";
+		prob 50 output "This is line 2 of a possible 2";
+	?]
+
+	if (exists person.object) then
+		output "The person has the object";
+	else
+		output "The person does not have the object";
+
+	if(exists here.object) then
+		output "The object is in the location";
+	else 
+		output "The object is not in the location";
+
+	
+	choose (grabItem, "character grab item", "g")
+		(dropItem, "character drop item", "d")
+		(showItem, "show item in location", "s")
+		(hideItem, "hide item from location", "h")
+		(exit, "exit", "e")
+	{
+		when grabItem
+			grab person.object;
+		next here
+
+		when dropItem
+			drop person.object;
+		next here
+
+		when showItem
+			show here.object;
+		next here
+
+		when hideItem
+			hide here.object;
+		next here
+
+		when exit
+			num = 1;
+		next here
+	}
+
+} 

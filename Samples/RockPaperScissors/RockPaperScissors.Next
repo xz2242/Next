@@ -1,0 +1,91 @@
+int won;
+int lost;
+
+
+location game {(int outcome),(),()}
+
+
+start game end (game.outcome == 4) {
+	output "Games won:";
+	output won;
+	output "";
+	output "Games lost:";
+	output lost;
+	output "";
+	output "rock paper scissors says shoot!";
+
+	[? 
+		prob 33 game.outcome = 1;
+		prob 33 game.outcome = 2;
+		prob 34 game.outcome = 3;
+	?]
+
+
+
+	
+	choose (scissors, "scissors", "s")
+		(paper, "paper", "p")
+		(rock, "rock", "r")
+		(exit, "exit", "e")
+	{
+		when scissors{
+			if(game.outcome == 1) then{
+				output "opponent picked scissors!";
+				output "You tied";
+			}
+			else if ( game.outcome == 2) then{
+				output "opponent picked paper!";
+				output "You won!!";
+				won = won + 1;
+			}
+			else{
+				output "opponent picked rock!";
+				output"You lost";
+				lost = lost + 1;
+			}
+		}
+		next game
+
+		when paper{
+			if(game.outcome == 2) then{
+				output "opponent picked paper!";
+				output "You tied";
+			}
+			else if ( game.outcome == 3) then{
+				output "opponent picked rock!";
+				output "You won!!";
+				won = won + 1;
+			}
+			else{
+				output "opponent picked scissors!";
+				output"You lost";
+				lost = lost + 1;
+			}
+		}
+		next game
+
+		when rock{
+			if(game.outcome == 3) then{
+				output "opponent picked rock!";
+				output "You tied";
+			}
+			else if ( game.outcome == 1) then{
+				output "opponent picked scissors!";
+				output "You won!!";
+				won = won + 1;
+			}
+			else{
+				output "opponent picked paper!";
+				output"You lost";
+				lost = lost + 1;
+			}
+		}
+		next game
+
+
+		when exit
+			game.outcome = 4;
+		next game
+	}
+
+} 
