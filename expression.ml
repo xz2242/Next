@@ -26,7 +26,7 @@ let next_type_to_string = function
 
 let check_type_to_string name  = function
     symt -> if (not (VarMap.mem (name,String) symt)) && (not (VarMap.mem (name,Integer) symt)) && (not (VarMap.mem (name,Location) symt))
-  						&& (not (VarMap.mem (name,Character) symt)) && (not (VarMap.mem (name,Item) symt)) 
+  				&& (not (VarMap.mem (name,Character) symt)) && (not (VarMap.mem (name,Item) symt)) 
   			then raise ( NotFound("undefined variable " ^ name))
             else if (VarMap.mem (name,String) symt) then "String" 
 	        else if (VarMap.mem (name,Integer) symt) then "Int"
@@ -52,24 +52,24 @@ let rec expr_to_java exp tmap = match exp with
                         else if op == Geq then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " >= " ^ (expr_to_java exp2 tmap) ^ ")"
                         else if op == Neq then "boolToInt (" ^ (expr_to_java exp1 tmap) ^ " != " ^ (expr_to_java exp2 tmap) ^ ")"
                         else raise (InvalidComparison("Invalid Comparison"))
-   | Asn (id, exp) -> let t = check_id tmap id in 
-                        (match id with
-                        Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
-                      | Has(name, subname) -> "entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")")
-   | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
-   | LitS (str) -> "\"" ^ str ^ "\""
-   | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
-                                let t2 = check_id tmap (Var(str2)) in
-                                    (match t2 with
-                                    Item -> "entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
-                                    | Character -> "entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
-                                    | _ -> raise (InvalidComparison("Invalid Comparison")))
-   | Ident (id) ->  let t = check_id tmap id in 
-                    (match id with
-                      Var(name) -> name
-                    | Has(name, subname) -> "entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\")")    
-   | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
-   | Not (exp) -> "boolToInt(!" ^ "isTrue(" ^ (expr_to_java exp tmap) ^ ") )"
+                       | Asn (id, exp) -> let t = check_id tmap id in 
+                                            (match id with
+                                                Var(str) -> str ^ " = " ^ (expr_to_java exp tmap)
+                                                | Has(name, subname) -> "entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")")
+                       | Lit (i) -> "(" ^ (string_of_int i) ^ ")"
+                       | LitS (str) -> "\"" ^ str ^ "\""
+                       | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
+                                                    let t2 = check_id tmap (Var(str2)) in
+                                                        (match t2 with
+                                                            Item -> "entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
+                                                            | Character -> "entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\")"
+                                                            | _ -> raise (InvalidComparison("Invalid Comparison")))
+                       | Ident (id) ->  let t = check_id tmap id in 
+                                        (match id with
+                                            Var(name) -> name
+                                            | Has(name, subname) -> "entityHas" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap))  ^ ", \"" ^ subname ^ "\")")    
+                       | Neg (exp) -> "(-" ^ (expr_to_java exp tmap) ^ ")"
+                       | Not (exp) -> "boolToInt(!" ^ "isTrue(" ^ (expr_to_java exp tmap) ^ ") )"
 
 
 let rec expr_to_java_boolean exp tmap = match exp with
@@ -90,21 +90,21 @@ let rec expr_to_java_boolean exp tmap = match exp with
 							else if op == Or then  (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " || " ^ (snd (expr_to_java_boolean exp2 tmap)))
                         	else if op == And then (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " && " ^ (snd (expr_to_java_boolean exp2 tmap)))
 	                        else ([], "false")
-	   | Asn (id, exp) ->   let t = check_id tmap id in 
-                                (match id with
-                                    Var(str) -> ([str ^ " = " ^ (expr_to_java exp tmap)], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
-                                    | Has(name, subname) -> (["entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")"], "(" ^ (expr_to_java exp tmap) ^ ") != 0 "))
-	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
-	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
-	   | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
-                                       let t2 = check_id tmap (Var(str2)) in
-                                           (match t2 with
-                                           Item -> ([], "isTrue(entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
-                                           | Character -> ([], "isTrue(entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
-                                           | _ -> raise (InvalidComparison("Invalid Comparison")))
-	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
-	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ " != 0 ")
-	   | Not (exp) -> ([], "!isTrue(" ^ (expr_to_java exp tmap) ^ ")")
+	                       | Asn (id, exp) ->   let t = check_id tmap id in 
+                                                    (match id with
+                                                        Var(str) -> ([str ^ " = " ^ (expr_to_java exp tmap)], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
+                                                        | Has(name, subname) -> (["entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")"], "(" ^ (expr_to_java exp tmap) ^ ") != 0 "))
+                    	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
+                    	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
+                    	   | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
+                                                           let t2 = check_id tmap (Var(str2)) in
+                                                               (match t2 with
+                                                               Item -> ([], "isTrue(entityExistsItem(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
+                                                               | Character -> ([], "isTrue(entityExistsCharacter(\"" ^ str1 ^ "\", Type." ^ (String.uppercase (next_type_to_string t1)) ^ ", \"" ^ str2 ^ "\"))")
+                                                               | _ -> raise (InvalidComparison("Invalid Comparison")))
+                    	   | Ident (id) -> ([], "isTrue(" ^ (expr_to_java exp tmap) ^ ")") 
+                    	   | Neg (exp) -> ([], (expr_to_java exp tmap) ^ " != 0 ")
+                    	   | Not (exp) -> ([], "!isTrue(" ^ (expr_to_java exp tmap) ^ ")")
 
 end
 
