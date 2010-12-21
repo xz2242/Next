@@ -2,6 +2,7 @@ item laser{(string color = "Green", int damage = 10)}
 item PDP_8{(int memory = 10)}
 item not_windows_computer {(string OS = "Not-Windows")}
 item fish_sandwich {(int portion_left = 100, string taste = "yummy")}
+
 character prof_edwards {(int life = 10000, int awesomeness = 300, string slogan = "Add another layer of indirection!"), ()}
 
 item dragon_book {(int damage = 5)}
@@ -26,7 +27,7 @@ int itemNum = 0;
 int enemy;
 int intro = 0;
 
-location columbia{(int temp = 20), (), (prof_edwards)}
+location columbia{(), (), (prof_edwards)}
 
 start columbia end(prof_edwards.life < 0 or itemNum == 4) {
 	if intro == 0 then{
@@ -79,156 +80,159 @@ start dragon_cave end (prof_edwards.life <= 0  or itemNum == 4) {
 		moment = 1;
 	}
 	else ;
-		choose (fight, "fight", "f")
-			(runaway, "run away", "r")
-			(ask, " ask nicely", "a") {
+	choose (fight, "fight", "f")
+		(runaway, "run away", "r")
+		(ask, " ask nicely", "a") {
 			
-			when fight{
-				[? prob 70 { 
-					output "You say: ";
-					output "behold Aho, my shiny laser pointer";
-					prof_aho.life = prof_aho.life - laser.damage;
-					output "You caused Prof. Aho a damage of:";
-					output laser.damage;
-					if (prof_aho.life <= 1) then{
-						output "You have defeated Aho... well done!!";
-						drop prof_aho.dragon_book;
-					}
-					else ;
-				}
-				prob 20 {
-					output "As he hits you Prof. Aho lets you know:";
-					output prof_aho.slogan;
-					prof_edwards.life = prof_edwards.life - dragon_book.damage;
-					output "Prof Aho hurt you this much:";
-					output dragon_book.damage;
-				}
-				prob 10{
-					output "wuah wuah wuah";
-					output "Aho surrenders.";
-					output "YOu have won the dragon book";
+		when fight{
+			[? prob 70 { 
+				output "You say: ";
+				output "behold Aho, my shiny laser pointer";
+				prof_aho.life = prof_aho.life - laser.damage;
+				output "You caused Prof. Aho a damage of:";
+				output laser.damage;
+				
+				if (prof_aho.life <= 1) then{
+					output "You have defeated Aho... well done!!";
 					drop prof_aho.dragon_book;
+				}
+				else ;
+			}
+			prob 20 {
+				output "As he hits you Prof. Aho lets you know:";
+				output prof_aho.slogan;
+				prof_edwards.life = prof_edwards.life - dragon_book.damage;
+				output "Prof Aho hurt you this much:";
+				output dragon_book.damage;
+			}
+			prob 10{
+				output "wuah wuah wuah";
+				output "Aho surrenders.";
+				output "YOu have won the dragon book";
+				drop prof_aho.dragon_book;
 					
-				}?]
+			}?]
 
 			if(exists dragon_cave.dragon_book) then{
-			output "In victory you say your famous slogan:";
-			output prof_edwards.slogan;
-			output "Would you like to pick up the dragon book?";
-			choose(grabbook, "grab", "g")
-				(notgrab, "not grab", "n"){
-				when grabbook { output "You have the dragon book!!";
-					grab prof_edwards.dragon_book;
-					if (itemNum == 3) then{
-						output "You did it!!";
-						output "You have collected al four items";
-						output "With them you build the most premiums compiler eveeeeer!!";
-					}
-					else ;
+				output "In victory you say your famous slogan:";
+				output prof_edwards.slogan;
+				output "Would you like to pick up the dragon book?";
+				choose(grabbook, "grab", "g")
+					(notgrab, "not grab", "n"){
 				
-					itemNum = itemNum + 1;
-					output "Lets go back to columbia";
-				} next columbia
-				when notgrab { 
-					output "You dont have the dragon book!!!";
-					grab prof_aho.dragon_book;
-				} 
-				 next dragon_cave
-			}
+					when grabbook { output "You have the dragon book!!";
+						grab prof_edwards.dragon_book;
+						if (itemNum == 3) then{
+							output "You did it!!";
+							output "You have collected al four items";
+							output "With them you build the most premiums compiler eveeeeer!!";
+						}
+						else ;
+				
+						itemNum = itemNum + 1;
+						output "Lets go back to columbia";
+					} next columbia
+				
+					when notgrab { 
+						output "You dont have the dragon book!!!";
+						grab prof_aho.dragon_book;
+					} 
+				 	next dragon_cave
+				}
 			}
 			else ; 
-			} next dragon_cave
+		} next dragon_cave
 			
-			when runaway {
-				output "You run away to columbia.. aaaawww";
-				moment = 0;
+		when runaway {
+			output "You run away to columbia.. aaaawww";
+			moment = 0;
 				
-			}next columbia
+		}next columbia
 			
 
-			when ask {
-				if(exists prof_aho.dragon_book) then{
+		when ask {
+			if(exists prof_aho.dragon_book) then{
 				drop prof_aho.dragon_book;
 				grab prof_edwards.dragon_book;
 				output "He actually just gave you the dragon book!";
 				output "... after 3000 hours of telling you about Awk...";
 				
 				if (itemNum == 3) then{
-				output "You did it!!";
-				output "You have collected all four items";
-				output "With them you build the most premiums compiler eveeeeer!!";
+					output "You did it!!";
+					output "You have collected all four items";
+					output "With them you build the most premiums compiler eveeeeer!!";
 				}
 				else ;
+				
 				itemNum = itemNum + 1;
 				output "Anyway, time to go back to columbia and choose the next location";
 			}
 			else output "The professor does not have the dragon book!";
 				
-			}next columbia
-		}
+		}next columbia
+	}
 	
 		
 					    
 }
 
 int attack;
+
 start ucb end (prof_edwards.life <= 0 or itemNum == 4) {
-		if (bill_gates.life <= 0 or plt_mob.life <= 0) then {
-			if (exists ucb.not_windows_computer) then {
-				output "You have won!";
-				output "You have received the not-windows computer!";
-				grab prof_edwards.not_windows_computer;
-				if (itemNum == 3) then{
-					output "You did it!!";
-					output "You have collected all four items";
-					output "With them you build the most premiums compiler eveeeeer!!";
-				}
-				else ;
-				itemNum = itemNum + 1;
-				output "Time to return to Columbia";
+	if (bill_gates.life <= 0 or plt_mob.life <= 0) then {
+		if (exists ucb.not_windows_computer) then {
+			output "You have won!";
+			output "You have received the not-windows computer!";
+			grab prof_edwards.not_windows_computer;
+			if (itemNum == 3) then{
+				output "You did it!!";
+				output "You have collected all four items";
+				output "With them you build the most premiums compiler eveeeeer!!";
+			}
+			else ;
+			itemNum = itemNum + 1;
+			output "Time to return to Columbia";
 				choose (col, "Columbia", "c"){
 					when col ;
 					next columbia
 				}
-			}
-			else{
-				output "You have what you needed from here";
-				output "Time to return to Columbia";
-				choose (col, "Columbia", "c"){
-					when col{
+		}
+		else{
+			output "You have what you needed from here";
+			output "Time to return to Columbia";
+			choose (col, "Columbia", "c"){
+				when col{
 						
-					} next columbia
-				}
+				} next columbia
 			}
 		}
-		else ;	
+	}
+	else ;	
 
 
 	if(enemy == 0) then{ 
 		[? prob 50 enemy = 1;
-			prob 50 enemy = 2;
+		prob 50 enemy = 2;
 		?]
 	}
 	else if (enemy == 1) then{
 
-		
-				
-			
 		output "Get ready to fight Bill Gates!!";
 		[? prob 40 {
 			attack = 1;
 			output "Bill throws Microsoft Office at your head!";
-			}
+		}
 		prob 30 {
 			 attack = 2;
 			output "Bill throws Windows 7 at your feet!";
-			}
+		}
 		prob 30 {
 			attack = 3;
 			output "Bill is trying to tell you the new features of c#!";
-			}	
+		}	
 				
 		?]
+		
 		choose(duck, "duck", "d")
 			(jump, "jump", "j")
 			(cover, "cover your ears", "c")
@@ -298,15 +302,15 @@ start ucb end (prof_edwards.life <= 0 or itemNum == 4) {
 		[? prob 40 {
 			attack = 1;
 			output "Someone throws a C Reference Manual at you!";
-			}
+		}
 		prob 30 {
 			 attack = 2;
 			output "someone is trying to throw the Ocaml camel at your feet!!";
-			}
+		}
 		prob 30 {
 			attack = 3;
 			output "They are all screaming about a new language that is scanned backwards!";
-			}	
+		}	
 				
 		?]
 		choose(duck, "duck", "d")
@@ -377,41 +381,45 @@ start ucb end (prof_edwards.life <= 0 or itemNum == 4) {
 start mcdonalds end  (prof_edwards.life <= 0 or itemNum == 4) {
 	if (exists mcdonalds.fish_sandwich) then{	
 
-	output "Ronald gives you a riddle!";
-	output  "What Burger was featured in the greatest advertising campaign ever?";
-	choose (fish, " fish sandwitch", "f")
-		(burger, " Big Mac", "b")
-		(caesar, " Caesar Salad", "c"){
+		output "Ronald gives you a riddle!";
+		output  "What Burger was featured in the greatest advertising campaign ever?";
+		choose (fish, " fish sandwitch", "f")
+			(burger, " Big Mac", "b")
+			(caesar, " Caesar Salad", "c"){
 		
-		when fish {
-			output "Yes, you do believe in magic!"; 
-			output "YOu have earned a  fish Burger";
-			output "Lets go back to Columbia to keep on with the adventure!!";
-			grab prof_edwards.fish_sandwich;
-			if (itemNum == 3) then{
-				output "You did it!!";
-				output "You have collected all four items";
-				output "With them you build the most premiums compiler eveeeeer!!";
+			when fish {
+				output "Yes, you do believe in magic!"; 
+				output "YOu have earned a  fish Burger";
+				output "Lets go back to Columbia to keep on with the adventure!!";
+				grab prof_edwards.fish_sandwich;
+				if (itemNum == 3) then{
+					output "You did it!!";
+					output "You have collected all four items";
+					output "With them you build the most premiums compiler eveeeeer!!";
 				}
-			else ;
+				else ;
 				itemNum = itemNum + 1;
-		} next columbia
-		when burger
-			output "no... come on... you were there!!";
-		next mcdonalds
-		when caesar
-			output "Thats not even a burger!!";
-		next mcdonalds
+			} next columbia
+		
+			when burger
+				output "no... come on... you were there!!";
+			next mcdonalds
+			
+			when caesar
+				output "Thats not even a burger!!";
+			next mcdonalds
+		}
 	}
-	}
+
 	else{
 		output "you have collected what you needed here";
 		choose(col, "Columbia", "c"){
-		when col{} next columbia
+			when col{} next columbia
 		}
 	}
 
 }
+
 
 int narrated = 0;
 
@@ -420,28 +428,34 @@ start taiwan end (prof_edwards.life <= 0 or itemNum == 4) {
 		output "...oh no wait, you beat Godzilla!! holy shhh... wow!";
 		output "You have received the PDP-8!!";
 		if( not exists prof_edwards.PDP_8) then{
-		grab prof_edwards.PDP_8;
-		if (itemNum == 3) then{
+			grab prof_edwards.PDP_8;
+			if (itemNum == 3) then{
 				output "You did it!!";
 				output "You have collected all four items";
 				output "With them you build the most premiums compiler eveeeeer!!";
-				}
+			}
 			else ;
 		itemNum = itemNum + 1;
-		} else ;
+		} 
+		else ;
 	}
 	else ;
+	
 	if (exists taiwan.PDP_8) then{
 		if (narrated == 0) then{
 			output "You have traveled to Taiwan to get the biggest PDP-8 in the world";
 			output "You need it for its humongous stack!!";
 			output "The problem is, it belongs to Godzilla!!";
 			narrated = 1;
-		} else ;
-	output "Godzilla is about to step on you!!";
-	choose (shoot,"shooting your laser pointer at his foot", "s")
-		(die, "dying squished between its toes", "d")
-		(tickle, "tickling the monster's foot", "t"){
+		} 
+		else ;
+
+		output "Godzilla is about to step on you!!";
+		
+		choose (shoot,"shooting your laser pointer at his foot", "s")
+			(die, "dying squished between its toes", "d")
+			(tickle, "tickling the monster's foot", "t"){
+			
 			when shoot {
 				output "You hit the monster in the foot";
 				godzilla.life = godzilla.life - laser.damage;
@@ -449,10 +463,12 @@ start taiwan end (prof_edwards.life <= 0 or itemNum == 4) {
 				output "Keep fighting!!";
 				
 			}next taiwan
+			
 			when die{
 				output "You have died between its green toes";
 				prof_edwards.life = 0;
 			}next columbia
+			
 			when tickle{
 				output "the monster fell back laughing";
 				output "You have done 50 damage!!";
@@ -463,7 +479,7 @@ start taiwan end (prof_edwards.life <= 0 or itemNum == 4) {
 	else{
 		output "You have the calculator. Time to return to columbia";
 		choose(col, "Columbia", "c"){
-		when col; next columbia
+			when col; next columbia
 		}
 	}
 					 

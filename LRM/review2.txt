@@ -13,3 +13,47 @@ LRM specifies that operands must have arithmetic type but we allow strings as we
 7.5 Might want to make start its own section or put it on declarations. Start is now a kind of declaration and we now need a start statement for every location declared. Also, now all game logic that is not a declaration must go inside the start statement
 
 7.6.2 Pending on what we decide this may have to change to only include locations and not characters
+
+Change sample program in LRM to this which actually creates an end condition:
+
+int count;
+
+item the_greatest_sword_ever {(int damage = 100000000)}
+
+character xiaowei_the_greatest_man_ever {(int life = 100000000,
+int level=99999, string haha="hahahahaha"), (the_greatest_sword_ever)}
+
+location where_is_this_place {(int sizex = 10000, int sizey=9283), (),
+(xiaowei_the_greatest_man_ever)}
+
+start where_is_this_place end (xiaowei_the_greatest_man_ever.life < 0) {
+	choose (attack,"hia!","a") (up,"up","u") (fin, "end", "f") {
+		when attack
+		{
+			xiaowei_the_greatest_man_ever.life+1;
+
+		} next where_is_this_place
+		
+		when up
+		{
+			[? prob 40 {
+				count = count-1;
+				output "count:";
+				output count;
+			}
+			prob 60 {
+				count = count+1;
+				output "count:";
+				output count;
+			}
+ 			?]
+		} next where_is_this_place
+	
+		when fin
+		{
+			xiaowei_the_greatest_man_ever.life = -1;
+		} next where_is_this_place
+		
+		
+	}
+}

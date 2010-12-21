@@ -5,9 +5,9 @@ location here {(),(),(you)}
 
 start here end (num == 1) {
 	if (exists here.you) then
-	output you.slogan;
+		output you.slogan;
 	else
-	output announce;
+		output announce;
 	num = 1;
 	
 } 
