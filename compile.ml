@@ -132,7 +132,7 @@ let global_dec_to_java (playcode, startfns) global_dec tmap = match global_dec w
                     | hd::hd2::tl -> (playcode @ tl, startfns @ [hd; hd2])
                     | _::tl -> raise (InvalidCode("Invalid Code")))
   | Startend (name, expr, stmt) -> playcode @ ["//Location function call"; name ^ "();"], startfns @ ["//start funtion"; "public void " ^ name ^ "() {"] @ 
-	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["currentLocation = \"" ^ name ^ "\";";"while (!(" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ ")){"  ] @ ["if (" ^(snd (Expression.expr_to_java_boolean expr tmap)) ^")"; "endGame();"]
+	(fst (Expression.expr_to_java_boolean expr tmap)) @ ["currentLocation = \"" ^ name ^ "\";"]@ ["if (" ^(snd (Expression.expr_to_java_boolean expr tmap)) ^")"; "endGame();"]@["while (!(" ^ (snd (Expression.expr_to_java_boolean expr tmap)) ^ ")){"  ] 
 	@ (startend_stmt_check (snd (Expression.expr_to_java_boolean expr tmap)) (fst (stmt_to_java tmap ([], []) stmt)) )   
 	@ (fst (Expression.expr_to_java_boolean expr tmap))@ ["}"  ; "}"]
 
