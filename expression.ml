@@ -90,7 +90,10 @@ let rec expr_to_java_boolean exp tmap = match exp with
 							else if op == Or then  (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " || " ^ (snd (expr_to_java_boolean exp2 tmap)))
                         	else if op == And then (fst (expr_to_java_boolean exp1 tmap)@fst (expr_to_java_boolean exp2 tmap), (snd (expr_to_java_boolean exp1 tmap)) ^ " && " ^ (snd (expr_to_java_boolean exp2 tmap)))
 	                        else ([], "false")
-	   | Asn (id, exp) -> ([], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
+	   | Asn (id, exp) ->   let t = check_id tmap id in 
+                                (match id with
+                                    Var(str) -> ([str ^ " = " ^ (expr_to_java exp tmap)], "(" ^ (expr_to_java exp tmap) ^ ") != 0 ")
+                                    | Has(name, subname) -> (["entitySet" ^ (String.capitalize (next_type_to_string t)) ^ "(\"" ^ name ^ "\", Type." ^ (String.uppercase (check_type_to_string name tmap)) ^ ", \"" ^ subname ^ "\", " ^ (expr_to_java exp tmap) ^ ")"], "(" ^ (expr_to_java exp tmap) ^ ") != 0 "))
 	   | Lit (i) -> ([], "isTrue(" ^ (string_of_int i) ^ ")")
 	   | LitS (str) -> ([], "isTrue(" ^ str ^ ")")
 	   | Exists (str1, str2) -> let t1 = check_id tmap (Var(str1)) in
