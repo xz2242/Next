@@ -29,7 +29,6 @@ rule token = parse
 | ',' {COMMA}
 | "output" {OUTPUT}
 | "not" {LOGICNOT}
-
 |'.' {DOT}
 |"start" {START}
 |"end" {END}
@@ -50,7 +49,6 @@ rule token = parse
 |"item" {ITEM}
 |"int" {INT}
 |"string" {STRING}
-
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
 | ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_']* as var { VARIABLE ("_" ^ var) }
 | eof { EOF }
